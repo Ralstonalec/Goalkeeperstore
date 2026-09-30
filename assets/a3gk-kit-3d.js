@@ -144,20 +144,88 @@ function createKitScene(THREE, container, options = {}) {
   }
   const inner = new THREE.MeshStandardMaterial({ color: 0x0b0c0a, roughness: 1, side: THREE.BackSide, vertexColors: true });
 
+  // Garment meshes are generated in a background worker (they take a moment
+  // to build) and cached, so the page never freezes. If workers aren't
+  // available they're built on the main thread instead.
   const geoCache = new Map();
-  function garmentGeometry(kind, opts) {
-    const k = kind + JSON.stringify(opts);
-    if (geoCache.has(k)) return geoCache.get(k);
-    const g = options.garment.buildGarment(kind, opts);
+  let worker = null;
+  const pending = new Map();
+  let seq = 0;
+  if (options.garmentUrl && typeof Worker !== 'undefined') {
+    try {
+      const abs = new URL(options.garmentUrl, location.href).href;
+      const code = `self.window = self; importScripts(${JSON.stringify(abs)});
+onmessage = function (e) {
+  var d = e.data;
+  try {
+    var g = self.A3GKGarment.buildGarment(d.kind, d.opts);
+    postMessage({ id: d.id, g: g }, [g.position.buffer, g.normal.buffer, g.uv.buffer, g.color.buffer]);
+  } catch (err) { postMessage({ id: d.id, error: String(err && err.message || err) }); }
+};`;
+      const blobUrl = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+      // A small pool so jersey, shorts and socks build at the same time.
+      const size = Math.max(1, Math.min(3, (navigator.hardwareConcurrency || 2) - 1));
+      const pool = Array.from({ length: size }, () => new Worker(blobUrl));
+      let next = 0;
+      worker = {
+        postMessage: (m) => pool[next++ % pool.length].postMessage(m),
+        terminate: () => pool.forEach((w) => w.terminate()),
+      };
+      const onmessage = (e) => {
+        const p = pending.get(e.data.id);
+        if (!p) return;
+        pending.delete(e.data.id);
+        if (e.data.error) p.reject(new Error(e.data.error));
+        else p.resolve(e.data.g);
+      };
+      const onerror = () => {
+        if (worker) worker.terminate();
+        worker = null;
+        pending.forEach((p) => p.fallback());
+        pending.clear();
+      };
+      pool.forEach((w) => {
+        w.onmessage = onmessage;
+        w.onerror = onerror;
+      });
+    } catch (e) {
+      worker = null;
+    }
+  }
+
+  function toGeometry(g) {
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(g.position, 3));
     geo.setAttribute('normal', new THREE.BufferAttribute(g.normal, 3));
     geo.setAttribute('uv', new THREE.BufferAttribute(g.uv, 2));
     geo.setAttribute('color', new THREE.BufferAttribute(g.color, 3));
     g.groups.forEach((r) => geo.addGroup(r.start, r.count, r.materialIndex));
+    geo.computeBoundingBox();
     geo.computeBoundingSphere();
-    geoCache.set(k, geo);
     return geo;
+  }
+
+  function garmentGeometry(kind, opts) {
+    const k = kind + JSON.stringify(opts);
+    if (!geoCache.has(k)) {
+      const buildHere = () => Promise.resolve().then(() => options.garment.buildGarment(kind, opts));
+      const raw = worker
+        ? new Promise((resolve, reject) => {
+            const id = ++seq;
+            pending.set(id, { resolve, reject, fallback: () => buildHere().then(resolve, reject) });
+            worker.postMessage({ id, kind, opts });
+          })
+        : buildHere();
+      geoCache.set(k, raw.then(toGeometry));
+    }
+    return geoCache.get(k);
+  }
+
+  // Warm the cache with the other variants once the first kit is up.
+  function prebuild() {
+    [['jersey', { sleeve: 'long' }], ['jersey', { sleeve: 'short' }], ['bottoms', { bottom: 'shorts' }], ['bottoms', { bottom: 'pants' }], ['socks', { bottom: 'shorts' }], ['socks', { bottom: 'pants' }]].forEach(([k, o]) =>
+      garmentGeometry(k, o).catch(() => {})
+    );
   }
 
   function wrapRepeat(t) {
@@ -234,16 +302,30 @@ function createKitScene(THREE, container, options = {}) {
     kit.clear();
   }
 
-  function build(spec) {
-    disposeKit();
+  let buildToken = 0;
+  let firstBuilt = null;
+  let firstFailed = null;
+  const ready = new Promise((res, rej) => {
+    firstBuilt = res;
+    firstFailed = rej;
+  });
+
+  async function build(spec) {
+    const token = ++buildToken;
     const { parts, sleeve, collar, finish } = spec;
     const hasJersey = parts.includes('jersey');
     const bottom = parts.find((p) => p !== 'jersey');
+    const [jGeo, bGeo, sGeo] = await Promise.all([
+      hasJersey ? garmentGeometry('jersey', { sleeve: sleeve === 'short' ? 'short' : 'long' }) : null,
+      bottom ? garmentGeometry('bottoms', { bottom }) : null,
+      bottom && spec.socks ? garmentGeometry('socks', { bottom }) : null,
+    ]);
+    if (token !== buildToken) return; // a newer build started meanwhile
+    disposeKit();
 
-    if (hasJersey) {
-      const geo = garmentGeometry('jersey', { sleeve: sleeve === 'short' ? 'short' : 'long' });
+    if (jGeo) {
       const mats = [textures.torso, textures.sleeveR, textures.sleeveL].map((t) => fabric(wrapRepeat(t), bumpTex, finish));
-      const jersey = withInner(geo, mats);
+      const jersey = withInner(jGeo, mats);
       jersey.children.forEach((c) => (c.userData.cached = true));
       kit.add(jersey);
 
@@ -265,39 +347,37 @@ function createKitScene(THREE, container, options = {}) {
       kit.add(new THREE.Mesh(band, bandMat));
     }
 
-    if (bottom) {
-      const geo = garmentGeometry('bottoms', { bottom });
+    if (bGeo) {
       const mats = [textures.hip, textures.legR, textures.legL].map((t) => fabric(wrapRepeat(t), bumpTex, finish));
-      const bottoms = withInner(geo, mats);
+      const bottoms = withInner(bGeo, mats);
       bottoms.children.forEach((c) => (c.userData.cached = true));
       kit.add(bottoms);
-
-      const pants = bottom === 'pants';
-      if (spec.socks) {
-        const sockTop = pants ? -2.3 : -1.32;
-        const sockLen = pants ? 0.55 : 1.3;
-        [1, -1].forEach((dir) => {
-          const geo = new THREE.CylinderGeometry(0.235, 0.2, sockLen, 48, 8, true);
-          geo.translate(0, -sockLen / 2, 0);
-          const g = new THREE.Group();
-          g.add(new THREE.Mesh(geo, fabric(textures.sock, bumpTex, 'matte')));
-          const sock = g;
-          sock.children[0].material.vertexColors = false;
-          sock.position.set((pants ? 0.585 : 0.5) * dir, sockTop, 0);
-          sock.scale.set(1, 1, 0.9);
-          kit.add(sock);
-        });
-      }
+    }
+    if (sGeo) {
+      const socks = withInner(sGeo, [fabric(wrapRepeat(textures.sock), bumpTex, 'matte')]);
+      socks.children.forEach((c) => (c.userData.cached = true));
+      kit.add(socks);
     }
 
-    // Frame the camera on whatever is being built.
-    const top = hasJersey ? 2.45 : 0.2;
-    const low = bottom ? (spec.socks ? (bottom === 'pants' ? -2.9 : -2.65) : bottom === 'pants' ? -2.55 : -1.25) : 0;
+    // Frame the camera on whatever was built.
+    const box = new THREE.Box3();
+    [jGeo, bGeo, sGeo].forEach((g) => g && box.union(g.boundingBox));
+    const top = box.max.y + 0.1;
+    const low = box.min.y;
     target = new THREE.Vector3(0, (top + low) / 2, 0);
-    camDist = Math.max(6.5, (top - low) * 2.35 + 1.5);
+    const h = top - low;
+    const w = box.max.x - box.min.x;
+    const fit = Math.max(h, w / Math.max(0.6, camera.aspect));
+    camDist = fit / (2 * Math.tan((camera.fov * Math.PI) / 360)) * 1.18 + 1;
     floor.position.y = low - 0.02;
-    floor.scale.set(hasJersey ? 1.2 : 1, 1, 1);
+    floor.scale.set(Math.max(1, w / 3.2), 1, 1);
     frame();
+    requestRender();
+    if (firstBuilt) {
+      firstBuilt();
+      firstBuilt = firstFailed = null;
+      setTimeout(prebuild, 400);
+    }
   }
 
   function update(spec) {
@@ -311,7 +391,10 @@ function createKitScene(THREE, container, options = {}) {
     const key = [spec.parts.join(','), spec.sleeve, spec.collar, spec.finish, spec.socks, spec.trim].join('|');
     if (key !== lastKey) {
       lastKey = key;
-      build(spec);
+      build(spec).catch((e) => {
+        console.warn('A3GK: garment build failed', e);
+        if (firstFailed) firstFailed(e);
+      });
     } else {
       materials.forEach((m) => {
         if (m.map) m.map.needsUpdate = true;
@@ -445,14 +528,15 @@ function createKitScene(THREE, container, options = {}) {
 
   function dispose() {
     ro.disconnect();
-    geoCache.forEach((g) => g.dispose());
+    geoCache.forEach((p) => p.then((g) => g.dispose(), () => {}));
+    if (worker) worker.terminate();
     cancelAnimationFrame(raf);
     disposeKit();
     renderer.dispose();
     el.remove();
   }
 
-  return { update, setView, snapshot, dispose, requestRender };
+  return { update, setView, snapshot, dispose, requestRender, ready };
 }
 
 window.A3GKKit3D = { createKitScene };
