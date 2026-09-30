@@ -4,5 +4,6 @@
   "installCommand": "npm install",
   "buildCommand": "npm run build:preview",
   "outputDirectory": "dist",
-  "trailingSlash": false
+  "trailingSlash": false,
+  "cleanUrls": true
 }

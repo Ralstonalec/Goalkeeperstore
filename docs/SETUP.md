@@ -30,6 +30,30 @@ Anything marked **[TBC]** needs a real answer from you before launch. Grep the r
 3. Leave the theme unpublished and use **Preview** until launch.
 4. Before every push, run `python3 tools/validate_templates.py`. Shopify rejects a theme with a template setting that doesn't exist in the section schema, and this script catches those first.
 
+## 1b. Create the pages, collections, blog and menus (one command)
+
+The theme holds the *templates*, but Shopify only shows a page once it exists in admin. Until then, only the homepage works. This script creates everything the theme links to:
+- 9 pages, each with its template
+- 6 collections, published to the Online Store
+- the Guides blog, with the 5 guides from `content/guides/`
+- the `a3gk.*` product fields from §3
+- the main menu and the three footer menus from §6
+
+It never touches products, prices or policies, and it's safe to re-run: anything that already exists is skipped.
+
+1. **Get an Admin API token.** In Shopify admin, go to **Settings → Apps and sales channels → Develop apps → Create an app**.
+   - Under Admin API scopes, tick `write_content`, `write_products`, `write_online_store_navigation` and `write_publications`.
+   - Click **Install**, then reveal and copy the token (it starts `shpat_`).
+2. **Run the script** on your computer, from a copy of this repo, with Node 18 or later:
+   ```sh
+   npm install
+   npm run setup:store -- --dry-run          # shows what it will create, changes nothing
+   SHOPIFY_STORE=your-store.myshopify.com SHOPIFY_ADMIN_TOKEN=shpat_xxx npm run setup:store
+   ```
+3. Treat the token like a password and don't commit it. When setup is done, you can uninstall the app.
+
+If you'd rather click through it yourself, §3, §5 and §6 below list the same items so you can create them by hand.
+
 ## 2. Settings
 
 - **Settings → General:** store name `A3GK`, sender email, and your business address (required for policies).
