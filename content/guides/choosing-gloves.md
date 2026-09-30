@@ -1,8 +1,8 @@
 ---
-title: How to choose goalkeeper gloves — cuts, latex, and what's actually worth paying for
+title: How to choose goalkeeper gloves
 handle: how-to-choose-goalkeeper-gloves
 seo_title: How to Choose Goalkeeper Gloves (Cuts, Latex, Sizing) | A3GK
-seo_description: Negative vs roll finger vs flat palm, soft vs hard latex, fingersaves, and what surface you play on. An honest guide from a keeper-only store that doesn't sell gloves yet.
+seo_description: Cuts, latex, fingersaves and the surface you play on. A buying guide from a keeper store that doesn't sell its own gloves yet.
 blog: guides
 ---
 

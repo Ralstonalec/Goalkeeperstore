@@ -1,8 +1,8 @@
 ---
-title: Goalkeeper padding explained — which zones you actually need
+title: Goalkeeper padding, explained
 handle: goalkeeper-padding-explained
 seo_title: Padded Goalkeeper Shorts & Pants Explained | A3GK
-seo_description: Hip, tailbone, thigh, knee and elbow padding for goalkeepers. What each zone protects, when you need it, and the trade-offs in heat and bulk.
+seo_description: Hip, tailbone, thigh, knee and elbow padding: what each zone protects, when you need it, and the trade-offs in heat and bulk.
 blog: guides
 ---
 

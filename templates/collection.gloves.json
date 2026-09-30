@@ -3,7 +3,6 @@
     "honest": {
       "type": "a3gk-honest-picks",
       "settings": {
-        "eyebrow": "Gloves",
         "empty_heading": "Our own gloves? Not yet.",
         "empty_link_label": "How to choose your next gloves",
         "empty_link": "shopify://blogs/guides",
@@ -34,13 +33,12 @@
         "l1"
       ],
       "settings": {
-        "eyebrow": "Meanwhile",
         "heading": "We can still help you buy the right pair.",
-        "text": "<p>Our size guide has a hand-measurement calculator and honest advice on cuts. Whatever brand you buy, measure first.</p>",
+        "text": "<p>Our size guide has a hand-measurement calculator and advice on cuts. Whatever brand you buy, measure first.</p>",
         "layout": "split",
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     }
   },

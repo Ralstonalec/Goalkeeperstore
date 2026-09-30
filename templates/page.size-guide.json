@@ -5,13 +5,12 @@
       "blocks": {},
       "block_order": [],
       "settings": {
-        "eyebrow": "Fit",
         "heading": "Fit matters. Here's how to get it right now.",
         "text": "<p>A glove that's half a size out loses you grip and feel. Padding in the wrong place doesn't protect anything. So we treat sizing as part of the product, not an afterthought.</p>",
         "layout": "split",
-        "surface": false,
         "padding_top": 96,
-        "padding_bottom": 48
+        "padding_bottom": 48,
+        "tone": "ink"
       }
     },
     "phases": {
@@ -22,7 +21,7 @@
           "settings": {
             "label": "Phase 1",
             "title": "Apparel & protection sizing",
-            "text": "<p>Charts for our kit and protection, measured from production samples \u2014 plus honest advice when you're between sizes.</p>",
+            "text": "<p>Charts for our kit and protection, measured from production samples, with advice for when you're between sizes.</p>",
             "current": true
           }
         },
@@ -51,21 +50,20 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "Where we're going",
         "heading": "We're building toward more",
         "text": "",
-        "surface": false,
         "footnote": "",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "gloves": {
       "type": "a3gk-glove-sizer",
       "settings": {
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     },
     "apparel": {
@@ -152,12 +150,11 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "Fit questions",
         "heading": "Still unsure?",
         "schema": true,
-        "surface": false,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     }
   },

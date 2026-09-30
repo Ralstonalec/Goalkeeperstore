@@ -44,7 +44,7 @@
 -%}
 <section
   id="{{ section.settings.anchor | default: section.id | handleize }}"
-  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  class="a3-section a3-tone--{{ section.settings.tone }}"
   style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="a3-wrap a3-bundle">
@@ -111,7 +111,7 @@
             {%- if saving > 0 -%}
               You save <strong class="a3-accent">{{ saving | money }}</strong> ({{ pct }}%).
             {%- else -%}
-              No saving on this one — it's here for convenience, and we'd rather tell you than pretend.
+              No saving on this one. It's here for convenience.
             {%- endif -%}
           </p>
           <p class="a3-small">Worked out from today's individual prices, not an inflated "was" price.</p>
@@ -151,7 +151,7 @@
 
 {% stylesheet %}
   .a3-bundle { display: grid; gap: 4rem; align-items: start; }
-  .a3-bundle h2 { margin: 0 0 1.6rem; font-size: clamp(3.4rem, 2.2rem + 3vw, 5.6rem); }
+  .a3-bundle h2 { margin: 0 0 1.6rem; font-size: clamp(3rem, 2.2rem + 2vw, 4.8rem); }
   .a3-bundle__who { margin: 0 0 1.2rem; }
   .a3-bundle__media { aspect-ratio: 16 / 10; margin-top: 2.4rem; }
   .a3-bundle__maths h3 { margin: 0; }
@@ -171,13 +171,13 @@
   "settings": [
     { "type": "product", "id": "bundle_product", "label": "Bundle product", "info": "On a product template, leave blank to use the current product." },
     { "type": "text", "id": "anchor", "label": "Anchor (for links like /pages/bundles#starter)" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Bundle" },
+    { "type": "text", "id": "eyebrow", "label": "Small line above heading" },
     { "type": "text", "id": "heading", "label": "Heading", "info": "Defaults to the bundle product title." },
     { "type": "text", "id": "who", "label": "Who it's for" },
     { "type": "richtext", "id": "why", "label": "Why it works" },
     { "type": "image_picker", "id": "media", "label": "Image" },
     { "type": "text", "id": "shot", "label": "Placeholder shot description" },
-    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "select", "id": "tone", "label": "Background", "options": [{ "value": "ink", "label": "Dark" }, { "value": "raised", "label": "Dark, raised" }, { "value": "paper", "label": "Light" }], "default": "ink" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
   ],

@@ -152,10 +152,9 @@
     "bundle": {
       "type": "a3gk-bundle",
       "settings": {
-        "eyebrow": "What's inside",
         "padding_top": 48,
         "padding_bottom": 48,
-        "surface": true
+        "tone": "raised"
       }
     }
   },

@@ -5,21 +5,19 @@
       "settings": {
         "purpose": "feedback",
         "anchor": "",
-        "eyebrow": "Feedback",
         "heading": "Tell us something",
         "text": "<p>Good, bad, or \"you should stock this\". We read all of it, and when it changes something we'll put it on our <a href=\"/pages/you-told-us\">changes log</a>.</p>",
-        "surface": false,
         "button_label": "Send feedback",
         "message_label": "What should we know?",
         "response_time": "",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "log": {
       "type": "a3gk-feedback-log",
       "settings": {
-        "eyebrow": "What changed",
         "heading": "Recent changes",
         "limit": 3,
         "cta_label": "",

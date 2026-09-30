@@ -1,8 +1,8 @@
 ---
-title: How to design your keeper kit in the A3GK builder
+title: Designing your kit in the builder
 handle: how-to-design-goalkeeper-kit
 seo_title: Design a Custom Goalkeeper Kit — How the A3GK Builder Works
-seo_description: Step by step through the A3GK kit builder: base, colours, name and number, crest, padding zones, sizing, proofs and lead times.
+seo_description: Step by step through the A3GK kit builder: colours, name and number, crest, padding zones, sizing, proofs and delivery times.
 blog: guides
 ---
 

@@ -8,7 +8,7 @@ Shopify stays in charge of commerce: products, variants, cart, checkout, custome
 
 ```
 assets/      a3gk.css (design system), a3gk.js (reveals/parallax),
-             a3gk-builder.js/.css (kit builder), self-hosted Barlow Condensed (OFL)
+             a3gk-builder.js/.css (kit builder), self-hosted Archivo variable font (OFL)
 sections/    a3gk-*.liquid: all custom sections (see below). Everything else is Dawn.
 snippets/    a3gk-media (image or honest placeholder), a3gk-value-compare, a3gk-status-badge
 templates/   homepage, product (default/care/apparel/bundle/builder-base),
@@ -73,4 +73,4 @@ shopify theme check                   # Shopify's linter (if you have the CLI)
 
 ## Licences
 
-Dawn is © Shopify, used under its licence (see `LICENSE.md`). Barlow Condensed is under the SIL Open Font License 1.1.
+Dawn is © Shopify, used under its licence (see `LICENSE.md`). Archivo is under the SIL Open Font License 1.1.

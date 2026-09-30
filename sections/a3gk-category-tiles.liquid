@@ -1,16 +1,21 @@
+{%- comment -%}
+  Category index: a numbered list of what the store does. Reads well with
+  no photography at all; when a category has an image it appears on hover
+  (desktop) and as a thumbnail (mobile).
+{%- endcomment -%}
 <section
-  class="a3-section"
+  class="a3-section a3-tone--{{ section.settings.tone }}"
   style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="a3-wrap">
     <div class="a3-head">
-      <h2 class="a3-reveal">{{ section.settings.heading | escape }}</h2>
+      <h2>{{ section.settings.heading | escape }}</h2>
       {%- if section.settings.text != blank -%}
-        <div class="a3-reveal" style="--a3-i: 1">{{ section.settings.text }}</div>
+        <div>{{ section.settings.text }}</div>
       {%- endif -%}
     </div>
 
-    <ul class="a3-tiles" role="list">
+    <ol class="a3-index" role="list">
       {%- for block in section.blocks -%}
         {%- liquid
           assign link = block.settings.link
@@ -22,88 +27,97 @@
             assign img = block.settings.collection.featured_image
           endif
         -%}
-        <li class="a3-tile a3-reveal{% if forloop.first %} a3-tile--lead{% endif %}" style="--a3-i: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
-          <a class="a3-tile__link" href="{{ link | default: '#' }}">
-            <div class="a3-tile__media a3-media">
-              {%- render 'a3gk-media', image: img, shot: block.settings.shot, sizes: '(min-width: 990px) 33vw, 100vw' -%}
-            </div>
-            <div class="a3-tile__body">
-              {%- render 'a3gk-status-badge', status: block.settings.status, label: block.settings.status_label -%}
-              <h3>{{ block.settings.title | escape }}</h3>
-              {%- if block.settings.note != blank -%}
-                <p class="a3-small">{{ block.settings.note | escape }}</p>
-              {%- endif -%}
-            </div>
+        <li class="a3-index__row" {{ block.shopify_attributes }}>
+          <a class="a3-index__link" href="{{ link | default: '#' }}">
+            <span class="a3-index__n a3-num">{{ forloop.index | prepend: '0' }}</span>
+            <span class="a3-index__name">{{ block.settings.title | escape }}</span>
+            <span class="a3-index__note">{{ block.settings.note | escape }}</span>
+            <span class="a3-index__status">
+              {%- case block.settings.status -%}
+                {%- when 'live' -%}<span class="a3-badge a3-badge--live">{{ block.settings.status_label | default: 'Available' }}</span>
+                {%- when 'soon' -%}<span class="a3-badge">{{ block.settings.status_label | default: 'Coming soon' }}</span>
+                {%- else -%}<span class="a3-badge">{{ block.settings.status_label }}</span>
+              {%- endcase -%}
+            </span>
+            {%- if img != blank -%}
+              <span class="a3-index__img a3-media" aria-hidden="true">
+                {{ img | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 28vw, 30vw', alt: '' }}
+              </span>
+            {%- endif -%}
           </a>
         </li>
       {%- endfor -%}
-    </ul>
+    </ol>
   </div>
 </section>
 
 {% stylesheet %}
-  .a3-tiles {
+  .a3-index {
     list-style: none;
     margin: 0;
     padding: 0;
-    display: grid;
-    gap: 1.6rem;
-    grid-template-columns: 1fr;
+    border-top: 1px solid var(--a3-line);
   }
 
-  .a3-tile__link {
+  .a3-index__row { border-bottom: 1px solid var(--a3-line); }
+
+  .a3-index__link {
     position: relative;
-    display: block;
-    height: 100%;
-    min-height: 32rem;
+    display: grid;
+    grid-template-columns: 4.4rem 1fr auto;
+    grid-template-areas:
+      'n name status'
+      'n note note';
+    gap: 0.4rem 1.6rem;
+    align-items: baseline;
+    padding: 2.4rem 0;
     color: var(--a3-text);
     text-decoration: none;
-    border-radius: var(--a3-radius);
-    overflow: hidden;
-    isolation: isolate;
   }
 
-  .a3-tile__media {
+  .a3-index__n { grid-area: n; color: var(--a3-muted); font-size: 1.5rem; }
+
+  .a3-index__name {
+    grid-area: name;
+    font-size: clamp(2.8rem, 2rem + 2.2vw, 5.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .a3-index__note { grid-area: note; color: var(--a3-muted); font-size: 1.5rem; }
+  .a3-index__status { grid-area: status; text-align: right; }
+
+  .a3-index__img {
     position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: 0;
+    right: 18%;
+    top: 50%;
+    width: min(28vw, 36rem);
+    aspect-ratio: 4 / 3;
+    transform: translateY(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s var(--a3-ease);
+    z-index: 2;
   }
 
-  .a3-tile__media img { transition: transform 1.2s var(--a3-ease); }
-  .a3-tile__link:hover .a3-tile__media img { transform: scale(1.05); }
-
-  .a3-tile__media::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, transparent 30%, rgba(11, 13, 12, 0.9) 100%);
-  }
-
-  .a3-tile__body {
-    position: absolute;
-    inset: auto 0 0 0;
-    padding: 2.4rem;
-    display: grid;
-    gap: 0.8rem;
-    justify-items: start;
-  }
-
-  .a3-tile__body h3 { margin: 0; font-size: clamp(3rem, 2rem + 2vw, 4.4rem); }
-  .a3-tile__body p { margin: 0; color: var(--a3-text); opacity: 0.8; }
-
-  .a3-tile__media .a3-shot { justify-content: flex-start; }
-
-  @media screen and (min-width: 750px) {
-    .a3-tiles { grid-template-columns: repeat(2, 1fr); }
+  @media (hover: hover) and (min-width: 990px) {
+    .a3-index__link:hover .a3-index__name { color: var(--a3-accent-text); }
+    .a3-index__link:hover .a3-index__img { opacity: 1; }
   }
 
   @media screen and (min-width: 990px) {
-    .a3-tiles { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 30rem; }
-    .a3-tile--lead { grid-row: span 2; }
-    /* Six tiles: let the last one run full width instead of sitting alone. */
-    .a3-tile--lead:nth-last-child(6) ~ .a3-tile:last-child { grid-column: 1 / -1; }
-    .a3-tile__link { min-height: 0; }
+    .a3-index__link {
+      grid-template-columns: 6rem minmax(0, 1.2fr) minmax(0, 1fr) 14rem;
+      grid-template-areas: 'n name note status';
+      align-items: center;
+      padding: 3.2rem 0;
+    }
+  }
+
+  @media (hover: none), (max-width: 989px) {
+    .a3-index__img { display: none; }
   }
 {% endstylesheet %}
 
@@ -112,8 +126,19 @@
   "name": "A3GK categories",
   "tag": "div",
   "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": "What we do" },
-    { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>A short range on purpose. If it isn't good enough to recommend, it isn't here.</p>" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "What we make" },
+    { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>A short range, on purpose. Everything here is something a keeper goes through week after week.</p>" },
+    {
+      "type": "select",
+      "id": "tone",
+      "label": "Background",
+      "options": [
+        { "value": "ink", "label": "Dark" },
+        { "value": "raised", "label": "Dark, raised" },
+        { "value": "paper", "label": "Light" }
+      ],
+      "default": "ink"
+    },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 }
   ],
@@ -125,22 +150,22 @@
         { "type": "text", "id": "title", "label": "Title", "default": "Category" },
         { "type": "collection", "id": "collection", "label": "Collection" },
         { "type": "url", "id": "link", "label": "Link override" },
-        { "type": "image_picker", "id": "image", "label": "Image", "info": "Falls back to the collection image." },
-        { "type": "text", "id": "shot", "label": "Placeholder shot description" },
+        { "type": "image_picker", "id": "image", "label": "Image", "info": "Shown on hover. Falls back to the collection image." },
+        { "type": "text", "id": "shot", "label": "Photo brief (for the photographer)" },
         {
           "type": "select",
           "id": "status",
           "label": "Status",
           "options": [
-            { "value": "live", "label": "Available now" },
+            { "value": "live", "label": "Available" },
             { "value": "soon", "label": "Coming soon" },
-            { "value": "none", "label": "No badge" }
+            { "value": "none", "label": "No label" }
           ],
           "default": "none",
-          "info": "Keep this honest — only 'Available now' when products are actually in stock."
+          "info": "Only 'Available' when products are actually in stock."
         },
-        { "type": "text", "id": "status_label", "label": "Badge text override" },
-        { "type": "text", "id": "note", "label": "One-line note" }
+        { "type": "text", "id": "status_label", "label": "Label text override" },
+        { "type": "text", "id": "note", "label": "One-line description" }
       ]
     }
   ],
@@ -148,11 +173,11 @@
     {
       "name": "A3GK categories",
       "blocks": [
-        { "type": "category", "settings": { "title": "Glove care", "status": "soon", "note": "Wash, grip spray, deodorizer. Our own." } },
-        { "type": "category", "settings": { "title": "Builder", "status": "soon", "note": "Custom padded jerseys, shorts and pants." } },
+        { "type": "category", "settings": { "title": "Glove care", "status": "soon", "note": "Wash, grip spray, deodorizer" } },
+        { "type": "category", "settings": { "title": "Kit builder", "status": "soon", "note": "Padded jerseys, shorts and pants in your colours" } },
         { "type": "category", "settings": { "title": "Tape & socks", "status": "soon" } },
         { "type": "category", "settings": { "title": "Protection", "status": "soon" } },
-        { "type": "category", "settings": { "title": "Gloves", "status": "none", "note": "Not yet. Here's why." } }
+        { "type": "category", "settings": { "title": "Gloves", "status": "none", "status_label": "Not yet", "note": "Why we don't sell our own" } }
       ]
     }
   ]

@@ -119,13 +119,13 @@ const guides = readGuides();
 const guideCards = (limit = 99) => `
   <section class="a3-section" style="--a3-pad-top:48px;--a3-pad-bottom:96px">
     <div class="a3-wrap">
-      <div class="a3-head"><h2>Keeper guides</h2><p><a class="a3-link" href="/blogs/guides">All guides</a></p></div>
+      <div class="a3-head"><h2>Guides</h2><p><a class="a3-link" href="/blogs/guides">All guides</a></p></div>
       <div class="a3-grid" style="--a3-min:28rem">
         ${guides
           .slice(0, limit)
           .map(
-            (g, i) => `<a class="a3-card a3-reveal" style="--a3-i:${i}" href="/blogs/guides/${g.handle}">
-              <span class="a3-eyebrow">Guide</span><h3>${g.title}</h3><p class="a3-muted">${g.seo_description || ''}</p></a>`
+            (g, i) => `<a class="a3-item" href="/blogs/guides/${g.handle}">
+              <h3>${g.title}</h3><p class="a3-muted">${g.seo_description || ''}</p></a>`
           )
           .join('')}
       </div>
@@ -180,49 +180,47 @@ function page(title, body, description = '') {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${title} – A3GK</title>
 <meta name="description" content="${description.replace(/"/g, '&quot;')}">
-<meta name="theme-color" content="#0b0d0c">
+<meta name="theme-color" content="#0e0f0d">
 <meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="font" type="font/woff2" href="/assets/a3gk-barlow-condensed-800.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="/assets/a3gk-archivo.woff2" crossorigin>
 <style>
   *,*::before,*::after{box-sizing:border-box}
   html{font-size:62.5%}
-  body{margin:0;background:#0b0d0c;color:#edefec;font-family:Inter,system-ui,sans-serif;font-size:1.6rem;line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:#0e0f0d;color:#eeebe3;font-family:'A3GK Sans',system-ui,sans-serif;font-size:1.6rem;line-height:1.55;-webkit-font-smoothing:antialiased}
   a{color:inherit}
   img{max-width:100%}
   .visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  .pv-bar{background:#3be37f;color:#06140b;text-align:center;font-size:1.3rem;padding:.8rem 1.6rem;font-weight:600}
-  .pv-announce{background:#000;text-align:center;font-size:1.3rem;letter-spacing:.06em;padding:.8rem 1.6rem}
-  .pv-header{position:sticky;top:0;z-index:20;background:rgba(11,13,12,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(237,239,236,.12)}
-  .pv-header__in{display:flex;align-items:center;justify-content:space-between;gap:2rem;max-width:140rem;margin:0 auto;padding:1.6rem clamp(1.6rem,4vw,5rem)}
-  .pv-logo{font-family:'A3GK Display',sans-serif;font-weight:800;font-size:2.8rem;letter-spacing:.06em;text-decoration:none}
-  .pv-nav{display:flex;gap:2.4rem;font-size:1.4rem;letter-spacing:.04em}
-  .pv-nav a{text-decoration:none;opacity:.85}.pv-nav a:hover{opacity:1;color:#3be37f}
+  .pv-bar{background:#eeebe3;color:#121310;text-align:center;font-size:1.3rem;padding:.8rem 1.6rem;font-weight:500}
+  .pv-announce{background:#000;text-align:center;font-size:1.3rem;padding:.8rem 1.6rem;color:#97948b}
+  .pv-header{position:sticky;top:0;z-index:20;background:rgba(14,15,13,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(237,239,236,.12)}
+  .pv-header__in{display:flex;align-items:center;justify-content:space-between;gap:2rem;max-width:136rem;margin:0 auto;padding:1.8rem clamp(1.6rem,4vw,5.6rem)}
+  .pv-logo{font-weight:800;font-stretch:72%;font-size:3rem;letter-spacing:-.01em;text-decoration:none}
+  .pv-nav{display:flex;gap:2.8rem;font-size:1.5rem}
+  .pv-nav a{text-decoration:none;opacity:.8}.pv-nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:.35em}
   .pv-menu{display:none}
   .pv-menu summary{list-style:none;cursor:pointer;padding:.6rem 1.2rem;border:1px solid rgba(237,239,236,.24);border-radius:4px;font-size:1.4rem}
   .pv-menu summary::-webkit-details-marker{display:none}
   .pv-menu nav{position:absolute;left:0;right:0;top:100%;background:#131715;display:grid;padding:1.6rem;gap:1.4rem;border-bottom:1px solid rgba(237,239,236,.12)}
   @media (max-width:989px){.pv-nav{display:none}.pv-menu{display:block}}
-  .pv-footer{background:#000;border-top:1px solid rgba(237,239,236,.12);padding:5.6rem clamp(1.6rem,4vw,5rem) 4rem}
-  .pv-footer__in{max-width:140rem;margin:0 auto;display:grid;gap:3.2rem;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr))}
+  .pv-footer{background:#000;padding:7.2rem 0 5.6rem}
+  .pv-footer__in{max-width:136rem;margin:0 auto;padding:0 clamp(1.6rem,4vw,5.6rem);display:grid;gap:3.2rem;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr))}
   .pv-footer h4{margin:0 0 1.2rem;font-size:1.6rem}
   .pv-footer ul{list-style:none;margin:0;padding:0;display:grid;gap:.8rem;font-size:1.4rem;color:#9aa39d}
-  .pv-footer a{text-decoration:none}.pv-footer a:hover{color:#3be37f}
+  .pv-footer a{text-decoration:none}.pv-footer a:hover{color:#eeebe3}
   .pv-prose{max-width:72rem;margin:0 auto;padding:6.4rem clamp(1.6rem,4vw,5rem) 9.6rem;line-height:1.7}
-  .pv-prose h1{font-size:clamp(3.6rem,2.4rem + 3vw,6rem);margin:0 0 2.4rem}
-  .pv-prose h2{font-size:3rem;margin:4.8rem 0 1.6rem}
+  .pv-prose h1{font-size:clamp(3.4rem,2.4rem + 2.4vw,5.2rem);margin:0 0 2.4rem}
+  .pv-prose h2{font-size:2.8rem;margin:4.8rem 0 1.6rem}
   .pv-prose table{width:100%;border-collapse:collapse;font-size:1.5rem;display:block;overflow-x:auto}
   .pv-prose th,.pv-prose td{text-align:left;padding:1rem;border-bottom:1px solid rgba(237,239,236,.12);vertical-align:top}
-  .pv-prose a{color:#3be37f}
-  .pv-prose blockquote{margin:0;padding:1.2rem 2rem;border-left:3px solid #3be37f;background:#1b201d}
+  .pv-prose a{color:inherit;text-underline-offset:.3em}
+  .pv-prose blockquote{margin:0;padding:.4rem 0 .4rem 2rem;border-left:2px solid #3be37f;color:#c9c6be}
 </style>
 <link rel="stylesheet" href="/assets/a3gk.css">
 ${css}
 </head>
 <body>
 <div class="pv-bar">Design preview. The live store, cart and checkout run on Shopify.</div>
-<div class="pv-announce">Real lead times. Honest takes. No fake discounts.</div>
+<div class="pv-announce">Goalkeepers only. Launching soon.</div>
 <header class="pv-header"><div class="pv-header__in">
   <a class="pv-logo" href="/">A3GK</a>
   <nav class="pv-nav" aria-label="Main">${NAV.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}</nav>
@@ -271,8 +269,8 @@ for (const [route, tpl, title] of routes) {
 // Collections that only exist once products are added in Shopify.
 const soon = (heading, text) =>
   `<section class="a3-section" style="--a3-pad-top:120px;--a3-pad-bottom:120px"><div class="a3-wrap a3-wrap--narrow">
-    <span class="a3-badge a3-badge--soon">Coming soon</span>
-    <h1 style="font-size:clamp(4rem,2.6rem + 4vw,8rem);margin:2rem 0">${heading}</h1>
+    <span class="a3-badge">Coming soon</span>
+    <h1 style="font-size:clamp(3.6rem,2.4rem + 3vw,6.4rem);margin:1.6rem 0 2.4rem">${heading}</h1>
     <p class="a3-lede">${text}</p>
     <p><a class="a3-link" href="/pages/builder">Try the kit builder</a></p></div></section>`;
 for (const [handle, name] of [
@@ -283,17 +281,17 @@ for (const [handle, name] of [
   ['bundles', 'Bundles'],
   ['all', 'Shop'],
 ]) {
-  write(`/collections/${handle}`, page(name, soon(name, 'Products go live here once they have passed testing and are in stock. No placeholders pretending to be products.'), name));
+  write(`/collections/${handle}`, page(name, soon(name, 'Products go live here once they have passed testing and are in stock.'), name));
 }
 write('/cart', page('Cart', soon('Cart', 'The cart and checkout run on the live Shopify store. This is a design preview.'), 'Cart'));
 
 // Guides blog
 write(
   '/blogs/guides',
-  page('Keeper guides', guideCards() , 'Honest goalkeeper guides: glove care, choosing gloves, padding, sizing.')
+  page('Keeper guides', guideCards() , 'Goalkeeper guides: glove care, choosing gloves, padding, sizing.')
 );
 for (const g of guides) {
-  write(`/blogs/guides/${g.handle}`, page(g.title, `<article class="pv-prose"><p class="a3-eyebrow">Guide</p><h1>${g.title}</h1>${g.body}</article>`, g.seo_description || ''));
+  write(`/blogs/guides/${g.handle}`, page(g.title, `<article class="pv-prose"><h1>${g.title}</h1>${g.body}</article>`, g.seo_description || ''));
 }
 
 // Policies (drafts)

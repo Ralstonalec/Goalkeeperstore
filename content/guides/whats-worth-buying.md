@@ -1,8 +1,8 @@
 ---
-title: What's worth buying as a keeper (and what isn't)
+title: What's worth buying as a keeper
 handle: goalkeeper-gear-worth-buying
 seo_title: Goalkeeper Gear Worth Buying — An Honest List | A3GK
-seo_description: An honest list of goalkeeper kit that's worth the money and the stuff that usually isn't, from a keeper-only store.
+seo_description: Goalkeeper kit that's worth the money, and the things that usually aren't.
 blog: guides
 ---
 

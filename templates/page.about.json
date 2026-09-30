@@ -5,13 +5,12 @@
       "blocks": {},
       "block_order": [],
       "settings": {
-        "eyebrow": "About A3GK",
         "heading": "Built for the one who wears different colours.",
         "text": "<p>A3GK exists because keepers are an afterthought at most football shops. We sell a small range, only for keepers, and only things we'd use ourselves.</p>",
         "layout": "split",
-        "surface": false,
         "padding_top": 112,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "tone": "ink"
       }
     },
     "standards": {
@@ -34,22 +33,22 @@
         "p2": {
           "type": "point",
           "settings": {
-            "title": "Honest takes, including the downsides.",
-            "text": "<p>Every product page says who it's for and who it isn't for.</p>"
+            "title": "Every product page says who it isn't for.",
+            "text": "<p>A grip spray that's great on grass might be wrong for indoor floors. We say so.</p>"
           }
         },
         "p3": {
           "type": "point",
           "settings": {
-            "title": "No fake discounts.",
-            "text": "<p>No inflated \"was\" prices. Bundle savings are calculated from real, current prices.</p>"
+            "title": "Prices that don't move.",
+            "text": "<p>No sales that are always on. Bundle savings are worked out from the current price of each item.</p>"
           }
         },
         "p4": {
           "type": "point",
           "settings": {
             "title": "Real lead times.",
-            "text": "<p>Especially for custom kit. We'd rather quote longer and deliver early.</p>"
+            "text": "<p>Custom kit shows its delivery date before you pay, and we plan to hit it.</p>"
           }
         }
       },
@@ -61,13 +60,12 @@
         "p4"
       ],
       "settings": {
-        "eyebrow": "How we pick",
         "heading": "Our rules",
         "text": "",
         "layout": "split",
-        "surface": true,
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "raised"
       }
     },
     "gloves": {
@@ -75,13 +73,12 @@
       "blocks": {},
       "block_order": [],
       "settings": {
-        "eyebrow": "On gloves",
         "heading": "One day, our own gloves.",
         "text": "<p>When we find a manufacturer who can actually do them right \u2014 pro-level latex, cut and stitching, tested side by side against the gloves serious keepers already wear. Not before. It might take a year or more, and we're fine with that.</p>",
         "layout": "split",
-        "surface": false,
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "ink"
       }
     },
     "feedback": {

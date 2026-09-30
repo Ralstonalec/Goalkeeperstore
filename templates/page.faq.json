@@ -24,12 +24,11 @@
       ],
       "settings": {
         "anchor": "sizing",
-        "eyebrow": "Sizing",
         "heading": "Sizing",
         "schema": true,
-        "surface": false,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "care": {
@@ -56,12 +55,11 @@
       ],
       "settings": {
         "anchor": "care",
-        "eyebrow": "Care",
         "heading": "Glove care",
         "schema": false,
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     },
     "shipping": {
@@ -88,12 +86,11 @@
       ],
       "settings": {
         "anchor": "shipping",
-        "eyebrow": "Shipping",
         "heading": "Shipping",
         "schema": false,
-        "surface": false,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "builder": {
@@ -120,12 +117,11 @@
       ],
       "settings": {
         "anchor": "builder",
-        "eyebrow": "Builder",
         "heading": "Kit builder",
         "schema": false,
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     },
     "returns": {
@@ -152,12 +148,11 @@
       ],
       "settings": {
         "anchor": "returns",
-        "eyebrow": "Returns",
         "heading": "Returns",
         "schema": false,
-        "surface": false,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     }
   },

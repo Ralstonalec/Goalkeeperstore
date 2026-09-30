@@ -3,7 +3,6 @@
     "log": {
       "type": "a3gk-feedback-log",
       "settings": {
-        "eyebrow": "Changelog",
         "heading": "You told us. We changed it.",
         "limit": 0,
         "cta_label": "Tell us something",

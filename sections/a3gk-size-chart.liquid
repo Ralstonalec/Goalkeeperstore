@@ -23,7 +23,7 @@
 -%}
 <section
   id="{{ section.settings.anchor | default: section.id | handleize }}"
-  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  class="a3-section a3-tone--{{ section.settings.tone }}"
   style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="a3-wrap a3-wrap--narrow">
@@ -70,7 +70,7 @@
 </section>
 
 {% stylesheet %}
-  .a3-chart__title { margin: 0 0 1.2rem; font-size: clamp(3rem, 2rem + 2vw, 4.4rem); }
+  .a3-chart__title { margin: 0 0 1.2rem; font-size: clamp(2.8rem, 2rem + 1.6vw, 4rem); }
   .a3-chart__intro { margin-bottom: 2.4rem; }
   .a3-chart th[scope='row'] { color: var(--a3-text); font-weight: 700; width: auto; }
   .a3-chart__advice { margin-top: 2.4rem; line-height: 1.65; }
@@ -94,10 +94,10 @@
       "type": "text",
       "id": "empty_text",
       "label": "Text when there are no rows",
-      "default": "Final measurements are being confirmed with our manufacturer from production samples. We'd rather show nothing than numbers we haven't checked."
+      "default": "Measurements will be published once we've checked them on production samples."
     },
     { "type": "richtext", "id": "advice", "label": "Fit advice" },
-    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "select", "id": "tone", "label": "Background", "options": [{ "value": "ink", "label": "Dark" }, { "value": "raised", "label": "Dark, raised" }, { "value": "paper", "label": "Light" }], "default": "ink" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 64 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 64 }
   ],

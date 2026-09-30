@@ -1,5 +1,5 @@
 <section
-  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  class="a3-section a3-tone--{{ section.settings.tone }}"
   style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="a3-wrap a3-statement a3-statement--{{ section.settings.layout }}">
@@ -19,7 +19,7 @@
         {%- case block.type -%}
           {%- when 'point' -%}
             <div class="a3-statement__point" {{ block.shopify_attributes }}>
-              <h3 class="h4">{{ block.settings.title | escape }}</h3>
+              <h3>{{ block.settings.title | escape }}</h3>
               <div class="a3-muted">{{ block.settings.text }}</div>
             </div>
           {%- when 'link' -%}
@@ -40,13 +40,14 @@
 
   .a3-statement__title {
     margin: 0;
-    font-size: clamp(3.6rem, 2.2rem + 4vw, 8rem);
-    max-width: 16ch;
+    font-size: clamp(3.4rem, 2.2rem + 3vw, 6.4rem);
+    max-width: 15ch;
   }
 
   .a3-statement__body { display: grid; gap: 2.4rem; align-content: start; }
 
-  .a3-statement__point h3 { margin: 0 0 0.6rem; font-size: 2rem; }
+  .a3-statement__point { padding-top: 2rem; border-top: 1px solid var(--a3-line); }
+  .a3-statement__point h3 { margin: 0 0 0.8rem; font-size: 2rem; letter-spacing: -0.015em; }
   .a3-statement__point p { margin: 0; line-height: 1.6; }
 
   @media screen and (min-width: 990px) {
@@ -59,7 +60,7 @@
   "name": "A3GK statement",
   "tag": "div",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why this exists" },
+    { "type": "text", "id": "eyebrow", "label": "Small line above heading" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Keepers get treated like an afterthought." },
     {
       "type": "richtext",
@@ -77,7 +78,7 @@
       ],
       "default": "split"
     },
-    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "select", "id": "tone", "label": "Background", "options": [{ "value": "ink", "label": "Dark" }, { "value": "raised", "label": "Dark, raised" }, { "value": "paper", "label": "Light" }], "default": "ink" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 }
   ],
