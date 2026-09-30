@@ -1,0 +1,231 @@
+{%- comment -%}
+  The honest half of every product page. Each block reads a product metafield
+  (namespace "a3gk") so content lives with the product, not the template.
+  Blocks with no data render nothing — no filler.
+
+  Metafields (see docs/SETUP.md for definitions):
+  a3gk.why_we_made        multi-line text
+  a3gk.good_for           list of single-line text
+  a3gk.not_ideal_for      list of single-line text
+  a3gk.specs              list of single-line text, "Label: Value"
+  a3gk.how_to_use         multi-line text
+  a3gk.how_often          single-line text
+  a3gk.lead_time          single-line text
+  a3gk.benchmark_*        see snippets/a3gk-value-compare.liquid
+{%- endcomment -%}
+{%- liquid
+  assign mf = product.metafields.a3gk
+-%}
+<section
+  class="a3-section"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-pd">
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when 'why' -%}
+          {%- if mf.why_we_made != blank -%}
+            <div class="a3-pd__block a3-pd__why a3-reveal" {{ block.shopify_attributes }}>
+              <p class="a3-eyebrow">{{ block.settings.title | escape }}</p>
+              <div class="a3-lede">{{ mf.why_we_made.value | newline_to_br }}</div>
+            </div>
+          {%- endif -%}
+
+        {%- when 'fit' -%}
+          {%- if mf.good_for != blank or mf.not_ideal_for != blank -%}
+            <div class="a3-pd__block a3-pd__fit a3-reveal" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ block.settings.title | escape }}</h2>
+              <div class="a3-pd__cols">
+                {%- if mf.good_for != blank -%}
+                  <div>
+                    <h3 class="a3-small a3-pd__label">Good for</h3>
+                    <ul class="a3-list a3-list--yes">
+                      {%- for item in mf.good_for.value -%}<li>{{ item | escape }}</li>{%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+                {%- if mf.not_ideal_for != blank -%}
+                  <div>
+                    <h3 class="a3-small a3-pd__label">Not ideal for</h3>
+                    <ul class="a3-list a3-list--no">
+                      {%- for item in mf.not_ideal_for.value -%}<li>{{ item | escape }}</li>{%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+          {%- endif -%}
+
+        {%- when 'specs' -%}
+          {%- if mf.specs != blank -%}
+            <div class="a3-pd__block a3-reveal" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ block.settings.title | escape }}</h2>
+              <table class="a3-table">
+                <tbody>
+                  {%- for row in mf.specs.value -%}
+                    {%- assign parts = row | split: ':' -%}
+                    <tr>
+                      {%- if parts.size > 1 -%}
+                        <th scope="row">{{ parts.first | strip | escape }}</th>
+                        <td>{{ row | remove_first: parts.first | remove_first: ':' | strip | escape }}</td>
+                      {%- else -%}
+                        <td colspan="2">{{ row | escape }}</td>
+                      {%- endif -%}
+                    </tr>
+                  {%- endfor -%}
+                </tbody>
+              </table>
+              {%- if block.settings.size_link != blank -%}
+                <p><a class="a3-link" href="{{ block.settings.size_link }}">{{ block.settings.size_label | escape }}</a></p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+        {%- when 'use' -%}
+          {%- if mf.how_to_use != blank -%}
+            <div class="a3-pd__block a3-reveal" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ block.settings.title | escape }}</h2>
+              <div class="a3-pd__use">{{ mf.how_to_use.value | newline_to_br }}</div>
+              {%- if mf.how_often != blank -%}
+                <p class="a3-notice"><strong>How often:</strong> {{ mf.how_often.value | escape }}</p>
+              {%- endif -%}
+            </div>
+          {%- endif -%}
+
+        {%- when 'value' -%}
+          {%- capture compare -%}{%- render 'a3gk-value-compare', product: product -%}{%- endcapture -%}
+          {%- if compare != blank -%}
+            <div class="a3-pd__block a3-reveal" {{ block.shopify_attributes }}>
+              <h2 class="h3">{{ block.settings.title | escape }}</h2>
+              {{ compare }}
+            </div>
+          {%- endif -%}
+
+        {%- when 'lead_time' -%}
+          <div class="a3-pd__block a3-reveal" {{ block.shopify_attributes }}>
+            <h2 class="h3">{{ block.settings.title | escape }}</h2>
+            <p>
+              {%- if mf.lead_time != blank -%}
+                {{ mf.lead_time.value | escape }}
+              {%- else -%}
+                {{ block.settings.default_text | escape }}
+              {%- endif -%}
+            </p>
+            {%- if block.settings.link != blank -%}
+              <p><a class="a3-link" href="{{ block.settings.link }}">{{ block.settings.link_label | escape }}</a></p>
+            {%- endif -%}
+          </div>
+
+        {%- when 'reviews_note' -%}
+          <div class="a3-pd__block a3-reveal" {{ block.shopify_attributes }}>
+            <h2 class="h3">{{ block.settings.title | escape }}</h2>
+            <div class="a3-muted">{{ block.settings.text }}</div>
+          </div>
+
+        {%- when '@app' -%}
+          <div class="a3-pd__block a3-pd__app">{% render block %}</div>
+      {%- endcase -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-pd { display: grid; gap: 5.6rem; max-width: 96rem; }
+  .a3-pd__block h2 { margin: 0 0 2rem; font-size: clamp(2.8rem, 2rem + 1.6vw, 4rem); }
+  .a3-pd__label { margin: 0 0 1rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: inherit; font-weight: 500; }
+  .a3-pd__cols { display: grid; gap: 3.2rem; }
+  .a3-pd__use { line-height: 1.7; margin-bottom: 2rem; }
+  .a3-pd__why .a3-lede { font-size: clamp(2rem, 1.6rem + 1vw, 2.8rem); line-height: 1.4; }
+
+  @media screen and (min-width: 750px) {
+    .a3-pd__cols { grid-template-columns: 1fr 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK product details",
+  "tag": "div",
+  "enabled_on": { "templates": ["product"] },
+  "settings": [
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "why",
+      "name": "Why we made / stock this",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "title", "label": "Label", "default": "Why we made this" }]
+    },
+    {
+      "type": "fit",
+      "name": "Good for / not ideal for",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "title", "label": "Heading", "default": "Who it's for" }]
+    },
+    {
+      "type": "specs",
+      "name": "Specs",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Specs" },
+        { "type": "text", "id": "size_label", "label": "Size guide link label", "default": "Size guide" },
+        { "type": "url", "id": "size_link", "label": "Size guide link" }
+      ]
+    },
+    {
+      "type": "use",
+      "name": "How to use",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "title", "label": "Heading", "default": "How to use it" }]
+    },
+    {
+      "type": "value",
+      "name": "Price comparison",
+      "limit": 1,
+      "settings": [{ "type": "text", "id": "title", "label": "Heading", "default": "What you'd pay elsewhere" }]
+    },
+    {
+      "type": "lead_time",
+      "name": "Shipping & lead time",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "When it'll arrive" },
+        { "type": "text", "id": "default_text", "label": "Default text", "default": "Ships within the time shown at checkout. Full details on our shipping page." },
+        { "type": "text", "id": "link_label", "label": "Link label", "default": "Shipping details" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    },
+    {
+      "type": "reviews_note",
+      "name": "How reviews work",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading", "default": "Reviews from keepers" },
+        {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>We ask reviewers about fit, how it held up and where they play — not just for stars. We publish every review, good and bad, from verified buyers only.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "A3GK product details",
+      "blocks": [
+        { "type": "why" },
+        { "type": "fit" },
+        { "type": "use" },
+        { "type": "specs" },
+        { "type": "value" },
+        { "type": "lead_time" },
+        { "type": "reviews_note" }
+      ]
+    }
+  ]
+}
+{% endschema %}

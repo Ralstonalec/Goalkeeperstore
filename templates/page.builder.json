@@ -1,0 +1,90 @@
+{
+  "sections": {
+    "builder": {
+      "type": "a3gk-builder",
+      "settings": {
+        "eyebrow": "Custom kit builder",
+        "heading": "Build your kit",
+        "team_link": "shopify://pages/team-orders",
+        "returns_link": "/policies/refund-policy",
+        "lead_time": ""
+      }
+    },
+    "faq": {
+      "type": "a3gk-faq",
+      "blocks": {
+        "q0": {
+          "type": "qa",
+          "settings": {
+            "question": "How accurate is the preview?",
+            "answer": "<p>It's a guide to layout and colour combinations. Screens show colour differently and print fonts are approximated. Before production we send a proof, and nothing is made until you approve it.</p>"
+          }
+        },
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I use my club crest?",
+            "answer": "<p>Yes. Choose \"Our club crest\" in the Crest step. After you order, we email you to collect the artwork (a vector file or a high-resolution PNG is best), then send you a proof.</p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "What does the padding actually do?",
+            "answer": "<p>Foam pads sewn into specific zones take the hit when you land. Hips are the one most keepers want. Tailbone, thigh and knee pads add protection for hard, frozen or artificial pitches, at the cost of a little bulk and heat. <a href=\"/blogs/guides\">Our padding guide</a> goes into detail.</p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "How long does it take?",
+            "answer": "<p>The lead time is shown in the builder before you add to cart, and again at checkout. It's our manufacturer's real production time plus shipping \u2014 we don't guess low to win the sale.</p>"
+          }
+        },
+        "q4": {
+          "type": "qa",
+          "settings": {
+            "question": "Can I return custom kit?",
+            "answer": "<p>Custom kit is made for you, so it can't be returned for change of mind. If it arrives faulty or doesn't match the proof you approved, we fix it. That's why we send the proof.</p>"
+          }
+        },
+        "q5": {
+          "type": "qa",
+          "settings": {
+            "question": "I'm ordering for a whole squad.",
+            "answer": "<p>Use the <a href=\"/pages/team-orders\">team orders</a> page \u2014 you get volume pricing and one person to deal with.</p>"
+          }
+        },
+        "q6": {
+          "type": "qa",
+          "settings": {
+            "question": "Where's my saved design?",
+            "answer": "<p>Designs save to the browser you made them in. Use \"Copy link\" to open a design on another device or send it to someone else.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6"
+      ],
+      "settings": {
+        "anchor": "",
+        "eyebrow": "Builder questions",
+        "heading": "Before you design",
+        "schema": true,
+        "surface": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "builder",
+    "faq"
+  ]
+}

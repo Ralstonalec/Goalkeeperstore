@@ -1,0 +1,196 @@
+{%- comment -%}
+  Bundle with honest maths: sums the current prices of the items inside
+  and compares them to the bundle's own price. If there's no saving, it says so.
+
+  Items come from blocks, or — on a bundle product template — from the
+  product metafield a3gk.bundle_items (list of product references).
+  The bundle itself is a real Shopify product (ideally built with the free
+  Shopify Bundles app so inventory stays correct).
+{%- endcomment -%}
+{%- liquid
+  assign bundle = section.settings.bundle_product
+  if bundle == blank and template.name == 'product'
+    assign bundle = product
+  endif
+
+  assign total = 0
+  assign item_count = 0
+  for block in section.blocks
+    if block.settings.product != blank
+      assign line = block.settings.product.price | times: block.settings.qty
+      assign total = total | plus: line
+      assign item_count = item_count | plus: 1
+    endif
+  endfor
+
+  assign use_metafield = false
+  if item_count == 0 and bundle != blank and bundle.metafields.a3gk.bundle_items != blank
+    assign use_metafield = true
+    for p in bundle.metafields.a3gk.bundle_items.value
+      assign total = total | plus: p.price
+      assign item_count = item_count | plus: 1
+    endfor
+  endif
+
+  if bundle != blank
+    assign bundle_price = bundle.selected_or_first_available_variant.price
+    assign saving = total | minus: bundle_price
+    if total > 0
+      assign pct = saving | times: 100.0 | divided_by: total | round
+    else
+      assign pct = 0
+    endif
+  endif
+-%}
+<section
+  id="{{ section.settings.anchor | default: section.id | handleize }}"
+  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-bundle">
+    <div class="a3-bundle__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="a3-reveal" style="--a3-i: 1">{{ section.settings.heading | default: bundle.title | escape }}</h2>
+      {%- if section.settings.who != blank -%}
+        <p class="a3-bundle__who a3-reveal" style="--a3-i: 2"><strong>Who it's for:</strong> {{ section.settings.who | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.why != blank -%}
+        <div class="a3-muted a3-reveal" style="--a3-i: 3">{{ section.settings.why }}</div>
+      {%- endif -%}
+      {%- if section.settings.media != blank or section.settings.shot != blank -%}
+        <div class="a3-bundle__media a3-media a3-reveal">
+          {%- render 'a3gk-media', image: section.settings.media, shot: section.settings.shot -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="a3-bundle__maths a3-card a3-reveal" style="--a3-i: 2">
+      {%- if item_count > 0 -%}
+        <h3 class="h4">What's in it</h3>
+        <div class="a3-table-scroll">
+          <table class="a3-table">
+            <thead>
+              <tr><th scope="col">Item</th><th scope="col">Bought separately</th></tr>
+            </thead>
+            <tbody>
+              {%- if use_metafield -%}
+                {%- for p in bundle.metafields.a3gk.bundle_items.value -%}
+                  <tr>
+                    <td><a href="{{ p.url }}" class="a3-bundle__item">{{ p.title | escape }}</a></td>
+                    <td>{{ p.price | money }}</td>
+                  </tr>
+                {%- endfor -%}
+              {%- else -%}
+                {%- for block in section.blocks -%}
+                  {%- assign p = block.settings.product -%}
+                  {%- if p != blank -%}
+                    <tr {{ block.shopify_attributes }}>
+                      <td>
+                        <a href="{{ p.url }}" class="a3-bundle__item">{{ p.title | escape }}</a>
+                        {%- if block.settings.qty > 1 %} × {{ block.settings.qty }}{% endif -%}
+                      </td>
+                      <td>{{ p.price | times: block.settings.qty | money }}</td>
+                    </tr>
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+            </tbody>
+            <tfoot>
+              <tr><th scope="row">Separately</th><td>{{ total | money }}</td></tr>
+              {%- if bundle != blank -%}
+                <tr><th scope="row">As a bundle</th><td class="a3-accent">{{ bundle_price | money }}</td></tr>
+              {%- endif -%}
+            </tfoot>
+          </table>
+        </div>
+
+        {%- if bundle != blank -%}
+          <p class="a3-bundle__saving">
+            {%- if saving > 0 -%}
+              You save <strong class="a3-accent">{{ saving | money }}</strong> ({{ pct }}%).
+            {%- else -%}
+              No saving on this one — it's here for convenience, and we'd rather tell you than pretend.
+            {%- endif -%}
+          </p>
+          <p class="a3-small">Worked out from today's individual prices, not an inflated "was" price.</p>
+
+          {%- if bundle.available -%}
+            {%- form 'product', bundle, class: 'a3-bundle__form' -%}
+              {%- if bundle.has_only_default_variant -%}
+                <input type="hidden" name="id" value="{{ bundle.selected_or_first_available_variant.id }}">
+              {%- else -%}
+                <div class="a3-field">
+                  <label for="a3-bundle-v-{{ section.id }}">Option</label>
+                  <select id="a3-bundle-v-{{ section.id }}" name="id" class="a3-select">
+                    {%- for v in bundle.variants -%}
+                      <option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>
+                        {{ v.title | escape }} — {{ v.price | money }}{% unless v.available %} (sold out){% endunless %}
+                      </option>
+                    {%- endfor -%}
+                  </select>
+                </div>
+              {%- endif -%}
+              <button type="submit" class="a3-btn">Add bundle — {{ bundle_price | money }}</button>
+            {%- endform -%}
+          {%- else -%}
+            {%- render 'a3gk-status-badge', status: 'soon' -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- render 'a3gk-status-badge', status: 'soon' -%}
+        <p class="a3-muted">This bundle goes live once every item in it is in stock.</p>
+        {%- if request.design_mode -%}
+          <p class="a3-setup">Add item blocks (or set the bundle product's a3gk.bundle_items metafield) and pick the bundle product. The maths is automatic.</p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-bundle { display: grid; gap: 4rem; align-items: start; }
+  .a3-bundle h2 { margin: 0 0 1.6rem; font-size: clamp(3.4rem, 2.2rem + 3vw, 5.6rem); }
+  .a3-bundle__who { margin: 0 0 1.2rem; }
+  .a3-bundle__media { aspect-ratio: 16 / 10; margin-top: 2.4rem; }
+  .a3-bundle__maths h3 { margin: 0; }
+  .a3-bundle__item { color: inherit; }
+  .a3-bundle__saving { font-size: 1.8rem; margin: 0; }
+  .a3-bundle__form { display: grid; gap: 1.2rem; }
+
+  @media screen and (min-width: 990px) {
+    .a3-bundle { grid-template-columns: 1.1fr 1fr; gap: 6rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK bundle",
+  "tag": "div",
+  "settings": [
+    { "type": "product", "id": "bundle_product", "label": "Bundle product", "info": "On a product template, leave blank to use the current product." },
+    { "type": "text", "id": "anchor", "label": "Anchor (for links like /pages/bundles#starter)" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Bundle" },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Defaults to the bundle product title." },
+    { "type": "text", "id": "who", "label": "Who it's for" },
+    { "type": "richtext", "id": "why", "label": "Why it works" },
+    { "type": "image_picker", "id": "media", "label": "Image" },
+    { "type": "text", "id": "shot", "label": "Placeholder shot description" },
+    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "range", "id": "qty", "label": "Quantity", "min": 1, "max": 10, "step": 1, "default": 1 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "A3GK bundle" }]
+}
+{% endschema %}

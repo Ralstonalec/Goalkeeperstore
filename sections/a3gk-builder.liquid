@@ -1,0 +1,144 @@
+{%- comment -%}
+  A3GK custom padded kit builder (MVP).
+
+  How it maps onto Shopify (no custom backend):
+  - Each base garment is a normal Shopify product (Jersey / Shorts / Pants).
+    Options the builder understands, by name: "Size", "Padding", "Sleeve".
+    Price comes from the matching variant, so pricing is managed in Shopify admin.
+  - Optional add-on products (name print, number print, crest) are added as
+    separate cart lines if the manufacturer charges for them. Leave blank if included.
+  - The design is attached as line item properties (readable summary + a
+    hidden full spec and a link that re-opens the design).
+  - Designs save to the browser and to a shareable link. Account-level saving
+    needs an app/backend and is flagged in docs/SETUP.md.
+{%- endcomment -%}
+{%- liquid
+  assign s = section.settings
+-%}
+{{ 'a3gk-builder.css' | asset_url | stylesheet_tag }}
+
+<section class="a3-builder-section" aria-labelledby="a3b-title-{{ section.id }}">
+  <div class="a3-wrap a3-builder__intro">
+    {%- if s.eyebrow != blank -%}
+      <p class="a3-eyebrow">{{ s.eyebrow | escape }}</p>
+    {%- endif -%}
+    <h1 id="a3b-title-{{ section.id }}" class="a3-builder__title">{{ s.heading | escape }}</h1>
+    {%- if s.text != blank -%}
+      <div class="a3-muted">{{ s.text }}</div>
+    {%- endif -%}
+  </div>
+
+  <a3-builder class="a3-builder" data-section="{{ section.id }}">
+    <script type="application/json" data-a3b-config>
+      {
+        "sectionId": {{ section.id | json }},
+        "products": {
+          "jersey": {% if s.jersey_product != blank %}{{ s.jersey_product | json }}{% else %}null{% endif %},
+          "shorts": {% if s.shorts_product != blank %}{{ s.shorts_product | json }}{% else %}null{% endif %},
+          "pants": {% if s.pants_product != blank %}{{ s.pants_product | json }}{% else %}null{% endif %}
+        },
+        "addons": {
+          "name": {% if s.addon_name != blank %}{ "id": {{ s.addon_name.selected_or_first_available_variant.id | json }}, "price": {{ s.addon_name.selected_or_first_available_variant.price | json }}, "title": {{ s.addon_name.title | json }}, "available": {{ s.addon_name.available | json }} }{% else %}null{% endif %},
+          "number": {% if s.addon_number != blank %}{ "id": {{ s.addon_number.selected_or_first_available_variant.id | json }}, "price": {{ s.addon_number.selected_or_first_available_variant.price | json }}, "title": {{ s.addon_number.title | json }}, "available": {{ s.addon_number.available | json }} }{% else %}null{% endif %},
+          "crest": {% if s.addon_crest != blank %}{ "id": {{ s.addon_crest.selected_or_first_available_variant.id | json }}, "price": {{ s.addon_crest.selected_or_first_available_variant.price | json }}, "title": {{ s.addon_crest.title | json }}, "available": {{ s.addon_crest.available | json }} }{% else %}null{% endif %}
+        },
+        "palette": {{ s.palette | json }},
+        "paddingMap": {{ s.padding_map | json }},
+        "nameMax": {{ s.name_max | json }},
+        "leadTime": {{ s.lead_time | json }},
+        "customNote": {{ s.custom_note | json }},
+        "moneyFormat": {{ shop.money_format | json }},
+        "cartUrl": {{ routes.cart_url | json }},
+        "cartAddUrl": {{ routes.cart_add_url | append: '.js' | json }},
+        "teamUrl": {{ s.team_link | json }},
+        "returnsUrl": {{ s.returns_link | json }},
+        "loginUrl": {{ routes.account_login_url | json }},
+        "customer": {% if customer %}true{% else %}false{% endif %},
+        "designMode": {{ request.design_mode | json }}
+      }
+    </script>
+
+    <noscript>
+      <p class="a3-notice a3-wrap">The kit builder needs JavaScript. You can still order a custom kit by <a href="{{ s.team_link | default: routes.root_url }}">contacting us</a>.</p>
+    </noscript>
+
+    <div class="a3b" data-a3b-root hidden>
+      <div class="a3b__stage" data-a3b-stage>
+        <div class="a3b__viewbar" role="group" aria-label="Preview view">
+          <button type="button" class="a3b__view is-active" data-view="front" aria-pressed="true">Front</button>
+          <button type="button" class="a3b__view" data-view="back" aria-pressed="false">Back</button>
+          <button type="button" class="a3b__view a3b__padtoggle" data-toggle-padding aria-pressed="false">Show padding</button>
+        </div>
+        <div class="a3b__figures" data-a3b-figures></div>
+        <p class="a3b__disclaimer a3-small">
+          Preview is a guide. Colours on screen vary and print fonts are approximated. You approve a proof before anything is made.
+        </p>
+      </div>
+
+      <div class="a3b__panel">
+        <nav class="a3b__tabs" role="tablist" aria-label="Builder steps" data-a3b-tabs></nav>
+        <div class="a3b__panes" data-a3b-panes></div>
+        <div class="a3b__summary" data-a3b-summary aria-live="polite"></div>
+      </div>
+    </div>
+  </a3-builder>
+</section>
+
+<script src="{{ 'a3gk-builder.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "A3GK kit builder",
+  "tag": "div",
+  "class": "a3gk-builder-wrap",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Custom kit builder" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Build your kit" },
+    { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>Padded keeper jersey, shorts or pants in your colours. Price and lead time shown before you pay.</p>" },
+    { "type": "header", "content": "Base products" },
+    {
+      "type": "paragraph",
+      "content": "Options the builder reads by name: Size, Padding, Sleeve. Price comes from the matching variant. Leave blank to show the builder in preview-only mode (no ordering)."
+    },
+    { "type": "product", "id": "jersey_product", "label": "Jersey product" },
+    { "type": "product", "id": "shorts_product", "label": "Shorts product" },
+    { "type": "product", "id": "pants_product", "label": "Pants product" },
+    { "type": "header", "content": "Paid extras (optional)" },
+    { "type": "paragraph", "content": "Only if the manufacturer charges extra. Leave blank if included in the garment price." },
+    { "type": "product", "id": "addon_name", "label": "Name print" },
+    { "type": "product", "id": "addon_number", "label": "Number print" },
+    { "type": "product", "id": "addon_crest", "label": "Crest / logo" },
+    { "type": "header", "content": "Manufacturer constraints" },
+    {
+      "type": "textarea",
+      "id": "palette",
+      "label": "Available colours",
+      "info": "One per line: Name: #hex. Use the manufacturer's real colour list.",
+      "default": "Black: #111111\nWhite: #F4F4F2\nPitch green: #3BE37F\nVolt: #D7FF3A\nOrange: #FF6A13\nRed: #D7263D\nPink: #FF4FA3\nPurple: #6B3FA0\nRoyal: #2F55D4\nSky: #5BC0EB\nNavy: #14213D\nGrey: #7A7F85\nGold: #E0B040\nTeal: #0F8B8D"
+    },
+    {
+      "type": "textarea",
+      "id": "padding_map",
+      "label": "Padding options → zones",
+      "info": "One per line: Option value: zones. Zones: elbows, hip, tailbone, thigh, knee. Option values must match the products' Padding option.",
+      "default": "None:\nElbows: elbows\nHip + tailbone: hip, tailbone\nHip, tailbone + thigh: hip, tailbone, thigh\nFull: hip, tailbone, thigh, knee"
+    },
+    { "type": "range", "id": "name_max", "label": "Max name length", "min": 6, "max": 16, "step": 1, "default": 12 },
+    {
+      "type": "text",
+      "id": "lead_time",
+      "label": "Lead time (shown before checkout)",
+      "info": "Your manufacturer's real production time plus shipping. e.g. 'Made to order: about 3–4 weeks to your door.' Ordering stays off until this is set."
+    },
+    {
+      "type": "textarea",
+      "id": "custom_note",
+      "label": "Made-to-order terms (shown before checkout)",
+      "default": "Custom kit is made for you, so it can't be returned for change of mind. If it arrives faulty or doesn't match the proof you approved, we'll fix it."
+    },
+    { "type": "url", "id": "team_link", "label": "Team orders page" },
+    { "type": "url", "id": "returns_link", "label": "Returns policy link" }
+  ],
+  "presets": [{ "name": "A3GK kit builder" }]
+}
+{% endschema %}

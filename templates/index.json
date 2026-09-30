@@ -1,0 +1,213 @@
+{
+  "sections": {
+    "hero": {
+      "type": "a3gk-hero",
+      "settings": {
+        "eyebrow": "A3GK — Goalkeepers only",
+        "heading": "Keeper kit, done properly.",
+        "subheading": "<p>Glove care, tape, socks and custom padded kit — made for keepers, priced fairly, and only sold if we'd use it ourselves.</p>",
+        "button_1_label": "Shop glove care",
+        "button_1_link": "shopify://collections/glove-care",
+        "button_2_label": "Build your kit",
+        "button_2_link": "shopify://pages/builder",
+        "height": 92,
+        "overlay": 30,
+        "parallax": true
+      }
+    },
+    "why": {
+      "type": "a3gk-statement",
+      "blocks": {
+        "link": {
+          "type": "link",
+          "settings": { "label": "How we pick what we sell", "url": "shopify://pages/about" }
+        }
+      },
+      "block_order": ["link"],
+      "settings": {
+        "eyebrow": "Why this exists",
+        "heading": "Keepers get treated like an afterthought.",
+        "layout": "split",
+        "padding_top": 112,
+        "padding_bottom": 96
+      }
+    },
+    "categories": {
+      "type": "a3gk-category-tiles",
+      "blocks": {
+        "care": {
+          "type": "category",
+          "settings": {
+            "title": "Glove care",
+            "link": "shopify://collections/glove-care",
+            "status": "soon",
+            "note": "Wash, grip spray, deodorizer. Our own.",
+            "shot": "Grip spray misting onto a latex palm, backlit, droplets frozen mid-air."
+          }
+        },
+        "builder": {
+          "type": "category",
+          "settings": {
+            "title": "Kit builder",
+            "link": "shopify://pages/builder",
+            "status": "soon",
+            "note": "Custom padded jerseys, shorts and pants.",
+            "shot": "Custom padded jersey laid flat, number and crest in focus, side light."
+          }
+        },
+        "tape": {
+          "type": "category",
+          "settings": {
+            "title": "Tape & socks",
+            "link": "shopify://collections/tape-socks",
+            "status": "soon",
+            "shot": "Finger tape being wrapped, close-up of hands in the dressing room."
+          }
+        },
+        "protection": {
+          "type": "category",
+          "settings": {
+            "title": "Protection",
+            "link": "shopify://collections/protection",
+            "status": "soon",
+            "shot": "Padded shorts, hip pad detail, on a keeper getting up from a dive."
+          }
+        },
+        "gloves": {
+          "type": "category",
+          "settings": {
+            "title": "Gloves",
+            "link": "shopify://collections/gloves",
+            "status": "none",
+            "note": "Not yet. Here's why.",
+            "shot": "Worn glove on a wet pitch, shallow depth of field."
+          }
+        },
+        "bags": {
+          "type": "category",
+          "settings": {
+            "title": "Bags",
+            "link": "shopify://collections/bags",
+            "status": "soon",
+            "note": "Only once samples pass real keeper testing.",
+            "shot": "Kit bag with glove compartment open, gloves hanging to air."
+          }
+        }
+      },
+      "block_order": ["care", "builder", "tape", "protection", "gloves", "bags"],
+      "settings": {
+        "heading": "What we do",
+        "text": "<p>A short range on purpose. If it isn't good enough to recommend, it isn't here.</p>",
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    },
+    "care": {
+      "type": "a3gk-care-showcase",
+      "blocks": {
+        "spray": {
+          "type": "product",
+          "settings": {
+            "fallback_title": "Grip spray",
+            "one_liner": "Brings tired latex back to tacky.",
+            "shot": "Grip spray bottle on wet turf, floodlight rim light, label legible."
+          }
+        },
+        "wash": {
+          "type": "product",
+          "settings": {
+            "fallback_title": "Glove wash",
+            "one_liner": "Lifts dirt and sweat without stripping the latex.",
+            "shot": "Glove wash bottle beside a basin, gloves soaking, foam on latex."
+          }
+        },
+        "deo": {
+          "type": "product",
+          "settings": {
+            "fallback_title": "Deodorizer",
+            "one_liner": "For the bag. You know why.",
+            "shot": "Deodorizer being sprayed into a glove cuff, kit bag behind."
+          }
+        },
+        "bundle": {
+          "type": "product",
+          "settings": {
+            "fallback_title": "Care bundle",
+            "one_liner": "Wash + spray + deodorizer. Savings maths shown.",
+            "shot": "All three care products lined up on a bench, top-down, dark slate."
+          }
+        }
+      },
+      "block_order": ["spray", "wash", "deo", "bundle"],
+      "settings": {
+        "eyebrow": "Our own glove care",
+        "heading": "Same job. Fairer price.",
+        "cta_label": "See the bundles",
+        "cta_link": "shopify://pages/bundles",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "gloves": {
+      "type": "a3gk-honest-picks",
+      "settings": {
+        "eyebrow": "Gloves",
+        "empty_heading": "Our own gloves? Not yet.",
+        "empty_link_label": "How to choose your next gloves",
+        "empty_link": "shopify://blogs/guides",
+        "padding_top": 112,
+        "padding_bottom": 96
+      }
+    },
+    "builder": {
+      "type": "a3gk-builder-teaser",
+      "blocks": {
+        "s1": { "type": "step", "settings": { "text": "Pick a base: jersey, shorts, pants or full kit" } },
+        "s2": { "type": "step", "settings": { "text": "Set colours, name, number and crest" } },
+        "s3": { "type": "step", "settings": { "text": "Choose padding zones" } },
+        "s4": { "type": "step", "settings": { "text": "See the full price and lead time, then order" } }
+      },
+      "block_order": ["s1", "s2", "s3", "s4"],
+      "settings": {
+        "eyebrow": "Custom kit builder",
+        "heading": "Your colours. Your number. Padding where you land.",
+        "button_label": "Start building",
+        "link": "shopify://pages/builder",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "feedback": {
+      "type": "a3gk-feedback-log",
+      "settings": {
+        "eyebrow": "Feedback, in public",
+        "heading": "Keepers tell us things. We change things.",
+        "limit": 3,
+        "cta_label": "Tell us something",
+        "cta_link": "shopify://pages/feedback",
+        "all_label": "Every change we've made",
+        "all_link": "shopify://pages/you-told-us",
+        "padding_top": 112,
+        "padding_bottom": 96
+      }
+    },
+    "guides": {
+      "type": "featured-blog",
+      "settings": {
+        "heading": "Keeper guides",
+        "heading_size": "h1",
+        "blog": "guides",
+        "post_limit": 3,
+        "columns_desktop": 3,
+        "color_scheme": "scheme-1",
+        "show_image": true,
+        "show_date": false,
+        "show_author": false,
+        "show_view_all": true,
+        "padding_top": 48,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": ["hero", "why", "categories", "care", "gloves", "builder", "feedback", "guides"]
+}

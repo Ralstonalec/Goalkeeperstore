@@ -1,0 +1,141 @@
+{
+  "sections": {
+    "intro": {
+      "type": "a3gk-statement",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "Bundles",
+        "heading": "Buy together, pay less. The maths is right there.",
+        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices \u2014 just today's prices, added up.</p>",
+        "layout": "stack",
+        "surface": false,
+        "padding_top": 96,
+        "padding_bottom": 24
+      }
+    },
+    "starter": {
+      "type": "a3gk-bundle",
+      "settings": {
+        "anchor": "starter",
+        "eyebrow": "Bundle",
+        "heading": "Starter",
+        "who": "New to proper glove care, or buying your first decent pair.",
+        "why": "<p>Everything to keep new gloves grippy and fresh from day one: wash, spray, tape and a travel deodorizer.</p>",
+        "shot": "Wash, spray, tape and mini deodorizer laid out on a dark bench, top-down.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "matchday": {
+      "type": "a3gk-bundle",
+      "settings": {
+        "anchor": "match-day",
+        "eyebrow": "Bundle",
+        "heading": "Match-day",
+        "who": "Keepers who want one bag-ready kit for game day.",
+        "why": "<p>Spray for grip before kick-off, deodorizer for after, tape for fingers, and grip socks so your feet don't slide in your boots.</p>",
+        "shot": "Match-day bundle in an open kit bag, pre-match dressing room light.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "refill": {
+      "type": "a3gk-bundle",
+      "settings": {
+        "anchor": "refill",
+        "eyebrow": "Bundle",
+        "heading": "Refill",
+        "who": "Anyone already using our care line.",
+        "why": "<p>Just the two you go through fastest \u2014 wash and spray. Built for one-click reorder and refill reminders.</p>",
+        "shot": "Wash and spray bottles side by side, clean studio shot.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "turf": {
+      "type": "a3gk-bundle",
+      "settings": {
+        "anchor": "turf",
+        "eyebrow": "Bundle",
+        "heading": "Turf",
+        "who": "Keepers who play on artificial grass or hard pitches.",
+        "why": "<p>Turf burns and hard landings are the issue. Padded shorts for hips and thighs, grip socks, and tape.</p>",
+        "shot": "Keeper diving on 3G turf, rubber crumb kicking up.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "cold": {
+      "type": "a3gk-bundle",
+      "settings": {
+        "anchor": "cold-weather",
+        "eyebrow": "Bundle",
+        "heading": "Cold weather",
+        "who": "Winter keepers, early starts, frozen pitches.",
+        "why": "<p>Long-sleeve padded top and padded pants for full coverage on hard ground, plus socks.</p>",
+        "shot": "Keeper in long sleeves and pants, breath visible, frosty pitch.",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "custom": {
+      "type": "a3gk-statement",
+      "blocks": {
+        "l0": {
+          "type": "link",
+          "settings": {
+            "label": "Open the kit builder",
+            "url": "shopify://pages/builder"
+          }
+        }
+      },
+      "block_order": [
+        "l0"
+      ],
+      "settings": {
+        "eyebrow": "Custom kit",
+        "heading": "Want it in your colours?",
+        "text": "<p>Custom kit isn't a fixed bundle \u2014 build jersey and shorts or pants together in the kit builder and the full price shows before you pay.</p>",
+        "layout": "split",
+        "surface": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "team": {
+      "type": "a3gk-statement",
+      "blocks": {
+        "l0": {
+          "type": "link",
+          "settings": {
+            "label": "How team orders work",
+            "url": "shopify://pages/team-orders"
+          }
+        }
+      },
+      "block_order": [
+        "l0"
+      ],
+      "settings": {
+        "eyebrow": "Team order",
+        "heading": "Kitting out a squad?",
+        "text": "<p>Volume pricing on custom kit, care and tape for clubs, academies and schools. One contact, clear lead times.</p>",
+        "layout": "split",
+        "surface": false,
+        "padding_top": 80,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "starter",
+    "matchday",
+    "refill",
+    "turf",
+    "cold",
+    "custom",
+    "team"
+  ]
+}

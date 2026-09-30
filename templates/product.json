@@ -1,0 +1,161 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "title": {
+          "type": "title"
+        },
+        "price": {
+          "type": "price"
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_type": "button",
+            "swatch_shape": "circle"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector"
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": true,
+            "show_gift_card_recipient": false
+          }
+        },
+        "description": {
+          "type": "description"
+        },
+        "share": {
+          "type": "share",
+          "settings": {
+            "share_label": "Share"
+          }
+        },
+        "tagline": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.a3gk.tagline.value }}",
+            "text_style": "subtitle"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "tagline",
+        "price",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "share"
+      ],
+      "settings": {
+        "enable_sticky_info": true,
+        "color_scheme": "scheme-1",
+        "media_position": "left",
+        "gallery_layout": "thumbnail_slider",
+        "media_size": "large",
+        "constrain_to_viewport": true,
+        "media_fit": "cover",
+        "image_zoom": "lightbox",
+        "mobile_thumbnails": "show",
+        "hide_variants": true,
+        "enable_video_looping": false,
+        "padding_top": 36,
+        "padding_bottom": 12
+      }
+    },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "You may also like",
+        "heading_size": "h2",
+        "products_to_show": 4,
+        "columns_desktop": 4,
+        "color_scheme": "scheme-1",
+        "image_ratio": "square",
+        "image_shape": "default",
+        "show_secondary_image": true,
+        "show_vendor": false,
+        "show_rating": false,
+        "columns_mobile": "2",
+        "padding_top": 36,
+        "padding_bottom": 28
+      }
+    },
+    "details": {
+      "type": "a3gk-product-details",
+      "blocks": {
+        "why": {
+          "type": "why",
+          "settings": {
+            "title": "Why we made this"
+          }
+        },
+        "fit": {
+          "type": "fit",
+          "settings": {
+            "title": "Who it's for"
+          }
+        },
+        "use": {
+          "type": "use",
+          "settings": {
+            "title": "How to use it"
+          }
+        },
+        "specs": {
+          "type": "specs",
+          "settings": {
+            "title": "Specs",
+            "size_label": "Size guide",
+            "size_link": "shopify://pages/size-guide"
+          }
+        },
+        "value": {
+          "type": "value",
+          "settings": {
+            "title": "What you'd pay elsewhere"
+          }
+        },
+        "lead": {
+          "type": "lead_time",
+          "settings": {
+            "title": "When it'll arrive",
+            "default_text": "Ships within the time shown at checkout. Full details on our shipping page.",
+            "link_label": "Shipping details",
+            "link": "/policies/shipping-policy"
+          }
+        },
+        "reviews": {
+          "type": "reviews_note",
+          "settings": {
+            "title": "Reviews from keepers"
+          }
+        }
+      },
+      "block_order": [
+        "why",
+        "fit",
+        "use",
+        "specs",
+        "value",
+        "lead",
+        "reviews"
+      ],
+      "settings": {
+        "padding_top": 48,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "main",
+    "details",
+    "related-products"
+  ]
+}

@@ -1,0 +1,127 @@
+<section
+  class="a3-section a3-section--surface"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap">
+    <div class="a3-head">
+      <div>
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+        {%- endif -%}
+        <h2 class="a3-reveal" style="--a3-i: 1">{{ section.settings.heading | escape }}</h2>
+      </div>
+      {%- if section.settings.text != blank -%}
+        <div class="a3-reveal" style="--a3-i: 2">{{ section.settings.text }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="a3-grid a3-care" style="--a3-min: 24rem">
+      {%- for block in section.blocks -%}
+        {%- assign p = block.settings.product -%}
+        <article class="a3-card a3-care__item a3-reveal" style="--a3-i: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+          <div class="a3-care__media a3-media">
+            {%- if p != blank and p.featured_media != blank -%}
+              {%- render 'a3gk-media', image: p.featured_media.preview_image, sizes: '(min-width: 990px) 25vw, 100vw' -%}
+            {%- else -%}
+              {%- render 'a3gk-media', image: block.settings.image, shot: block.settings.shot -%}
+            {%- endif -%}
+          </div>
+
+          {%- if p != blank -%}
+            <div>
+              <h3><a href="{{ p.url }}" class="a3-care__title">{{ p.title | escape }}</a></h3>
+              {%- if block.settings.one_liner != blank -%}
+                <p class="a3-muted">{{ block.settings.one_liner | escape }}</p>
+              {%- endif -%}
+            </div>
+            {%- render 'a3gk-value-compare',
+              product: p,
+              name: block.settings.benchmark_name,
+              price: block.settings.benchmark_price,
+              checked: block.settings.benchmark_checked
+            -%}
+            {%- unless p.available -%}
+              {%- render 'a3gk-status-badge', status: 'soon' -%}
+            {%- endunless -%}
+          {%- else -%}
+            <div>
+              <h3>{{ block.settings.fallback_title | escape }}</h3>
+              {%- if block.settings.one_liner != blank -%}
+                <p class="a3-muted">{{ block.settings.one_liner | escape }}</p>
+              {%- endif -%}
+            </div>
+            {%- render 'a3gk-status-badge', status: 'soon' -%}
+            {%- if request.design_mode -%}
+              <p class="a3-setup">Pick a product for this block. Prices only show once a real product is linked.</p>
+            {%- endif -%}
+          {%- endif -%}
+        </article>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.cta_label != blank -%}
+      <p class="a3-care__cta a3-reveal">
+        <a class="a3-link" href="{{ section.settings.cta_link | default: '#' }}">{{ section.settings.cta_label | escape }}</a>
+      </p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-care__item { padding: 1.6rem; }
+  .a3-care__media { aspect-ratio: 4 / 5; }
+  .a3-care__title { color: inherit; text-decoration: none; }
+  .a3-care__title:hover { color: var(--a3-accent); }
+  .a3-care__item h3 { font-size: 2.6rem; margin-bottom: 0.4rem; }
+  .a3-care__cta { margin: 4rem 0 0; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK care showcase",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Our own glove care" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Same job. Fairer price." },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Intro",
+      "default": "<p>Glove care is where big brands charge the most for the least. We're making our own, testing it on real match gloves before anything goes on sale, and pricing it like we'd be buying it every month — because you will.</p>"
+    },
+    { "type": "text", "id": "cta_label", "label": "Link label", "default": "See care bundles" },
+    { "type": "url", "id": "cta_link", "label": "Link" },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Care product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "fallback_title", "label": "Title (before product exists)", "default": "Grip spray" },
+        { "type": "text", "id": "one_liner", "label": "One-line honest take" },
+        { "type": "image_picker", "id": "image", "label": "Image (before product exists)" },
+        { "type": "text", "id": "shot", "label": "Placeholder shot description", "default": "Bottle on wet turf, floodlight rim light, label legible." },
+        { "type": "header", "content": "Comparison" },
+        { "type": "paragraph", "content": "Leave blank to use the product's a3gk.benchmark_* metafields. No comparison shows unless a name and price are both set." },
+        { "type": "text", "id": "benchmark_name", "label": "Big-brand equivalent", "info": "e.g. GloveGlu Grip Spray 120ml" },
+        { "type": "text", "id": "benchmark_price", "label": "Their full retail price", "info": "Number only, in your store currency, e.g. 21.00" },
+        { "type": "text", "id": "benchmark_checked", "label": "Price checked", "info": "e.g. Sept 2026" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "A3GK care showcase",
+      "blocks": [
+        { "type": "product", "settings": { "fallback_title": "Grip spray", "one_liner": "Brings tired latex back to tacky." } },
+        { "type": "product", "settings": { "fallback_title": "Glove wash", "one_liner": "Lifts dirt and sweat without stripping the latex." } },
+        { "type": "product", "settings": { "fallback_title": "Deodorizer", "one_liner": "For the bag. You know why." } },
+        { "type": "product", "settings": { "fallback_title": "Care bundle", "one_liner": "Wash + spray + deodorizer. Bundle maths shown." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

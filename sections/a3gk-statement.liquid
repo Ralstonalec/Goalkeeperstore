@@ -1,0 +1,105 @@
+<section
+  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-statement a3-statement--{{ section.settings.layout }}">
+    <div class="a3-statement__head">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="a3-statement__title a3-reveal" style="--a3-i: 1">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="a3-statement__body a3-reveal" style="--a3-i: 2">
+      {%- if section.settings.text != blank -%}
+        <div class="a3-lede">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'point' -%}
+            <div class="a3-statement__point" {{ block.shopify_attributes }}>
+              <h3 class="h4">{{ block.settings.title | escape }}</h3>
+              <div class="a3-muted">{{ block.settings.text }}</div>
+            </div>
+          {%- when 'link' -%}
+            <p {{ block.shopify_attributes }}>
+              <a class="a3-link" href="{{ block.settings.url | default: '#' }}">{{ block.settings.label | escape }}</a>
+            </p>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-statement {
+    display: grid;
+    gap: 3.2rem;
+  }
+
+  .a3-statement__title {
+    margin: 0;
+    font-size: clamp(3.6rem, 2.2rem + 4vw, 8rem);
+    max-width: 16ch;
+  }
+
+  .a3-statement__body { display: grid; gap: 2.4rem; align-content: start; }
+
+  .a3-statement__point h3 { margin: 0 0 0.6rem; font-size: 2rem; }
+  .a3-statement__point p { margin: 0; line-height: 1.6; }
+
+  @media screen and (min-width: 990px) {
+    .a3-statement--split { grid-template-columns: 1.1fr 1fr; gap: 8rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK statement",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Why this exists" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Keepers get treated like an afterthought." },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Most football shops stock a wall of gloves and nothing else for the position. A3GK is only for keepers: the stuff you actually go through every week, made to a standard we'd put our own hands in, at prices that don't treat keepers as a premium niche.</p>"
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "split", "label": "Split (heading left)" },
+        { "value": "stack", "label": "Stacked" }
+      ],
+      "default": "split"
+    },
+    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Point" },
+        { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Short, specific, true.</p>" }
+      ]
+    },
+    {
+      "type": "link",
+      "name": "Link",
+      "limit": 2,
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Read more" },
+        { "type": "url", "id": "url", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "A3GK statement" }]
+}
+{% endschema %}

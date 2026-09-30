@@ -1,0 +1,97 @@
+<section
+  class="a3-section a3-section--surface a3-teaser"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-teaser__grid">
+    <div class="a3-teaser__media a3-media a3-reveal">
+      {%- render 'a3gk-media', image: section.settings.image, shot: section.settings.shot -%}
+    </div>
+    <div class="a3-teaser__body">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2 class="a3-reveal" style="--a3-i: 1">{{ section.settings.heading | escape }}</h2>
+      <div class="a3-lede a3-reveal" style="--a3-i: 2">{{ section.settings.text }}</div>
+
+      {%- if section.blocks.size > 0 -%}
+        <ol class="a3-teaser__steps a3-reveal" style="--a3-i: 3">
+          {%- for block in section.blocks -%}
+            <li {{ block.shopify_attributes }}>
+              <span class="a3-teaser__n">{{ forloop.index | prepend: '0' }}</span>
+              <span>{{ block.settings.text | escape }}</span>
+            </li>
+          {%- endfor -%}
+        </ol>
+      {%- endif -%}
+
+      {%- if section.settings.lead_time != blank -%}
+        <p class="a3-notice a3-reveal">{{ section.settings.lead_time | escape }}</p>
+      {%- endif -%}
+
+      <p class="a3-reveal">
+        <a class="a3-btn" href="{{ section.settings.link | default: '#' }}">{{ section.settings.button_label | escape }}</a>
+      </p>
+    </div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-teaser__grid { display: grid; gap: 4rem; align-items: center; }
+  .a3-teaser__media { aspect-ratio: 4 / 5; }
+  .a3-teaser h2 { margin: 0 0 2rem; font-size: clamp(3.6rem, 2.4rem + 3vw, 6.4rem); }
+  .a3-teaser__steps { list-style: none; padding: 0; margin: 3.2rem 0; display: grid; gap: 1.2rem; }
+  .a3-teaser__steps li { display: flex; gap: 1.6rem; align-items: baseline; padding-bottom: 1.2rem; border-bottom: 1px solid var(--a3-line); }
+  .a3-teaser__n { font-family: var(--a3-display); font-weight: 800; color: var(--a3-accent); font-size: 2rem; }
+
+  @media screen and (min-width: 990px) {
+    .a3-teaser__grid { grid-template-columns: 1fr 1fr; gap: 8rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK builder teaser",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Custom kit builder" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Your colours. Your number. Padding where you land." },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Design a padded keeper jersey, shorts or pants. See it front and back as you go. Price and lead time are shown before you pay — no surprises.</p>"
+    },
+    {
+      "type": "text",
+      "id": "lead_time",
+      "label": "Lead time note",
+      "info": "Use your manufacturer's real lead time. Leave blank until confirmed."
+    },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Start building" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "shot", "label": "Placeholder shot description", "default": "Keeper in a custom padded jersey, back to camera, name and number lit from the side." },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 5,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Step" }]
+    }
+  ],
+  "presets": [
+    {
+      "name": "A3GK builder teaser",
+      "blocks": [
+        { "type": "step", "settings": { "text": "Pick a base: jersey, shorts, pants or full kit" } },
+        { "type": "step", "settings": { "text": "Set colours, name, number and crest" } },
+        { "type": "step", "settings": { "text": "Choose padding zones" } },
+        { "type": "step", "settings": { "text": "See the full price and lead time, then order" } }
+      ]
+    }
+  ]
+}
+{% endschema %}
