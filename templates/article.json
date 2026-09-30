@@ -1,5 +1,13 @@
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "art": "lines",
+        "size": "medium",
+        "article_meta": true
+      }
+    },
     "main": {
       "type": "main-article",
       "blocks": {
@@ -7,13 +15,6 @@
           "type": "featured_image",
           "settings": {
             "image_height": "adapt"
-          }
-        },
-        "title": {
-          "type": "title",
-          "settings": {
-            "blog_show_date": true,
-            "blog_show_author": false
           }
         },
         "share": {
@@ -28,13 +29,13 @@
       },
       "block_order": [
         "featured_image",
-        "title",
         "share",
         "content"
       ]
     }
   },
   "order": [
+    "hero",
     "main"
   ]
 }

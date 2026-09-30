@@ -1,12 +1,22 @@
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Contact",
+        "heading": "Talk to a keeper.",
+        "text": "<p>Sizing, care, an order or the designer. You get a reply from someone who knows the kit.</p>",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "form": {
       "type": "a3gk-contact-form",
       "settings": {
         "purpose": "contact",
         "anchor": "",
         "heading": "Talk to a keeper",
-        "text": "<p>Questions about sizing, care, an order or the builder \u2014 you'll get a reply from someone who knows the kit.</p>",
+        "text": "<p>Questions about sizing, care, an order or the builder — you'll get a reply from someone who knows the kit.</p>",
         "button_label": "Send",
         "message_label": "Message",
         "response_time": "",
@@ -29,7 +39,7 @@
           "type": "qa",
           "settings": {
             "question": "How do I pick a glove size?",
-            "answer": "<p>Use our <a href=\"/pages/size-guide\">size guide</a> \u2014 it has a hand-measurement calculator.</p>"
+            "answer": "<p>Use our <a href=\"/pages/size-guide\">size guide</a> — it has a hand-measurement calculator.</p>"
           }
         },
         "q2": {
@@ -64,6 +74,7 @@
     }
   },
   "order": [
+    "hero",
     "form",
     "faq"
   ]

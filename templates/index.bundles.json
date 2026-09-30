@@ -4,17 +4,14 @@
  */
 {
   "sections": {
-    "intro": {
-      "type": "a3gk-statement",
-      "blocks": {},
-      "block_order": [],
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
+        "kicker": "Bundles",
+        "art": "render",
+        "render": "bundle",
         "heading": "Buy together, pay less. The maths is right there.",
-        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices — just today's prices, added up.</p>",
-        "layout": "stack",
-        "padding_top": 96,
-        "padding_bottom": 24,
-        "tone": "ink"
+        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices — just today's prices, added up.</p>"
       }
     },
     "starter": {
@@ -130,7 +127,7 @@
     }
   },
   "order": [
-    "intro",
+    "hero",
     "starter",
     "matchday",
     "refill",

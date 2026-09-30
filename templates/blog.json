@@ -1,5 +1,14 @@
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Guides",
+        "text": "<p>Care, fit, padding and what’s actually worth buying. Written by keepers.</p>",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "main": {
       "type": "main-blog",
       "settings": {
@@ -14,6 +23,7 @@
     }
   },
   "order": [
+    "hero",
     "main"
   ]
 }

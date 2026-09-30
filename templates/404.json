@@ -1,10 +1,21 @@
 {
   "sections": {
-    "main": {
-      "type": "main-404"
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "404",
+        "heading": "Not here.",
+        "text": "<p>That page has moved or never existed. Here’s where most keepers are headed.</p>",
+        "art": "scene",
+        "size": "tall",
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Glove care",
+        "button_2_link": "/collections/glove-care"
+      }
     }
   },
   "order": [
-    "main"
+    "hero"
   ]
 }

@@ -1,5 +1,15 @@
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Feedback",
+        "heading": "Tell us what to fix.",
+        "text": "<p>Good, bad, or “you should stock this”. We read all of it.</p>",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "form": {
       "type": "a3gk-contact-form",
       "settings": {
@@ -29,6 +39,7 @@
     }
   },
   "order": [
+    "hero",
     "form",
     "log"
   ]

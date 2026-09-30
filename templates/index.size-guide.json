@@ -4,17 +4,14 @@
  */
 {
   "sections": {
-    "intro": {
-      "type": "a3gk-statement",
-      "blocks": {},
-      "block_order": [],
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
+        "kicker": "Size guide",
+        "art": "render",
+        "render": "socks",
         "heading": "Fit matters. Here's how to get it right now.",
-        "text": "<p>A glove that's half a size out loses you grip and feel. Padding in the wrong place doesn't protect anything. So we treat sizing as part of the product, not an afterthought.</p>",
-        "layout": "split",
-        "padding_top": 96,
-        "padding_bottom": 48,
-        "tone": "ink"
+        "text": "<p>A glove that's half a size out loses you grip and feel. Padding in the wrong place doesn't protect anything. So we treat sizing as part of the product, not an afterthought.</p>"
       }
     },
     "phases": {
@@ -163,7 +160,7 @@
     }
   },
   "order": [
-    "intro",
+    "hero",
     "phases",
     "gloves",
     "apparel",

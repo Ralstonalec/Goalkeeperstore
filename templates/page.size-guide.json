@@ -1,16 +1,13 @@
 {
   "sections": {
-    "intro": {
-      "type": "a3gk-statement",
-      "blocks": {},
-      "block_order": [],
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
+        "kicker": "Size guide",
+        "art": "render",
+        "render": "socks",
         "heading": "Fit matters. Here's how to get it right now.",
-        "text": "<p>A glove that's half a size out loses you grip and feel. Padding in the wrong place doesn't protect anything. So we treat sizing as part of the product, not an afterthought.</p>",
-        "layout": "split",
-        "padding_top": 96,
-        "padding_bottom": 48,
-        "tone": "ink"
+        "text": "<p>A glove that's half a size out loses you grip and feel. Padding in the wrong place doesn't protect anything. So we treat sizing as part of the product, not an afterthought.</p>"
       }
     },
     "phases": {
@@ -77,7 +74,7 @@
         "col_2": "Waist (cm)",
         "col_3": "Hip (cm)",
         "col_4": "Height (cm)",
-        "advice": "<p><strong>Between sizes?</strong> For padded shorts and pants, size down if you're slim \u2014 pads must sit tight on the hip to stay in place when you dive. For jerseys, size up if you wear a base layer underneath.</p>",
+        "advice": "<p><strong>Between sizes?</strong> For padded shorts and pants, size down if you're slim — pads must sit tight on the hip to stay in place when you dive. For jerseys, size up if you wear a base layer underneath.</p>",
         "padding_top": 80,
         "padding_bottom": 48
       }
@@ -92,7 +89,7 @@
         "col_2": "Chest (cm)",
         "col_3": "Waist (cm)",
         "col_4": "Height (cm)",
-        "advice": "<p>Go by height and chest, not age. Kids grow fast, but padding that's too big slides off the hip \u2014 don't size up more than one.</p>",
+        "advice": "<p>Go by height and chest, not age. Kids grow fast, but padding that's too big slides off the hip — don't size up more than one.</p>",
         "padding_top": 48,
         "padding_bottom": 48
       }
@@ -124,7 +121,7 @@
           "type": "qa",
           "settings": {
             "question": "Do sizes differ between brands?",
-            "answer": "<p>Yes \u2014 by up to half a size. Treat our calculator as a starting point and always check the brand's own chart.</p>"
+            "answer": "<p>Yes — by up to half a size. Treat our calculator as a starting point and always check the brand's own chart.</p>"
           }
         },
         "q2": {
@@ -138,7 +135,7 @@
           "type": "qa",
           "settings": {
             "question": "Something doesn't fit.",
-            "answer": "<p>Non-custom items can be exchanged for a different size. See our <a href=\"/policies/refund-policy\">returns policy</a>. We'll ask what was wrong with the fit \u2014 that's how we improve our charts.</p>"
+            "answer": "<p>Non-custom items can be exchanged for a different size. See our <a href=\"/policies/refund-policy\">returns policy</a>. We'll ask what was wrong with the fit — that's how we improve our charts.</p>"
           }
         }
       },
@@ -159,7 +156,7 @@
     }
   },
   "order": [
-    "intro",
+    "hero",
     "phases",
     "gloves",
     "apparel",

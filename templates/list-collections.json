@@ -1,5 +1,13 @@
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "heading": "Shop",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "main": {
       "type": "main-list-collections",
       "settings": {
@@ -12,6 +20,7 @@
     }
   },
   "order": [
+    "hero",
     "main"
   ]
 }

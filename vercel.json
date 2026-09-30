@@ -5,5 +5,10 @@
   "buildCommand": "npm run build:preview",
   "outputDirectory": "dist",
   "trailingSlash": false,
-  "cleanUrls": true
+  "cleanUrls": true,
+  "functions": {
+    "api/design.js": {
+      "maxDuration": 120
+    }
+  }
 }

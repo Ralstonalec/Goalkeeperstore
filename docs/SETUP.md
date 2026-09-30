@@ -136,13 +136,14 @@ If the manufacturer charges extra for name, number or crest print, create add-on
 
 | Page title | Handle | Template |
 |-----------|--------|----------|
-| Kit builder | `builder` | `page.builder` |
+| Kit designer | `builder` | `page.builder` |
 | Bundles | `bundles` | `page.bundles` |
 | Size guide | `size-guide` | `page.size-guide` |
 | Team & club orders | `team-orders` | `page.team-orders` |
 | Feedback | `feedback` | `page.feedback` |
 | You told us | `you-told-us` | `page.you-told-us` |
 | About | `about` | `page.about` |
+| Our mission | `mission` | `page.mission` |
 | Contact | `contact` | `page.contact` |
 | FAQ | `faq` | `page.faq` |
 
@@ -153,10 +154,28 @@ Then open the theme editor on the **Kit builder** page and set:
 - **Lead time**: until this is filled in, the builder is preview-only
 - the made-to-order terms
 - the manufacturer's real colour palette
+- **AI endpoint URL** (optional, see §5b)
+
+## 5b. AI kit and crest design (optional)
+
+The kit designer can design kits from a described "vibe" and draw original crests. This runs as a small function on your Vercel project (`api/design.js`) and uses Claude through your own Anthropic API key. The key never reaches the browser or the theme.
+
+1. Get an API key at console.anthropic.com (billing is per use; a kit request is a few cents at most).
+2. **Vercel → Project → Settings → Environment Variables:**
+   - `ANTHROPIC_API_KEY` = your key
+   - `ALLOWED_ORIGINS` = your store's addresses, comma-separated, e.g. `https://a3gk.com,https://a3gk.myshopify.com`
+   - optional `A3GK_AI_DAILY_LIMIT` = AI requests per visitor per day (default 30)
+3. Redeploy. The Vercel design preview turns the AI option on automatically once the key is set.
+4. In Shopify, open the theme editor on the Kit designer page and set **AI endpoint URL** to `https://<your-vercel-project>.vercel.app/api/design`.
+
+Leave the URL blank to hide every AI option. What's enforced in code:
+- Kits only use colours from the palette you set, and only patterns, fonts and collars the designer can render.
+- Crests are checked on the server and again in the browser: flat SVG only, no scripts, links or images.
+- The prompt tells the model to make original crests and not recreate club or brand logos. You still approve a proof before anything is printed.
 
 ## 6. Navigation
 
-- **main-menu:** Glove care · Kit builder · Tape & socks · Protection · Bundles · Guides · Team orders
+- **main-menu:** Glove care · Kit designer · Tape & socks · Protection · Bundles · Mission · Guides · Team orders
 - **footer-shop:** Glove care · Tape & socks · Protection · Bundles · Kit builder · Gloves
 - **footer-help:** Size guide · Shipping · Returns · FAQ · Contact · Team orders
 - **footer-learn:** About · Guides · You told us · Feedback

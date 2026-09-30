@@ -83,9 +83,9 @@ const guideList = (limit, except) =>
     .join('')}</div>`;
 
 /* 3. Page views: straight copies of the page templates */
-const PAGES = ['builder', 'bundles', 'size-guide', 'team-orders', 'feedback', 'you-told-us', 'about', 'contact', 'faq'];
+const PAGES = ['builder', 'bundles', 'size-guide', 'team-orders', 'feedback', 'you-told-us', 'about', 'mission', 'contact', 'faq'];
 const PAGE_TITLES = {
-  builder: 'Kit builder', bundles: 'Bundles', 'size-guide': 'Size guide', 'team-orders': 'Team & club orders',
+  builder: 'Kit designer', mission: 'Our mission', bundles: 'Bundles', 'size-guide': 'Size guide', 'team-orders': 'Team & club orders',
   feedback: 'Feedback', 'you-told-us': 'You told us', about: 'About', contact: 'Contact', faq: 'FAQ',
 };
 for (const p of PAGES) {

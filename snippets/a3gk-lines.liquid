@@ -1,0 +1,41 @@
+{%- comment -%}
+  Floodlit penalty area in perspective: faint pitch markings with a green
+  glow. Background art for inner-page heroes. Decorative only.
+  Accepts: uid
+{%- endcomment -%}
+{%- assign p = uid | default: 'lines' | prepend: 'a3l-' | handleize -%}
+<svg class="a3-lines" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="{{ p }}-glow" cx="50%" cy="100%" r="70%">
+      <stop offset="0" stop-color="#3be37f" stop-opacity=".18"/>
+      <stop offset=".45" stop-color="#3be37f" stop-opacity=".05"/>
+      <stop offset="1" stop-color="#3be37f" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="{{ p }}-fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#eeebe3" stop-opacity="0"/>
+      <stop offset=".55" stop-color="#eeebe3" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#eeebe3" stop-opacity=".5"/>
+    </linearGradient>
+    <radialGradient id="{{ p }}-flood" cx="50%" cy="0%" r="60%">
+      <stop offset="0" stop-color="#f4fff8" stop-opacity=".1"/>
+      <stop offset="1" stop-color="#f4fff8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#{{ p }}-flood)"/>
+  <rect width="1600" height="900" fill="url(#{{ p }}-glow)"/>
+  <g fill="none" stroke="url(#{{ p }}-fade)" stroke-width="2">
+    <path d="M-200 900 L420 420 L1180 420 L1800 900"/>
+    <path d="M160 900 L610 470 L990 470 L1440 900"/>
+    <path d="M420 420 L1180 420"/>
+    <path d="M610 470 L990 470"/>
+    <path d="M660 900 Q800 780 940 900"/>
+    <path d="M0 420 L1600 420" stroke-opacity=".5"/>
+    <circle cx="800" cy="690" r="4" fill="#eeebe3" fill-opacity=".3" stroke="none"/>
+  </g>
+  <g stroke="#eeebe3" stroke-opacity=".4" stroke-width="3" fill="none">
+    <path d="M700 420 V330 H900 V420"/>
+  </g>
+  <g stroke="#eeebe3" stroke-opacity=".07" stroke-width="1">
+    <path d="M700 340 L680 420 M740 330 V420 M780 330 V420 M820 330 V420 M860 330 V420 M900 340 L920 420 M700 360 H900 M700 390 H900"/>
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 {%- comment -%}
-  A3GK custom padded kit builder (MVP).
+  A3GK custom padded kit designer (3D, with optional AI design).
 
   How it maps onto Shopify (no custom backend):
   - Each base garment is a normal Shopify product (Jersey / Shorts / Pants).
@@ -26,16 +26,15 @@
 -%}
 {{ 'a3gk-builder.css' | asset_url | stylesheet_tag }}
 
-<section class="a3-builder-section" aria-labelledby="a3b-title-{{ section.id }}">
-  <div class="a3-wrap a3-builder__intro">
-    {%- if s.eyebrow != blank -%}
-      <p class="a3-eyebrow">{{ s.eyebrow | escape }}</p>
-    {%- endif -%}
-    <h1 id="a3b-title-{{ section.id }}" class="a3-builder__title">{{ s.heading | escape }}</h1>
-    {%- if s.text != blank -%}
-      <div class="a3-muted">{{ s.text }}</div>
-    {%- endif -%}
-  </div>
+<section id="designer" class="a3-builder-section" aria-label="Kit designer">
+  {%- if s.heading != blank -%}
+    <div class="a3-wrap a3-builder__intro">
+      <h1 id="a3b-title-{{ section.id }}" class="a3-builder__title a3-display">{{ s.heading | escape }}</h1>
+      {%- if s.text != blank -%}
+        <div class="a3-lede a3-builder__text">{{ s.text }}</div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
 
   <a3-builder class="a3-builder" data-section="{{ section.id }}">
     <script type="application/json" data-a3b-config>
@@ -64,29 +63,53 @@
         "sizeGuideUrl": {{ size_url | strip | json }},
         "loginUrl": {{ routes.account_login_url | json }},
         "customer": {% if customer %}true{% else %}false{% endif %},
-        "designMode": {{ request.design_mode | json }}
+        "designMode": {{ request.design_mode | json }},
+        "threeUrl": {{ 'a3gk-three.module.min.js' | asset_url | json }},
+        "kit3dUrl": {{ 'a3gk-kit-3d.js' | asset_url | json }},
+        "aiEndpoint": {{ s.ai_endpoint | strip | json }}
       }
     </script>
 
     <noscript>
-      <p class="a3-notice a3-wrap">The kit builder needs JavaScript. You can still order a custom kit by <a href="{{ team_url | strip | default: routes.root_url }}">contacting us</a>.</p>
+      <p class="a3-notice a3-wrap">The kit designer needs JavaScript. You can still order a custom kit by <a href="{{ team_url | strip | default: routes.root_url }}">contacting us</a>.</p>
     </noscript>
 
     <div class="a3b" data-a3b-root hidden>
-      <div class="a3b__stage" data-a3b-stage>
-        <div class="a3b__viewbar" role="group" aria-label="Preview view">
-          <button type="button" class="a3b__view is-active" data-view="front" aria-pressed="true">Front</button>
-          <button type="button" class="a3b__view" data-view="back" aria-pressed="false">Back</button>
-          <button type="button" class="a3b__view a3b__padtoggle" data-toggle-padding aria-pressed="false">Show padding</button>
+      <div class="a3b__stage">
+        <div class="a3b__hud" aria-hidden="true">
+          <p class="a3b__hud-title">Your design<strong data-a3b-hudtitle>My kit</strong></p>
+          <p class="a3b__hint">Drag to turn · Scroll to zoom</p>
         </div>
-        <div class="a3b__figures" data-a3b-figures></div>
-        <p class="a3b__disclaimer a3-small">
-          Preview is a guide. Colours on screen vary and print fonts are approximated. You approve a proof before anything is made.
+        <div class="a3b__canvas">
+          <div class="a3b__3d" data-a3b-3d role="img" aria-label="3D preview of your kit design"></div>
+          <div class="a3b__flat" data-a3b-flat>
+            <figure><canvas data-view="front" role="img" aria-label="Front of your kit design"></canvas><figcaption>Front</figcaption></figure>
+            <figure><canvas data-view="back" role="img" aria-label="Back of your kit design"></canvas><figcaption>Back</figcaption></figure>
+          </div>
+          <p class="a3b__loading">Loading designer</p>
+        </div>
+        <div class="a3b__stagebar" data-a3b-stagebar>
+          <div class="a3b__seg" role="group" aria-label="View">
+            <button type="button" class="a3b__btn" data-view="front" aria-pressed="true">Front</button>
+            <button type="button" class="a3b__btn" data-view="back" aria-pressed="false">Back</button>
+            <button type="button" class="a3b__btn" data-view="left" aria-pressed="false">Left</button>
+            <button type="button" class="a3b__btn" data-view="right" aria-pressed="false">Right</button>
+          </div>
+          <div class="a3b__seg" role="group" aria-label="Preview mode" data-mode-toggle hidden>
+            <button type="button" class="a3b__btn" data-mode-btn="3d" aria-pressed="true">3D</button>
+            <button type="button" class="a3b__btn" data-mode-btn="flat" aria-pressed="false">Flat</button>
+          </div>
+          <div class="a3b__seg">
+            <button type="button" class="a3b__btn" data-toggle-padding aria-pressed="false">Padding</button>
+          </div>
+        </div>
+        <p class="a3b__disclaimer">
+          Preview is a guide. Screen colours vary and print fonts are approximated. You approve a proof before anything is made.
         </p>
       </div>
 
       <div class="a3b__panel">
-        <nav class="a3b__tabs" role="tablist" aria-label="Builder steps" data-a3b-tabs></nav>
+        <nav class="a3b__tabs" role="tablist" aria-label="Designer steps" data-a3b-tabs></nav>
         <div class="a3b__panes" data-a3b-panes></div>
         <div class="a3b__summary" data-a3b-summary aria-live="polite"></div>
       </div>
@@ -94,7 +117,24 @@
   </a3-builder>
 </section>
 
+<script src="{{ 'a3gk-kit-paint.js' | asset_url }}" defer="defer"></script>
 <script src="{{ 'a3gk-builder.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .a3-builder__intro { padding-block: 12rem 4.8rem; }
+  .a3-builder__title {
+    margin: 0 0 2rem;
+    font-size: clamp(4.4rem, 2rem + 5vw, 10rem);
+    font-stretch: 125%;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+    max-width: 12ch;
+  }
+  .a3-builder__text { max-width: 56rem; }
+  @media screen and (max-width: 749px) {
+    .a3-builder__intro { padding-block: 8rem 3.2rem; }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -102,9 +142,15 @@
   "tag": "div",
   "class": "a3gk-builder-wrap",
   "settings": [
-    { "type": "text", "id": "eyebrow", "label": "Small line above heading" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Build your kit" },
-    { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>Padded keeper jersey, shorts or pants in your colours. Price and lead time shown before you pay.</p>" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Design your kit" },
+    { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>Padded jersey, shorts or pants. Sixteen patterns, six typefaces, your crest, your number. Turn it in 3D, then order with the price and lead time in front of you.</p>" },
+    { "type": "header", "content": "AI design" },
+    {
+      "type": "text",
+      "id": "ai_endpoint",
+      "label": "AI endpoint URL",
+      "info": "Your Vercel deployment's /api/design URL (see docs/SETUP.md). Leave blank to hide the AI options."
+    },
     { "type": "header", "content": "Base products" },
     {
       "type": "paragraph",
@@ -124,7 +170,7 @@
       "id": "palette",
       "label": "Available colours",
       "info": "One per line: Name: #hex. Use the manufacturer's real colour list.",
-      "default": "Black: #111111\nWhite: #F4F4F2\nPitch green: #3BE37F\nVolt: #D7FF3A\nOrange: #FF6A13\nRed: #D7263D\nPink: #FF4FA3\nPurple: #6B3FA0\nRoyal: #2F55D4\nSky: #5BC0EB\nNavy: #14213D\nGrey: #7A7F85\nGold: #E0B040\nTeal: #0F8B8D"
+      "default": "Black: #111111\nWhite: #F4F4F2\nPitch green: #3BE37F\nForest: #1F5C3A\nVolt: #D7FF3A\nYellow: #FFD400\nGold: #E0B040\nOrange: #FF6A13\nRed: #D7263D\nMaroon: #6D1A2B\nPink: #FF4FA3\nPurple: #6B3FA0\nRoyal: #2F55D4\nSky: #5BC0EB\nNavy: #14213D\nTeal: #0F8B8D\nGrey: #7A7F85\nCharcoal: #33363A\nSand: #D9C9A3\nSilver: #B8BCC2"
     },
     {
       "type": "textarea",
