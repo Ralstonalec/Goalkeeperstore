@@ -79,50 +79,17 @@
         "render": "kit"
       }
     },
-    "custom": {
-      "type": "a3gk-statement",
-      "blocks": {
-        "l0": {
-          "type": "link",
-          "settings": {
-            "label": "Open the kit builder",
-            "url": "/pages/builder"
-          }
-        }
-      },
-      "block_order": [
-        "l0"
-      ],
+    "cta": {
+      "type": "a3gk-cta",
       "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Kitting out a squad?",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit",
+        "kicker": "Custom kit",
         "heading": "Want it in your colours?",
-        "text": "<p>Custom kit isn't a fixed bundle — build jersey and shorts or pants together in the kit builder and the full price shows before you pay.</p>",
-        "layout": "split",
-        "padding_top": 80,
-        "padding_bottom": 80,
-        "tone": "raised"
-      }
-    },
-    "team": {
-      "type": "a3gk-statement",
-      "blocks": {
-        "l0": {
-          "type": "link",
-          "settings": {
-            "label": "How team orders work",
-            "url": "/pages/team-orders"
-          }
-        }
-      },
-      "block_order": [
-        "l0"
-      ],
-      "settings": {
-        "heading": "Kitting out a squad?",
-        "text": "<p>Volume pricing on custom kit, care and tape for clubs, academies and schools. One contact, clear lead times.</p>",
-        "layout": "split",
-        "padding_top": 80,
-        "padding_bottom": 96,
-        "tone": "ink"
+        "text": "<p>Custom kit isn’t a fixed bundle. Build jersey and shorts or pants together in the kit designer and the full price shows before you pay.</p>"
       }
     }
   },
@@ -133,7 +100,6 @@
     "refill",
     "turf",
     "cold",
-    "custom",
-    "team"
+    "cta"
   ]
 }

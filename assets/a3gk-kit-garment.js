@@ -14,6 +14,9 @@
 
   Pure geometry: returns { position, normal, uv, color, groups } arrays.
 */
+(function () {
+'use strict';
+
 
 /* ---------------- small math ---------------- */
 
@@ -47,23 +50,23 @@ function keyed(keys, t) {
 // Torso half-width (x) and half-depth (z) by height. Hem at y=0, neck ~2.42.
 const TORSO_RX = [[-0.4, 0.97], [0, 0.97], [0.55, 0.92], [1.3, 0.97], [1.8, 0.99], [2.05, 0.97], [2.3, 0.9]];
 const TORSO_RZ = [[-0.4, 0.6], [0, 0.6], [0.7, 0.55], [1.35, 0.6], [1.8, 0.58], [2.1, 0.5], [2.35, 0.4]];
-export const torsoRx = (y) => keyed(TORSO_RX, y);
-export const torsoRz = (y) => keyed(TORSO_RZ, y);
+const torsoRx = (y) => keyed(TORSO_RX, y);
+const torsoRz = (y) => keyed(TORSO_RZ, y);
 
-export const NECK_Y = 2.42;
+const NECK_Y = 2.42;
 const NECK_R = 0.31;
 
 // Sleeve: shoulder joint, direction down the arm (same frame as the old
 // cylinder: origin (±0.8, 2.06), rotated ±0.6 rad about z).
-export const SLEEVE = { x: 0.8, y: 2.06, rot: 0.6, zScale: 0.8 };
-export const sleeveLen = (long) => (long ? 1.6 : 0.62);
+const SLEEVE = { x: 0.8, y: 2.06, rot: 0.6, zScale: 0.8 };
+const sleeveLen = (long) => (long ? 1.6 : 0.62);
 
 // Legs: origin (±0.44, -0.45), rotated ±0.04 (old frame) — slightly narrower
 // and splayed so the legs separate below the crotch.
-export const LEG = { x: 0.44, y: -0.45, rot: 0.04, zScale: 0.78 };
-export const legLen = (pants) => (pants ? 2.05 : 0.72);
-export const HIP_TOP = 0.15;
-export const HIP_BOTTOM = -0.55;
+const LEG = { x: 0.44, y: -0.45, rot: 0.04, zScale: 0.78 };
+const legLen = (pants) => (pants ? 2.05 : 0.72);
+const HIP_TOP = 0.15;
+const HIP_BOTTOM = -0.55;
 
 /* ---------------- distance helpers ---------------- */
 
@@ -387,7 +390,7 @@ function gradient(sdf, p, e = 0.004) {
 
 /* ---------------- build ---------------- */
 
-export function buildGarment(kind, opts = {}, h = 0.03) {
+function buildGarment(kind, opts = {}, h = 0.03) {
   const field = kind === 'jersey' ? jerseyField(opts) : bottomsField(opts);
   const { sdf } = field;
   const { verts, quads } = mesh(field, h);
@@ -546,7 +549,7 @@ function dist2(a, b) {
 }
 
 /* Closed curve along the neck opening, for the collar tube. */
-export function neckCurve(opts = {}, steps = 96) {
+function neckCurve(opts = {}, steps = 96) {
   const field = jerseyField(opts);
   const pts = [];
   for (let i = 0; i < steps; i++) {
@@ -565,3 +568,6 @@ export function neckCurve(opts = {}, steps = 96) {
   }
   return pts;
 }
+
+window.A3GKGarment = { buildGarment, neckCurve };
+})();

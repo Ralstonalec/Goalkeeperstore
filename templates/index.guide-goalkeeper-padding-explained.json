@@ -4,15 +4,31 @@
  */
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Guide",
+        "heading": "Goalkeeper padding, explained",
+        "text": "<p>Hip, tailbone, thigh, knee and elbow padding: what each zone protects, when you need it, and the trade-offs in heat and bulk.</p>",
+        "art": "lines",
+        "render": "kit",
+        "size": "medium",
+        "article_meta": false,
+        "button_label": "",
+        "button_link": "",
+        "button_2_label": "",
+        "button_2_link": ""
+      }
+    },
     "main": {
       "type": "a3gk-prose",
       "settings": {
-        "heading": "Goalkeeper padding, explained",
+        "heading": "",
         "intro": "",
         "html": "<p>Padding does one job: it spreads the impact when you land. More padding isn&#39;t automatically better, because it adds bulk and heat. The right answer depends on where you play and how you fall.</p>\n<h2>The zones</h2>\n<table>\n<thead>\n<tr>\n<th>Zone</th>\n<th>Protects</th>\n<th>You want it if…</th>\n</tr>\n</thead>\n<tbody><tr>\n<td><strong>Hips</strong></td>\n<td>The side of the pelvis and hip bone, which you land on after a sideways dive</td>\n<td>Almost everyone who dives. This is the one to start with.</td>\n</tr>\n<tr>\n<td><strong>Tailbone</strong></td>\n<td>The base of the spine</td>\n<td>You play on hard, frozen or artificial pitches, or fall backwards a lot</td>\n</tr>\n<tr>\n<td><strong>Thighs</strong></td>\n<td>The outer thigh</td>\n<td>You play on turf or hard ground, where the side of the leg takes friction and impact</td>\n</tr>\n<tr>\n<td><strong>Knees</strong></td>\n<td>Kneecaps and knee sides</td>\n<td>You play on turf or indoors. Pants only.</td>\n</tr>\n<tr>\n<td><strong>Elbows</strong></td>\n<td>Elbow point and forearm</td>\n<td>You make a lot of low saves on turf or hard ground. Long-sleeve jerseys only.</td>\n</tr>\n</tbody></table>\n<h2>Shorts vs pants</h2>\n<ul>\n<li><strong>Shorts:</strong> lighter and cooler. Best on grass in normal weather.</li>\n<li><strong>Pants:</strong> cover knees and the full leg. Best for turf, indoor floors and cold weather.</li>\n<li><strong>Base layer vs outer layer:</strong> padded undershorts go under normal kit shorts. Padded outer shorts are the kit.</li>\n</ul>\n<h2>Fit matters more than foam</h2>\n<p>A pad that isn&#39;t on your hip when you land does nothing. Padded shorts and pants should fit <strong>snug</strong>. If you&#39;re between sizes and slim, go down. <a href=\"/pages/size-guide#apparel\">Size guide →</a></p>\n<h2>Trade-offs, honestly</h2>\n<ul>\n<li>More zones means more heat. In summer on grass, hips alone is usually enough.</li>\n<li>Thicker foam cushions more but feels bulkier when you dive.</li>\n<li>Knee pads on grass are usually overkill. On turf, they save your skin.</li>\n</ul>\n<hr>\n<p><em>Build a padded jersey, shorts or pants with only the zones you want: <a href=\"/pages/builder\">Kit builder →</a></em></p>",
         "narrow": true,
         "tone": "ink",
-        "padding_top": 96,
+        "padding_top": 80,
         "padding_bottom": 96
       }
     },
@@ -27,10 +43,25 @@
         "padding_top": 80,
         "padding_bottom": 96
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "kicker": "",
+        "heading": "Put it into practice.",
+        "text": "<p>Design padded keeper kit in 3D: colours, pattern, number, crest and padding. See the price and lead time before you pay.</p>",
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit"
+      }
     }
   },
   "order": [
+    "hero",
     "main",
-    "more"
+    "more",
+    "cta"
   ]
 }

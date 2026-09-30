@@ -33,6 +33,7 @@ tools/       validate_templates.py: checks templates against section schemas
 | `a3gk-builder-teaser` | Homepage builder promo |
 | `a3gk-builder` | **3D kit designer** (three.js, drag to turn; flat front/back fallback): 16 patterns, 6 typefaces, 20-colour palette, collars, finishes, trims, name/number/motto placements, crests, padding zones, sizes. Optional **AI**: describe a vibe for three kit designs, or describe a crest. Prices come from real variants and the lead time is shown before cart. Save, re-edit and share link. |
 | `a3gk-page-hero` | Cinematic hero for every inner page. Title falls back to the page/collection/blog/article title. |
+| `a3gk-cta` | Closing call-to-action band every page ends on |
 | `a3gk-manifesto` | Huge lines that light up as they scroll past (mission page) |
 | `a3gk-feedback-log` | "Keepers tell us things. We change things." A dated changelog with an honest empty state |
 | `a3gk-bundle` | Bundle with automatic "separately vs bundle" maths from live prices |
@@ -78,4 +79,4 @@ shopify theme check                   # Shopify's linter (if you have the CLI)
 
 ## Licences
 
-Dawn is © Shopify, used under its licence (see `LICENSE.md`). Archivo is under the SIL Open Font License 1.1. three.js (`assets/a3gk-three.module.min.js`, r160) is © Three.js Authors under the MIT licence.
+Dawn is © Shopify, used under its licence (see `LICENSE.md`). Archivo is under the SIL Open Font License 1.1. three.js (r160, vendored at `tools/vendor/three.module.min.js` and wrapped as `assets/a3gk-three.js` by `node tools/build-three-global.mjs`) is © Three.js Authors under the MIT licence.

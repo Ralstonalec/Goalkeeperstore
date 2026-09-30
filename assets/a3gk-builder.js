@@ -240,6 +240,21 @@
     return new XMLSerializer().serializeToString(root);
   }
 
+  const scriptLoads = {};
+  function loadScript(src) {
+    if (!src) return Promise.reject(new Error('missing script URL'));
+    if (!scriptLoads[src])
+      scriptLoads[src] = new Promise((resolve, reject) => {
+        const el = document.createElement('script');
+        el.src = src;
+        el.async = false; // keep order
+        el.onload = resolve;
+        el.onerror = () => reject(new Error(`could not load ${src.split('/').pop().split('?')[0]}`));
+        document.head.appendChild(el);
+      });
+    return scriptLoads[src];
+  }
+
   /* ---------------- custom element ---------------- */
 
   class A3Builder extends HTMLElement {
@@ -564,11 +579,19 @@
       const gl = probe.getContext('webgl2') || probe.getContext('webgl');
       if (!gl || !this.cfg.threeUrl || !this.cfg.kit3dUrl || !this.cfg.garmentUrl) {
         this.root.dataset.no3d = gl ? 'config' : 'webgl';
+        const why = this.querySelector('[data-a3b-no3d-why]');
+        if (why) why.textContent = gl ? '(missing 3D files)' : '(WebGL is turned off or unsupported)';
         this.setMode('flat', true);
         return;
       }
       try {
-        const [THREE, mod, garment] = await Promise.all([import(this.cfg.threeUrl), import(this.cfg.kit3dUrl), import(this.cfg.garmentUrl)]);
+        // Plain <script> tags, not import(): classic scripts load from any CDN
+        // without CORS, which module imports need.
+        await Promise.all([this.cfg.threeUrl, this.cfg.garmentUrl, this.cfg.kit3dUrl].map(loadScript));
+        const THREE = window.THREE;
+        const mod = window.A3GKKit3D;
+        const garment = window.A3GKGarment;
+        if (!THREE || !mod || !garment) throw new Error('3D scripts did not initialise');
         this.THREE = THREE;
         this.kit3d = mod.createKitScene(THREE, this.stage3d, { garment });
         // Let the "building" label paint before the garment mesh is generated.
@@ -578,6 +601,8 @@
       } catch (e) {
         console.warn('A3GK: 3D unavailable, using flat view', e);
         this.root.dataset.no3d = 'load';
+        const why = this.querySelector('[data-a3b-no3d-why]');
+        if (why) why.textContent = `(${(e && e.message) || e})`;
         this.setMode('flat', true);
       }
     }

@@ -17,7 +17,11 @@
       <h2>{{ section.settings.heading | escape }}</h2>
       <div class="a3-lede">{{ section.settings.text }}</div>
       <div class="a3-sizer__diagram a3-media">
-        {%- render 'a3gk-media', image: section.settings.image, shot: section.settings.shot -%}
+        {%- if section.settings.image != blank -%}
+          {%- render 'a3gk-media', image: section.settings.image, shot: section.settings.shot -%}
+        {%- else -%}
+          {%- render 'a3gk-hand', uid: section.id -%}
+        {%- endif -%}
       </div>
     </div>
 
@@ -127,7 +131,8 @@
 {% stylesheet %}
   .a3-sizer { display: grid; gap: 4rem; align-items: start; }
   .a3-sizer h2 { margin: 0 0 2rem; font-size: clamp(3.2rem, 2.2rem + 2.4vw, 5.6rem); }
-  .a3-sizer__diagram { aspect-ratio: 4 / 3; margin-top: 2.4rem; }
+  .a3-sizer__diagram { aspect-ratio: 4 / 3; margin-top: 2.4rem; border-radius: calc(var(--a3-radius, 4px) * 2); overflow: hidden; border: 1px solid var(--a3-line); }
+  .a3-sizer__diagram > svg { display: block; width: 100%; height: 100%; }
   .a3-sizer__form { display: grid; gap: 2rem; }
   .a3-sizer__row { display: grid; grid-template-columns: 1fr 12rem; gap: 1rem; }
   .a3-sizer__pref { border: 0; padding: 0; margin: 0; display: grid; gap: 0.8rem; }

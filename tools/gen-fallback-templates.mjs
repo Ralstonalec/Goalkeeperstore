@@ -94,23 +94,52 @@ for (const p of PAGES) {
 }
 
 /* 4. Collection views */
-const soon = (eyebrow, heading, text, links) => ({
+const CTA = (settings = {}) => ({
+  type: 'a3gk-cta',
+  settings: {
+    kicker: '',
+    heading: 'Your kit. Your colours.',
+    text: '<p>Design padded keeper kit in 3D: colours, pattern, number, crest and padding. See the price and lead time before you pay.</p>',
+    button_label: 'Design your kit',
+    button_link: '/pages/builder',
+    button_2_label: 'Team orders',
+    button_2_link: '/pages/team-orders',
+    render: 'kit',
+    ...settings,
+  },
+});
+const HERO = (settings) => ({
+  type: 'a3gk-page-hero',
+  settings: { kicker: '', heading: '', text: '', art: 'lines', render: 'kit', size: 'medium', article_meta: false, button_label: '', button_link: '', button_2_label: '', button_2_link: '', ...settings },
+});
+// Collection pages that have no products yet: a full page, not a stub.
+const soon = (eyebrow, heading, text, links, render = 'none', points = []) => ({
   sections: {
+    hero: HERO({ kicker: eyebrow, heading, text, art: render === 'none' ? 'lines' : 'render', render: render === 'none' ? 'kit' : render, size: 'tall' }),
     main: {
       type: 'a3gk-statement',
-      blocks: Object.fromEntries(links.map(([label, url], i) => [`l${i}`, { type: 'link', settings: { label, url } }])),
-      block_order: links.map((_, i) => `l${i}`),
-      settings: { eyebrow, heading, text, layout: 'split', tone: 'ink', padding_top: 120, padding_bottom: 120 },
+      blocks: Object.fromEntries([
+        ...points.map(([title, body], i) => [`p${i}`, { type: 'point', settings: { title, text: `<p>${body}</p>` } }]),
+        ...links.map(([label, url], i) => [`l${i}`, { type: 'link', settings: { label, url } }]),
+      ]),
+      block_order: [...points.map((_, i) => `p${i}`), ...links.map((_, i) => `l${i}`)],
+      settings: { eyebrow: '', heading: 'Before it goes on sale', text: '<p>Nothing here goes on sale until it has been used and passed. When it does, the page says who it is for and who it isn\u2019t.</p>', layout: 'split', tone: 'ink', padding_top: 112, padding_bottom: 112 },
     },
+    cta: CTA(),
   },
-  order: ['main'],
+  order: ['hero', 'main', 'cta'],
 });
+const PROMISES = [
+  ['Tested before it is sold', 'Sampled and used on real gloves and real pitches first.'],
+  ['Priced to buy again', 'Fair, stable prices. No fake \u201cwas\u201d discounts.'],
+  ['Honest pages', 'What it does, how to use it, and who it isn\u2019t for.'],
+];
 const COLLECTIONS = {
-  'glove-care': ['Glove care', soon('Coming soon', 'Glove care', '<p>Our own glove wash, grip spray and deodorizer. They are in testing on match gloves now and go on sale once they pass.</p>', [['How to look after goalkeeper gloves', '/blogs/guides/how-to-clean-goalkeeper-gloves'], ['Care bundles', '/pages/bundles']])],
-  'tape-socks': ['Tape & socks', soon('Coming soon', 'Tape & socks', '<p>Own-brand finger tape and grip socks. Sizes will be on the size guide before they go on sale.</p>', [['Sock sizes', '/pages/size-guide#socks'], ['What\'s worth buying as a keeper', '/blogs/guides/goalkeeper-gear-worth-buying']])],
-  protection: ['Protection', soon('Coming later', 'Protection', '<p>Stock padded shorts and pants come later. You can already have padded kit made to order in the kit builder, with padding where you need it.</p>', [['Open the kit builder', '/pages/builder'], ['Goalkeeper padding, explained', '/blogs/guides/goalkeeper-padding-explained']])],
-  bags: ['Bags', soon('Coming later', 'Bags', '<p>An A3GK kit bag, once a sample has survived real use. Not before.</p>', [['About A3GK', '/pages/about']])],
-  bundles: ['Bundles', soon('', 'Bundles', '<p>Every bundle shows the price of each item on its own next to the bundle price.</p>', [['See the bundles', '/pages/bundles']])],
+  'glove-care': ['Glove care', soon('Coming soon', 'Glove care', '<p>Our own glove wash, grip spray and deodorizer. They are in testing on match gloves now and go on sale once they pass.</p>', [['How to look after goalkeeper gloves', '/blogs/guides/how-to-clean-goalkeeper-gloves'], ['Care bundles', '/pages/bundles']], 'bundle', PROMISES)],
+  'tape-socks': ['Tape & socks', soon('Coming soon', 'Tape & socks', '<p>Own-brand finger tape and grip socks. Sizes will be on the size guide before they go on sale.</p>', [['Sock sizes', '/pages/size-guide#socks'], ['What\'s worth buying as a keeper', '/blogs/guides/goalkeeper-gear-worth-buying']], 'socks', PROMISES)],
+  protection: ['Protection', soon('Coming later', 'Protection', '<p>Stock padded shorts and pants come later. You can already have padded kit made to order in the kit designer, with padding where you need it.</p>', [['Open the kit designer', '/pages/builder'], ['Goalkeeper padding, explained', '/blogs/guides/goalkeeper-padding-explained']], 'shorts', PROMISES)],
+  bags: ['Bags', soon('Coming later', 'Bags', '<p>An A3GK kit bag, once a sample has survived real use. Not before.</p>', [['About A3GK', '/pages/about']], 'bag', PROMISES)],
+  bundles: ['Bundles', soon('Bundles', 'Bundles', '<p>Every bundle shows the price of each item on its own next to the bundle price.</p>', [['See the bundles', '/pages/bundles']], 'bundle', PROMISES)],
   gloves: ['Gloves', readJSON(T('collection.gloves.json'))],
 };
 for (const [handle, [title, tpl]] of Object.entries(COLLECTIONS)) {
@@ -121,27 +150,31 @@ for (const [handle, [title, tpl]] of Object.entries(COLLECTIONS)) {
 /* 5. Guide views */
 writeGenerated(T('index.guides.json'), {
   sections: {
+    hero: HERO({ kicker: 'Guides', heading: 'Keeper guides', text: '<p>Glove care, choosing gloves, padding and sizing. Written by keepers.</p>', size: 'compact' }),
     main: {
       type: 'a3gk-prose',
-      settings: { heading: 'Guides', intro: 'Glove care, choosing gloves, padding and sizing, from a keeper-only store.', html: guideList(99), narrow: false, tone: 'ink', padding_top: 96, padding_bottom: 112 },
+      settings: { heading: '', intro: '', html: guideList(99), narrow: false, tone: 'ink', padding_top: 80, padding_bottom: 112 },
     },
+    cta: CTA(),
   },
-  order: ['main'],
+  order: ['hero', 'main', 'cta'],
 });
 titles.guides = 'Guides';
 for (const g of guides) {
   writeGenerated(T(`index.guide-${g.handle}.json`), {
     sections: {
+      hero: HERO({ kicker: 'Guide', heading: g.title, text: g.seo_description ? `<p>${esc(g.seo_description)}</p>` : '' }),
       main: {
         type: 'a3gk-prose',
-        settings: { heading: g.title, intro: '', html: g.html, narrow: true, tone: 'ink', padding_top: 96, padding_bottom: 96 },
+        settings: { heading: '', intro: '', html: g.html, narrow: true, tone: 'ink', padding_top: 80, padding_bottom: 96 },
       },
       more: {
         type: 'a3gk-prose',
         settings: { heading: '', intro: '', html: `<h2>More guides</h2>${guideList(99, g.handle)}`, narrow: false, tone: 'raised', padding_top: 80, padding_bottom: 96 },
       },
+      cta: CTA({ heading: 'Put it into practice.' }),
     },
-    order: ['main', 'more'],
+    order: ['hero', 'main', 'more', 'cta'],
   });
   titles[`guide-${g.handle}`] = g.title;
 }

@@ -19,7 +19,7 @@
       "settings": {
         "purpose": "feedback",
         "anchor": "",
-        "heading": "Tell us something",
+        "heading": "What should we fix?",
         "text": "<p>Good, bad, or \"you should stock this\". We read all of it, and when it changes something we'll put it on our <a href=\"/pages/you-told-us\">changes log</a>.</p>",
         "button_label": "Send feedback",
         "message_label": "What should we know?",
@@ -40,11 +40,24 @@
         "padding_top": 48,
         "padding_bottom": 96
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "The changes log",
+        "button_link": "/pages/you-told-us",
+        "button_2_label": "Design your kit",
+        "button_2_link": "/pages/builder",
+        "render": "none",
+        "heading": "See what you’ve changed.",
+        "text": "<p>Every change that started with a keeper telling us something, with the date.</p>"
+      }
     }
   },
   "order": [
     "hero",
     "form",
-    "log"
+    "log",
+    "cta"
   ]
 }

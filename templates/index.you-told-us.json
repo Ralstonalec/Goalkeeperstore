@@ -24,10 +24,23 @@
         "padding_top": 96,
         "padding_bottom": 96
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Send feedback",
+        "button_link": "/pages/feedback",
+        "button_2_label": "Design your kit",
+        "button_2_link": "/pages/builder",
+        "render": "none",
+        "heading": "Tell us what’s next.",
+        "text": "<p>Good, bad, or “you should stock this”. It all gets read.</p>"
+      }
     }
   },
   "order": [
     "hero",
-    "log"
+    "log",
+    "cta"
   ]
 }

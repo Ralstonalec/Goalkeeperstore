@@ -1,0 +1,37 @@
+{%- comment -%}
+  Illustration: where to measure for jerseys, shorts and pants.
+  Shown on size charts until real measurements are confirmed.
+  Accepts: uid
+{%- endcomment -%}
+{%- assign p = uid | default: 'measure' | prepend: 'a3m-' | handleize -%}
+<svg class="a3-illus a3-illus--measure" viewBox="0 0 640 400" role="img" aria-label="Where to measure: chest across the fullest part, waist at the natural waist, hips across the widest part, inside leg from crotch to hem" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="{{ p }}-kit" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2e29"/>
+      <stop offset="1" stop-color="#171916"/>
+    </linearGradient>
+  </defs>
+  <!-- jersey -->
+  <path d="M170 60 L210 44 C222 58 258 58 270 44 L310 60 L360 132 L330 150 L306 122 L306 250 L174 250 L174 122 L150 150 L120 132 Z" fill="url(#{{ p }}-kit)" stroke="#eeebe3" stroke-opacity=".25" stroke-width="1.5"/>
+  <!-- shorts -->
+  <path d="M420 110 L540 110 L556 268 L492 272 L480 176 L468 272 L404 268 Z" fill="url(#{{ p }}-kit)" stroke="#eeebe3" stroke-opacity=".25" stroke-width="1.5"/>
+  <g stroke="#3be37f" stroke-width="2" fill="none" stroke-linecap="round">
+    <!-- chest -->
+    <path d="M178 118 H302"/>
+    <path d="M178 112 v12 M302 112 v12"/>
+    <!-- length -->
+    <path d="M324 66 V250" stroke-dasharray="4 5"/>
+    <!-- waist -->
+    <path d="M420 128 H540"/>
+    <path d="M420 122 v12 M540 122 v12"/>
+    <!-- inside leg -->
+    <path d="M480 184 L488 266" stroke-dasharray="4 5"/>
+  </g>
+  <g font-family="'A3GK Sans', system-ui, sans-serif" fill="#eeebe3" font-size="14" font-weight="600">
+    <text x="240" y="108" text-anchor="middle">Chest</text>
+    <text x="344" y="162">Length</text>
+    <text x="480" y="102" text-anchor="middle">Waist</text>
+    <text x="500" y="300" text-anchor="middle">Inside leg</text>
+  </g>
+  <text x="320" y="360" font-family="'A3GK Sans', system-ui, sans-serif" font-size="13" fill="#eeebe3" fill-opacity=".55" text-anchor="middle">Measure your body over light clothing, not the garment</text>
+</svg>

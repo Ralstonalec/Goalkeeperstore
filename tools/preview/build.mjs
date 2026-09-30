@@ -271,7 +271,7 @@ function write(route, html) {
   fs.writeFileSync(`${dir}.html`, html);
 }
 
-const readTemplate = (name) => JSON.parse(fs.readFileSync(path.join(ROOT, 'templates', `${name}.json`), 'utf8'));
+const readTemplate = (name) => JSON.parse(fs.readFileSync(path.join(ROOT, 'templates', `${name}.json`), 'utf8').replace(/^\s*\/\*[\s\S]*?\*\//, ''));
 
 /* ---------------- Routes ---------------- */
 
@@ -300,30 +300,23 @@ const pageHero = (settings, title = '') =>
 // Collections that only exist once products are added in Shopify.
 const soon = (heading, text) =>
   pageHero({ kicker: 'Coming soon', heading, text: `<p>${text}</p>`, art: 'lines', size: 'tall', button_label: 'Design your kit', button_link: '/pages/builder' }, heading);
+// Collections without products render the same built-in views Shopify uses.
 for (const [handle, name] of [
   ['glove-care', 'Glove care'],
   ['tape-socks', 'Tape & socks'],
   ['protection', 'Protection'],
   ['bags', 'Bags'],
   ['bundles', 'Bundles'],
-  ['all', 'Shop'],
 ]) {
-  write(`/collections/${handle}`, page(name, await soon(name, 'Products go live here once they have passed testing and are in stock.'), name));
+  write(`/collections/${handle}`, page(name, await renderSections(readTemplate(`index.c-${handle}`), name), name));
 }
+write('/collections/all', page('Shop', await soon('Shop', 'Products go live here once they have passed testing and are in stock.'), 'Shop'));
 write('/cart', page('Cart', await soon('Cart', 'The cart and checkout run on the live Shopify store. This is a design preview.'), 'Cart'));
 
-// Guides blog
-write(
-  '/blogs/guides',
-  page(
-    'Keeper guides',
-    (await pageHero({ kicker: 'Guides', heading: 'Keeper guides', text: '<p>Care, fit, padding and what’s actually worth buying. Written by keepers.</p>', art: 'lines', size: 'compact' })) + guideCards(),
-    'Goalkeeper guides: glove care, choosing gloves, padding, sizing.'
-  )
-);
+// Guides blog: the same built-in views Shopify uses.
+write('/blogs/guides', page('Keeper guides', await renderSections(readTemplate('index.guides'), 'Guides'), 'Goalkeeper guides: glove care, choosing gloves, padding, sizing.'));
 for (const g of guides) {
-  const hero = await pageHero({ kicker: 'Guide', heading: g.title, text: g.seo_description ? `<p>${g.seo_description}</p>` : '', art: 'lines', size: 'medium' });
-  write(`/blogs/guides/${g.handle}`, page(g.title, hero + `<article class="pv-prose">${g.body.replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')}</article>`, g.seo_description || ''));
+  write(`/blogs/guides/${g.handle}`, page(g.title, await renderSections(readTemplate(`index.guide-${g.handle}`), g.title), g.seo_description || ''));
 }
 
 // Policies (drafts)

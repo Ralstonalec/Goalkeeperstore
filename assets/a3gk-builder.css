@@ -503,3 +503,4 @@
 @media screen and (max-width: 559px) {
   .a3b-stepnav__count { display: none; }
 }
+.a3b__no3d-why { display: block; margin-top: 0.4rem; font-size: 1.1rem; opacity: 0.7; }

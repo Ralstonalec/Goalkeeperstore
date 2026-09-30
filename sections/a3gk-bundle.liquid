@@ -139,8 +139,17 @@
           {%- endif -%}
         {%- endif -%}
       {%- else -%}
-        {%- render 'a3gk-status-badge', status: 'soon' -%}
-        <p class="a3-muted">This bundle goes live once every item in it is in stock.</p>
+        <div class="a3-bundle__soon">
+          {%- render 'a3gk-status-badge', status: 'soon' -%}
+          <p class="a3-bundle__soon-title">Launching with the range</p>
+          <p class="a3-muted">This bundle goes live once every item in it is in stock. The price will show each item on its own, the bundle price and the difference.</p>
+          <ul class="a3-bundle__promise" role="list">
+            <li>Today's prices, added up</li>
+            <li>No inflated "was" price</li>
+            <li>If there's no saving, we say so</li>
+          </ul>
+          <a class="a3-link" href="{{ routes.root_url }}pages/contact">Ask about this bundle</a>
+        </div>
         {%- if request.design_mode -%}
           <p class="a3-setup">Add item blocks (or set the bundle product's a3gk.bundle_items metafield) and pick the bundle product. The maths is automatic.</p>
         {%- endif -%}
@@ -158,9 +167,16 @@
   .a3-bundle__item { color: inherit; }
   .a3-bundle__saving { font-size: 1.8rem; margin: 0; }
   .a3-bundle__form { display: grid; gap: 1.2rem; }
+  .a3-bundle__soon { display: grid; gap: 1.2rem; justify-items: start; }
+  .a3-bundle__soon-title { margin: 0.4rem 0 0; font-size: 2.4rem; font-weight: 700; font-stretch: 112%; letter-spacing: -0.02em; }
+  .a3-bundle__soon .a3-muted { margin: 0; }
+  .a3-bundle__promise { list-style: none; margin: 0.4rem 0; padding: 0; display: grid; gap: 0.8rem; width: 100%; }
+  .a3-bundle__promise li { display: flex; gap: 1rem; align-items: center; padding: 1rem 0; border-top: 1px solid var(--a3-line); font-size: 1.5rem; }
+  .a3-bundle__promise li::before { content: ''; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--a3-accent, #3be37f); box-shadow: 0 0 12px rgba(59, 227, 127, 0.6); }
 
   @media screen and (min-width: 990px) {
     .a3-bundle { grid-template-columns: 1.1fr 1fr; gap: 6rem; }
+    .a3-bundle__maths { position: sticky; top: 10rem; }
   }
 {% endstylesheet %}
 

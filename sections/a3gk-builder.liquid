@@ -64,7 +64,7 @@
         "loginUrl": {{ routes.account_login_url | json }},
         "customer": {% if customer %}true{% else %}false{% endif %},
         "designMode": {{ request.design_mode | json }},
-        "threeUrl": {{ 'a3gk-three.module.min.js' | asset_url | json }},
+        "threeUrl": {{ 'a3gk-three.js' | asset_url | json }},
         "kit3dUrl": {{ 'a3gk-kit-3d.js' | asset_url | json }},
         "garmentUrl": {{ 'a3gk-kit-garment.js' | asset_url | json }},
         "aiEndpoint": {{ s.ai_endpoint | strip | json }}
@@ -88,7 +88,7 @@
             <figure><canvas data-view="back" role="img" aria-label="Back of your kit design"></canvas><figcaption>Back</figcaption></figure>
           </div>
           <p class="a3b__loading"><span class="a3b__spinner" aria-hidden="true"></span>Building your kit in 3D</p>
-          <p class="a3b__no3d" role="status">3D preview isn't available on this device or browser, so you're seeing the flat front and back. Everything else works the same.</p>
+          <p class="a3b__no3d" role="status">3D preview isn't available on this device or browser, so you're seeing the flat front and back. Everything else works the same. <span class="a3b__no3d-why" data-a3b-no3d-why></span></p>
         </div>
         <div class="a3b__stagebar" data-a3b-stagebar>
           <div class="a3b__seg" role="group" aria-label="View">
