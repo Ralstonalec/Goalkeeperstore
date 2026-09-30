@@ -5,7 +5,7 @@
 {%- endcomment -%}
 <section
   id="{{ section.settings.anchor | default: section.id | handleize }}"
-  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  class="a3-section a3-tone--{{ section.settings.tone }}"
   style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="a3-wrap">
@@ -23,7 +23,7 @@
 
     <ol class="a3-steps" role="list">
       {%- for block in section.blocks -%}
-        <li class="a3-card a3-steps__item a3-reveal{% if block.settings.current %} is-current{% endif %}" style="--a3-i: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+        <li class="a3-item a3-steps__item a3-reveal{% if block.settings.current %} is-current{% endif %}" style="--a3-i: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
           <span class="a3-steps__n">{{ block.settings.label | default: forloop.index | escape }}</span>
           <h3>{{ block.settings.title | escape }}</h3>
           {%- if block.type == 'tier' -%}
@@ -33,7 +33,7 @@
             <div class="a3-muted">{{ block.settings.text }}</div>
           {%- endif -%}
           {%- if block.settings.current -%}
-            <span class="a3-badge a3-badge--live">Now</span>
+            <span class="a3-badge a3-badge--live">Live now</span>
           {%- endif -%}
         </li>
       {%- endfor -%}
@@ -55,10 +55,10 @@
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr));
   }
   .a3-steps__item { justify-items: start; align-content: start; }
-  .a3-steps__item.is-current { border-color: rgba(59, 227, 127, 0.5); }
-  .a3-steps__n { font-family: var(--a3-display); font-weight: 800; font-size: 1.6rem; letter-spacing: 0.14em; color: var(--a3-accent); text-transform: uppercase; }
-  .a3-steps__item h3 { font-size: 2.6rem; }
-  .a3-steps__value { font-family: var(--a3-display); font-weight: 800; font-size: 3.6rem; line-height: 1; color: var(--a3-text); }
+  .a3-steps__item.is-current { border-top-color: var(--a3-accent-text); }
+  .a3-steps__n { font-size: 1.4rem; font-weight: 500; color: var(--a3-muted); }
+  .a3-steps__item h3 { font-size: 2.4rem; }
+  .a3-steps__value { font-weight: 700; font-stretch: 75%; font-size: 3.6rem; line-height: 1; color: var(--a3-text); }
   .a3-steps__item p, .a3-steps__item .a3-muted p { margin: 0; }
   .a3-steps__foot { margin-top: 2.4rem; }
 {% endstylesheet %}
@@ -69,11 +69,11 @@
   "tag": "div",
   "settings": [
     { "type": "text", "id": "anchor", "label": "Anchor" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow" },
+    { "type": "text", "id": "eyebrow", "label": "Small line above heading" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "How it works" },
     { "type": "richtext", "id": "text", "label": "Intro" },
     { "type": "text", "id": "footnote", "label": "Footnote" },
-    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "select", "id": "tone", "label": "Background", "options": [{ "value": "ink", "label": "Dark" }, { "value": "raised", "label": "Dark, raised" }, { "value": "paper", "label": "Light" }], "default": "ink" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
   ],

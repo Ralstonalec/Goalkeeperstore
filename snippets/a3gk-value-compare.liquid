@@ -40,9 +40,8 @@
         {{ diff | abs | money }} more.
       {%- endif -%}
       {%- if b_checked != blank %}
-        Their price checked {{ b_checked | escape }} at full retail.
+        Their full retail price, checked {{ b_checked | escape }}.
       {%- endif %}
-      Not a "was/now" discount — just what each costs.
     </p>
   </div>
 {%- endif -%}

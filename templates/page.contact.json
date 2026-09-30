@@ -5,15 +5,14 @@
       "settings": {
         "purpose": "contact",
         "anchor": "",
-        "eyebrow": "Contact",
         "heading": "Talk to a keeper",
         "text": "<p>Questions about sizing, care, an order or the builder \u2014 you'll get a reply from someone who knows the kit.</p>",
-        "surface": false,
         "button_label": "Send",
         "message_label": "Message",
         "response_time": "",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "faq": {
@@ -56,12 +55,11 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "Quick answers",
         "heading": "Common questions",
         "schema": true,
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     }
   },

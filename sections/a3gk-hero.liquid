@@ -58,9 +58,9 @@
 
   <div class="a3-hero__content a3-wrap">
     {%- if section.settings.eyebrow != blank -%}
-      <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+      <p class="a3-hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
     {%- endif -%}
-    <h1 id="a3-hero-title-{{ section.id }}" class="a3-hero__title a3-reveal" style="--a3-i: 1">
+    <h1 id="a3-hero-title-{{ section.id }}" class="a3-hero__title a3-display" style="--a3-i: 1">
       {{- section.settings.heading -}}
     </h1>
     {%- if section.settings.subheading != blank -%}
@@ -113,7 +113,8 @@
     justify-content: flex-start;
     align-items: flex-end;
     text-align: right;
-    padding: 12rem var(--a3-gutter) 2rem;
+    /* Extra right padding: the parallax layer is scaled up ~8%. */
+    padding: 12rem calc(var(--a3-gutter) + 6vw) 2rem var(--a3-gutter);
   }
 
   .a3-hero__media .a3-shot__tag { align-self: flex-end; }
@@ -123,8 +124,8 @@
     inset: 0;
     z-index: -1;
     background:
-      linear-gradient(180deg, rgba(11, 13, 12, 0.2) 0%, rgba(11, 13, 12, 0) 35%, rgba(11, 13, 12, 0.92) 100%),
-      rgba(11, 13, 12, var(--a3-overlay, 0.3));
+      linear-gradient(180deg, rgba(14, 15, 13, 0.25) 0%, rgba(14, 15, 13, 0) 40%, rgba(14, 15, 13, 0.9) 100%),
+      rgba(14, 15, 13, var(--a3-overlay, 0.3));
   }
 
   .a3-hero__content {
@@ -134,8 +135,16 @@
 
   .a3-hero__title {
     margin: 0 0 2.4rem;
-    font-size: clamp(5.2rem, 3rem + 7vw, 13rem);
+    font-size: clamp(5.6rem, 2.8rem + 7.4vw, 14rem);
     max-width: 14ch;
+  }
+
+  .a3-hero__eyebrow {
+    margin: 0 0 2rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--a3-text);
+    opacity: 0.8;
   }
 
   .a3-hero__ctas {
@@ -189,8 +198,7 @@
     {
       "type": "text",
       "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "A3GK — Goalkeepers only"
+      "label": "Small line above heading"
     },
     {
       "type": "text",
@@ -202,7 +210,7 @@
       "type": "richtext",
       "id": "subheading",
       "label": "Subheading",
-      "default": "<p>Glove care, tape, socks and custom padded kit — made for keepers, priced fairly, and only sold if we'd use it ourselves.</p>"
+      "default": "<p>Glove care, tape, grip socks and custom padded kit. Made for keepers, priced to be bought again.</p>"
     },
     {
       "type": "text",

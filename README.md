@@ -8,7 +8,7 @@ Shopify stays in charge of commerce: products, variants, cart, checkout, custome
 
 ```
 assets/      a3gk.css (design system), a3gk.js (reveals/parallax),
-             a3gk-builder.js/.css (kit builder), self-hosted Barlow Condensed (OFL)
+             a3gk-builder.js/.css (kit builder), self-hosted Archivo variable font (OFL)
 sections/    a3gk-*.liquid: all custom sections (see below). Everything else is Dawn.
 snippets/    a3gk-media (image or honest placeholder), a3gk-value-compare, a3gk-status-badge
 templates/   homepage, product (default/care/apparel/bundle/builder-base),
@@ -56,6 +56,14 @@ tools/       validate_templates.py: checks templates against section schemas
 
 With the Shopify CLI instead: `shopify theme dev` / `shopify theme push`. The `.shopifyignore` file keeps `docs/`, `content/` and `tools/` out of the upload.
 
+## Design preview on Vercel
+
+Vercel can't run the store: Liquid, cart, checkout and accounts only work on Shopify. This repo *does* include a static **design preview** for Vercel. It shows the homepage, builder, bundles, size guide, team orders, about, FAQ, guides and policy drafts, rendered from the same theme files. Forms and checkout are disabled, and a banner says it's a preview.
+
+- Import the repo in Vercel. `vercel.json` sets everything: install `npm install`, build `npm run build:preview`, output `dist/`.
+- Local: `npm install && npm run build:preview`, then serve `dist/`.
+- Each push to `main` redeploys the preview. The Shopify theme is unaffected, because `.shopifyignore` keeps these files out of the theme.
+
 ## Before pushing changes
 
 ```sh
@@ -65,4 +73,4 @@ shopify theme check                   # Shopify's linter (if you have the CLI)
 
 ## Licences
 
-Dawn is © Shopify, used under its licence (see `LICENSE.md`). Barlow Condensed is under the SIL Open Font License 1.1.
+Dawn is © Shopify, used under its licence (see `LICENSE.md`). Archivo is under the SIL Open Font License 1.1.

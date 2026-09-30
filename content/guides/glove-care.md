@@ -1,5 +1,5 @@
 ---
-title: How to look after goalkeeper gloves (and why most gloves die early)
+title: How to look after goalkeeper gloves
 handle: how-to-clean-goalkeeper-gloves
 seo_title: How to Clean Goalkeeper Gloves Properly | A3GK
 seo_description: Washing, drying and storing goalkeeper gloves so the latex lasts. What to do after every session, what never to do, and when a glove is finished.

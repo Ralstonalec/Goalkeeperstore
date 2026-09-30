@@ -166,13 +166,12 @@
         "link"
       ],
       "settings": {
-        "eyebrow": "Fit",
         "heading": "Padding only works if it sits where you land.",
-        "text": "<p>Too big and the pads slide off your hips when you dive. Check the size guide \u2014 and if you're between sizes, tell us your height and waist and we'll tell you honestly which to pick.</p>",
+        "text": "<p>Too big and the pads slide off your hips when you dive. Check the size guide \u2014 and if you're between sizes, tell us your height and waist and we'll tell you which to pick.</p>",
         "layout": "split",
-        "surface": true,
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "tone": "raised"
       }
     }
   },

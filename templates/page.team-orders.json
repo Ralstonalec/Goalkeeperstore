@@ -5,13 +5,12 @@
       "blocks": {},
       "block_order": [],
       "settings": {
-        "eyebrow": "Team & club orders",
         "heading": "One keeper or the whole academy.",
         "text": "<p>Custom padded kit, glove care and tape for clubs, academies and schools. Volume pricing, one point of contact, and lead times we'll actually hit.</p>",
         "layout": "split",
-        "surface": false,
         "padding_top": 96,
-        "padding_bottom": 48
+        "padding_bottom": 48,
+        "tone": "ink"
       }
     },
     "how": {
@@ -54,13 +53,12 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "How it works",
         "heading": "Four steps",
         "text": "",
-        "surface": false,
         "footnote": "",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "tiers": {
@@ -95,13 +93,12 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "Volume pricing",
         "heading": "The more keepers, the less each",
         "text": "<p>Pricing depends on garment and quantity. Tiers below are confirmed once our manufacturer pricing is final \u2014 until then, ask and we'll quote.</p>",
-        "surface": true,
         "footnote": "Tiers apply per order, across mixed sizes. Names and numbers can differ per piece.",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     },
     "form": {
@@ -109,15 +106,14 @@
       "settings": {
         "purpose": "team",
         "anchor": "quote",
-        "eyebrow": "Get a quote",
         "heading": "Tell us about your squad",
-        "text": "<p>A real person replies with pricing and a lead time.</p>",
-        "surface": false,
+        "text": "<p>We'll reply with pricing and a delivery date.</p>",
         "button_label": "Request a quote",
         "message_label": "Anything else we should know?",
         "response_time": "",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "ink"
       }
     },
     "faq": {
@@ -160,12 +156,11 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "Team questions",
         "heading": "The practical stuff",
         "schema": false,
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     }
   },

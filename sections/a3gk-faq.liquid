@@ -1,6 +1,6 @@
 <section
   id="{{ section.settings.anchor | default: section.id | handleize }}"
-  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  class="a3-section a3-tone--{{ section.settings.tone }}"
   style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
 >
   <div class="a3-wrap a3-faq">
@@ -44,7 +44,7 @@
 
 {% stylesheet %}
   .a3-faq { display: grid; gap: 3.2rem; }
-  .a3-faq h2 { margin: 0 0 1.2rem; font-size: clamp(3.2rem, 2.2rem + 2.4vw, 5.2rem); }
+  .a3-faq h2 { margin: 0 0 1.6rem; font-size: clamp(3rem, 2.2rem + 2vw, 4.4rem); }
   @media screen and (min-width: 990px) {
     .a3-faq { grid-template-columns: 1fr 1.6fr; gap: 8rem; }
   }
@@ -56,12 +56,12 @@
   "tag": "div",
   "settings": [
     { "type": "text", "id": "anchor", "label": "Anchor" },
-    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "FAQ" },
-    { "type": "text", "id": "heading", "label": "Heading", "default": "Straight answers" },
+    { "type": "text", "id": "eyebrow", "label": "Small line above heading" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Questions" },
     { "type": "richtext", "id": "text", "label": "Intro" },
     { "type": "checkbox", "id": "open_first", "label": "Open first question", "default": false },
     { "type": "checkbox", "id": "schema", "label": "Output FAQ structured data (SEO)", "default": true, "info": "Only enable on one FAQ section per page." },
-    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "select", "id": "tone", "label": "Background", "options": [{ "value": "ink", "label": "Dark" }, { "value": "raised", "label": "Dark, raised" }, { "value": "paper", "label": "Light" }], "default": "ink" },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
   ],

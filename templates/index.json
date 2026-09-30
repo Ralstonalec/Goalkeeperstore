@@ -3,9 +3,9 @@
     "hero": {
       "type": "a3gk-hero",
       "settings": {
-        "eyebrow": "A3GK — Goalkeepers only",
+        "eyebrow": "Goalkeepers only",
         "heading": "Keeper kit, done properly.",
-        "subheading": "<p>Glove care, tape, socks and custom padded kit — made for keepers, priced fairly, and only sold if we'd use it ourselves.</p>",
+        "subheading": "<p>Glove care, tape, grip socks and custom padded kit. Made for keepers, priced to be bought again.</p>",
         "button_1_label": "Shop glove care",
         "button_1_link": "shopify://collections/glove-care",
         "button_2_label": "Build your kit",
@@ -20,16 +20,22 @@
       "blocks": {
         "link": {
           "type": "link",
-          "settings": { "label": "How we pick what we sell", "url": "shopify://pages/about" }
+          "settings": {
+            "label": "How we choose what to sell",
+            "url": "shopify://pages/about"
+          }
         }
       },
-      "block_order": ["link"],
+      "block_order": [
+        "link"
+      ],
       "settings": {
-        "eyebrow": "Why this exists",
-        "heading": "Keepers get treated like an afterthought.",
+        "heading": "Most shops treat keepers as an afterthought.",
         "layout": "split",
         "padding_top": 112,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "paper",
+        "text": "<p>A wall of gloves, and nothing else for the position. We only make things for keepers, starting with what you go through every week: glove care, tape and socks.</p><p>Each product is tested on match gloves and real pitches before it goes on sale. If it doesn't hold up, we don't sell it.</p>"
       }
     },
     "categories": {
@@ -41,7 +47,7 @@
             "title": "Glove care",
             "link": "shopify://collections/glove-care",
             "status": "soon",
-            "note": "Wash, grip spray, deodorizer. Our own.",
+            "note": "Wash, grip spray, deodorizer",
             "shot": "Grip spray misting onto a latex palm, backlit, droplets frozen mid-air."
           }
         },
@@ -51,7 +57,7 @@
             "title": "Kit builder",
             "link": "shopify://pages/builder",
             "status": "soon",
-            "note": "Custom padded jerseys, shorts and pants.",
+            "note": "Padded jerseys, shorts and pants in your colours",
             "shot": "Custom padded jersey laid flat, number and crest in focus, side light."
           }
         },
@@ -61,7 +67,8 @@
             "title": "Tape & socks",
             "link": "shopify://collections/tape-socks",
             "status": "soon",
-            "shot": "Finger tape being wrapped, close-up of hands in the dressing room."
+            "shot": "Finger tape being wrapped, close-up of hands in the dressing room.",
+            "note": "Finger tape and grip socks"
           }
         },
         "protection": {
@@ -70,7 +77,8 @@
             "title": "Protection",
             "link": "shopify://collections/protection",
             "status": "soon",
-            "shot": "Padded shorts, hip pad detail, on a keeper getting up from a dive."
+            "shot": "Padded shorts, hip pad detail, on a keeper getting up from a dive.",
+            "note": "Padded shorts and pants"
           }
         },
         "gloves": {
@@ -79,8 +87,9 @@
             "title": "Gloves",
             "link": "shopify://collections/gloves",
             "status": "none",
-            "note": "Not yet. Here's why.",
-            "shot": "Worn glove on a wet pitch, shallow depth of field."
+            "note": "Why we don't sell our own yet",
+            "shot": "Worn glove on a wet pitch, shallow depth of field.",
+            "status_label": "Not yet"
           }
         },
         "bags": {
@@ -89,17 +98,25 @@
             "title": "Bags",
             "link": "shopify://collections/bags",
             "status": "soon",
-            "note": "Only once samples pass real keeper testing.",
+            "note": "Once a sample passes testing",
             "shot": "Kit bag with glove compartment open, gloves hanging to air."
           }
         }
       },
-      "block_order": ["care", "builder", "tape", "protection", "gloves", "bags"],
+      "block_order": [
+        "care",
+        "builder",
+        "tape",
+        "protection",
+        "gloves",
+        "bags"
+      ],
       "settings": {
-        "heading": "What we do",
-        "text": "<p>A short range on purpose. If it isn't good enough to recommend, it isn't here.</p>",
-        "padding_top": 48,
-        "padding_bottom": 96
+        "heading": "What we make",
+        "text": "<p>A short range, on purpose.</p>",
+        "padding_top": 96,
+        "padding_bottom": 96,
+        "tone": "ink"
       }
     },
     "care": {
@@ -133,62 +150,95 @@
           "type": "product",
           "settings": {
             "fallback_title": "Care bundle",
-            "one_liner": "Wash + spray + deodorizer. Savings maths shown.",
+            "one_liner": "Wash, spray and deodorizer in one order.",
             "shot": "All three care products lined up on a bench, top-down, dark slate."
           }
         }
       },
-      "block_order": ["spray", "wash", "deo", "bundle"],
+      "block_order": [
+        "spray",
+        "wash",
+        "deo",
+        "bundle"
+      ],
       "settings": {
-        "eyebrow": "Our own glove care",
-        "heading": "Same job. Fairer price.",
-        "cta_label": "See the bundles",
+        "heading": "Glove care",
+        "cta_label": "Care bundles",
         "cta_link": "shopify://pages/bundles",
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "paper",
+        "text": "<p>Our own wash, grip spray and deodorizer. Priced to be bought every month, because you will.</p>"
       }
     },
     "gloves": {
       "type": "a3gk-honest-picks",
       "settings": {
-        "eyebrow": "Gloves",
-        "empty_heading": "Our own gloves? Not yet.",
-        "empty_link_label": "How to choose your next gloves",
+        "empty_heading": "No A3GK gloves. Not yet.",
+        "empty_link_label": "How to choose goalkeeper gloves",
         "empty_link": "shopify://blogs/guides",
         "padding_top": 112,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "ink",
+        "empty_text": "<p>Gloves are the one thing a keeper can't compromise on. We'll only put our name on a pair once a manufacturer can match the latex, cut and stitching of the gloves serious keepers already wear, tested side by side. That may take a year.</p><p>Until then, our care range keeps the gloves you own grippy for longer, and our guides help you choose your next pair, whoever makes it.</p>"
       }
     },
     "builder": {
       "type": "a3gk-builder-teaser",
       "blocks": {
-        "s1": { "type": "step", "settings": { "text": "Pick a base: jersey, shorts, pants or full kit" } },
-        "s2": { "type": "step", "settings": { "text": "Set colours, name, number and crest" } },
-        "s3": { "type": "step", "settings": { "text": "Choose padding zones" } },
-        "s4": { "type": "step", "settings": { "text": "See the full price and lead time, then order" } }
+        "s1": {
+          "type": "step",
+          "settings": {
+            "text": "Pick a base: jersey, shorts, pants or full kit"
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "text": "Set colours, name, number and crest"
+          }
+        },
+        "s3": {
+          "type": "step",
+          "settings": {
+            "text": "Choose padding zones"
+          }
+        },
+        "s4": {
+          "type": "step",
+          "settings": {
+            "text": "See the full price and lead time, then order"
+          }
+        }
       },
-      "block_order": ["s1", "s2", "s3", "s4"],
+      "block_order": [
+        "s1",
+        "s2",
+        "s3",
+        "s4"
+      ],
       "settings": {
-        "eyebrow": "Custom kit builder",
-        "heading": "Your colours. Your number. Padding where you land.",
-        "button_label": "Start building",
+        "heading": "Design your own padded kit.",
+        "button_label": "Open the builder",
         "link": "shopify://pages/builder",
         "padding_top": 96,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "raised",
+        "text": "<p>Jersey, shorts or pants in your colours, with your name, number and crest, and padding where you land. You see the full price and delivery time before you pay.</p>"
       }
     },
     "feedback": {
       "type": "a3gk-feedback-log",
       "settings": {
-        "eyebrow": "Feedback, in public",
-        "heading": "Keepers tell us things. We change things.",
+        "heading": "What keepers told us, and what we changed",
         "limit": 3,
-        "cta_label": "Tell us something",
+        "cta_label": "Send us feedback",
         "cta_link": "shopify://pages/feedback",
-        "all_label": "Every change we've made",
+        "all_label": "All changes",
         "all_link": "shopify://pages/you-told-us",
         "padding_top": 112,
-        "padding_bottom": 96
+        "padding_bottom": 96,
+        "tone": "paper"
       }
     },
     "guides": {
@@ -209,5 +259,14 @@
       }
     }
   },
-  "order": ["hero", "why", "categories", "care", "gloves", "builder", "feedback", "guides"]
+  "order": [
+    "hero",
+    "why",
+    "categories",
+    "care",
+    "gloves",
+    "builder",
+    "feedback",
+    "guides"
+  ]
 }

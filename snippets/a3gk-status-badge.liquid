@@ -5,5 +5,5 @@
   {%- when 'live' -%}
     <span class="a3-badge a3-badge--live">{{ label | default: 'In stock' }}</span>
   {%- when 'soon' -%}
-    <span class="a3-badge a3-badge--soon">{{ label | default: 'Coming soon' }}</span>
+    <span class="a3-badge">{{ label | default: 'Coming soon' }}</span>
 {%- endcase -%}

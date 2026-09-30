@@ -1,86 +1,146 @@
 /*
-  A3GK design layer.
-  Sits on top of Dawn's base.css. Dark, cinematic, one accent.
-  Tokens live here; colour schemes in config/settings_data.json mirror them
-  so Dawn's own components (cart, account, search) stay on-brand.
+  A3GK design layer — sits on top of Dawn's base.css.
+
+  Principles:
+  - One type family (Archivo, variable weight + width). Sentence case.
+    Condensed caps are reserved for single display moments (hero, numbers).
+  - Two grounds: ink (dark) and paper (warm light). Sections alternate.
+  - The green is a signal, not decoration: buttons, prices, one mark per view.
+  - Structure comes from rules, spacing and alignment — not boxes and pills.
+  - Motion is a quiet fade on media. Text doesn't fly in.
 */
 
 @font-face {
-  font-family: 'A3GK Display';
-  src: url('a3gk-barlow-condensed-700.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'A3GK Display';
-  src: url('a3gk-barlow-condensed-800.woff2') format('woff2');
-  font-weight: 800;
+  font-family: 'A3GK Sans';
+  src: url('a3gk-archivo.woff2') format('woff2-variations'), url('a3gk-archivo.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
   font-style: normal;
   font-display: swap;
 }
 
 :root {
-  --a3-bg: #0b0d0c;
-  --a3-surface: #131715;
-  --a3-surface-2: #1b201d;
-  --a3-line: rgba(237, 239, 236, 0.12);
-  --a3-line-strong: rgba(237, 239, 236, 0.24);
-  --a3-text: #edefec;
-  --a3-muted: #9aa39d;
-  --a3-accent: #3be37f;
-  --a3-accent-ink: #06140b;
-  --a3-warn: #f2c14e;
-  --a3-radius: 4px;
-  --a3-display: 'A3GK Display', 'Arial Narrow', 'Helvetica Neue', Arial, sans-serif;
-  --a3-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
-  --a3-gutter: clamp(1.6rem, 4vw, 5rem);
+  --a3-ink: #0e0f0d;
+  --a3-ink-2: #171916;
+  --a3-ink-3: #20231f;
+  --a3-paper: #eeebe3;
+  --a3-paper-2: #e2ded3;
+  --a3-paper-3: #d6d1c4;
+  --a3-green: #3be37f;
+  --a3-green-deep: #0f6b37;
+
+  /* Tone tokens (ink by default; .a3-tone--paper swaps them) */
+  --a3-bg: var(--a3-ink);
+  --a3-surface: var(--a3-ink-2);
+  --a3-surface-2: var(--a3-ink-3);
+  --a3-text: #eeebe3;
+  --a3-muted: #97948b;
+  --a3-line: rgba(238, 235, 227, 0.13);
+  --a3-line-strong: rgba(238, 235, 227, 0.3);
+  --a3-accent: var(--a3-green);
+  --a3-accent-ink: #07130b;
+  --a3-accent-text: var(--a3-green);
+  --a3-warn: #e8b64c;
+
+  --a3-sans: 'A3GK Sans', 'Helvetica Neue', Arial, sans-serif;
+  --a3-radius: 2px;
+  --a3-ease: cubic-bezier(0.2, 0.6, 0.1, 1);
+  --a3-gutter: clamp(1.6rem, 4vw, 5.6rem);
+
+  /* Dawn picks these up for its own components (cart, account, search). */
+  --font-body-family: var(--a3-sans);
+  --font-heading-family: var(--a3-sans);
+  --font-body-weight: 400;
+  --font-heading-weight: 700;
+}
+
+.a3-tone--raised {
+  --a3-bg: var(--a3-ink-2);
+  --a3-surface: var(--a3-ink-3);
+  --a3-surface-2: #2a2e29;
+}
+
+.a3-tone--paper {
+  --a3-bg: var(--a3-paper);
+  --a3-surface: var(--a3-paper-2);
+  --a3-surface-2: var(--a3-paper-3);
+  --a3-text: #121310;
+  --a3-muted: #5f5c54;
+  --a3-line: rgba(18, 19, 16, 0.14);
+  --a3-line-strong: rgba(18, 19, 16, 0.32);
+  --a3-accent: #121310;
+  --a3-accent-ink: var(--a3-paper);
+  --a3-accent-text: var(--a3-green-deep);
+  --a3-warn: #8a5a00;
 }
 
 /* ---------- Type ---------- */
 
-h1, h2, h3, .h0, .h1, .h2, .h3,
-.a3-display {
-  font-family: var(--a3-display);
-  font-weight: 800;
-  letter-spacing: -0.005em;
-  text-transform: uppercase;
-  line-height: 0.95;
+body,
+.a3-section,
+.a3-builder-section {
+  font-family: var(--a3-sans);
+  font-stretch: 100%;
+  letter-spacing: 0;
 }
 
-h4, .h4, .h5 {
-  font-family: var(--a3-display);
+h1, h2, h3, .a3-display { text-wrap: balance; }
+p, li, .a3-lede { text-wrap: pretty; }
+
+h1, h2, h3, h4, .h0, .h1, .h2, .h3, .h4, .h5 {
+  font-family: var(--a3-sans);
   font-weight: 700;
-  letter-spacing: 0.02em;
+  font-stretch: 100%;
+  letter-spacing: -0.028em;
+  line-height: 1.02;
+  text-transform: none;
+}
+
+h4, .h4, .h5 { letter-spacing: -0.01em; line-height: 1.2; }
+
+/* The one loud voice: condensed caps, used sparingly. */
+.a3-display {
+  font-family: var(--a3-sans);
+  font-weight: 800;
+  font-stretch: 72%;
   text-transform: uppercase;
+  letter-spacing: -0.012em;
+  line-height: 0.88;
 }
 
 .a3-eyebrow {
-  display: inline-block;
-  font-family: var(--a3-display);
-  font-weight: 700;
+  display: block;
+  margin: 0 0 1.6rem;
   font-size: 1.4rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--a3-accent);
-  margin: 0 0 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--a3-muted);
 }
 
 .a3-lede {
-  font-size: clamp(1.7rem, 1.4rem + 0.6vw, 2.1rem);
-  line-height: 1.5;
+  font-size: clamp(1.8rem, 1.5rem + 0.5vw, 2.2rem);
+  line-height: 1.45;
+  letter-spacing: -0.01em;
   color: var(--a3-text);
-  max-width: 60ch;
+  max-width: 54ch;
 }
 
+.a3-lede p { margin: 0 0 1em; }
+.a3-lede p:last-child { margin-bottom: 0; }
+
 .a3-muted { color: var(--a3-muted); }
-.a3-accent { color: var(--a3-accent); }
+.a3-accent { color: var(--a3-accent-text); }
 
 .a3-small {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   line-height: 1.5;
   color: var(--a3-muted);
+}
+
+.a3-num {
+  font-stretch: 75%;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Layout ---------- */
@@ -88,47 +148,51 @@ h4, .h4, .h5 {
 .a3-section {
   background: var(--a3-bg);
   color: var(--a3-text);
-  padding-block: var(--a3-pad-top, 8rem) var(--a3-pad-bottom, 8rem);
+  padding-block: var(--a3-pad-top, 9.6rem) var(--a3-pad-bottom, 9.6rem);
 }
 
-.a3-section--surface { background: var(--a3-surface); }
+/* Legacy "raised" checkbox maps to the raised tone. */
+.a3-section--surface { --a3-bg: var(--a3-ink-2); --a3-surface: var(--a3-ink-3); }
 
 .a3-wrap {
-  max-width: var(--page-width, 120rem);
+  max-width: 136rem;
   margin-inline: auto;
   padding-inline: var(--a3-gutter);
 }
 
-.a3-wrap--narrow { max-width: 82rem; }
+.a3-wrap--narrow { max-width: 84rem; }
 
 .a3-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 4rem;
+  display: grid;
+  gap: 1.6rem;
+  margin-bottom: 5.6rem;
+  max-width: 72rem;
 }
+
+.a3-head > div { display: contents; }
 
 .a3-head h2 {
   margin: 0;
-  font-size: clamp(3.6rem, 2.4rem + 3vw, 6.4rem);
+  font-size: clamp(3.2rem, 2.2rem + 2.4vw, 5.6rem);
 }
 
-.a3-head p:not(.a3-eyebrow) { margin: 0; max-width: 48ch; color: var(--a3-muted); }
-.a3-head .a3-eyebrow { margin-bottom: 1.2rem; }
+.a3-head p:not(.a3-eyebrow),
+.a3-head .rte,
+.a3-head > div > p:not(.a3-eyebrow) {
+  margin: 0;
+  max-width: 56ch;
+  color: var(--a3-muted);
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
 
 .a3-grid {
   display: grid;
-  gap: 2rem;
+  gap: 4rem 2.4rem;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--a3-min, 26rem)), 1fr));
 }
 
-.a3-rule {
-  border: 0;
-  border-top: 1px solid var(--a3-line);
-  margin: 0;
-}
+.a3-rule { border: 0; border-top: 1px solid var(--a3-line); margin: 0; }
 
 /* ---------- Buttons & links ---------- */
 
@@ -137,32 +201,22 @@ h4, .h4, .h5 {
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  min-height: 4.8rem;
-  padding: 0 2.6rem;
+  min-height: 5.2rem;
+  padding: 0 2.8rem;
   border-radius: var(--a3-radius);
   border: 1px solid var(--a3-accent);
   background: var(--a3-accent);
   color: var(--a3-accent-ink);
-  font-family: var(--a3-display);
-  font-weight: 700;
-  font-size: 1.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-family: var(--a3-sans);
+  font-weight: 600;
+  font-size: 1.6rem;
+  letter-spacing: -0.005em;
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.25s var(--a3-ease), background-color 0.25s, color 0.25s;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.a3-btn:hover { transform: translateY(-2px); }
-
-.a3-btn:focus-visible,
-.a3-link:focus-visible,
-.a3-builder button:focus-visible,
-.a3-builder input:focus-visible,
-.a3-builder select:focus-visible {
-  outline: 2px solid var(--a3-accent);
-  outline-offset: 3px;
-}
+.a3-btn:hover { background: color-mix(in srgb, var(--a3-accent) 86%, var(--a3-text)); }
 
 .a3-btn--ghost {
   background: transparent;
@@ -170,61 +224,51 @@ h4, .h4, .h5 {
   border-color: var(--a3-line-strong);
 }
 
-.a3-btn--ghost:hover { border-color: var(--a3-text); }
+.a3-btn--ghost:hover { background: transparent; border-color: var(--a3-text); }
 
 .a3-btn[disabled],
-.a3-btn[aria-disabled='true'] {
-  opacity: 0.45;
-  cursor: not-allowed;
-  transform: none;
+.a3-btn[aria-disabled='true'] { opacity: 0.4; cursor: not-allowed; }
+
+.a3-btn:focus-visible,
+.a3-link:focus-visible,
+.a3-builder button:focus-visible,
+.a3-builder input:focus-visible,
+.a3-builder select:focus-visible {
+  outline: 2px solid var(--a3-accent-text);
+  outline-offset: 3px;
 }
 
 .a3-link {
   color: var(--a3-text);
-  text-decoration: none;
-  border-bottom: 1px solid var(--a3-accent);
-  padding-bottom: 2px;
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  text-decoration-color: var(--a3-line-strong);
+  transition: text-decoration-color 0.2s;
 }
 
-.a3-link::after { content: ' →'; color: var(--a3-accent); }
+.a3-link:hover { text-decoration-color: currentColor; }
 
-/* ---------- Badges ---------- */
+/* ---------- Status labels ---------- */
 
 .a3-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  padding: 0.3rem 0.9rem;
-  border-radius: 999px;
-  border: 1px solid var(--a3-line-strong);
-  font-size: 1.2rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--a3-muted);
-  background: rgba(11, 13, 12, 0.6);
+  display: inline-block;
   align-self: flex-start;
   justify-self: start;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--a3-muted);
 }
 
-.a3-badge--live { color: var(--a3-accent); border-color: rgba(59, 227, 127, 0.5); }
-.a3-badge--soon { color: var(--a3-warn); border-color: rgba(242, 193, 78, 0.45); }
-
-.a3-badge--live::before,
-.a3-badge--soon::before {
-  content: '';
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: currentColor;
-}
+.a3-badge--live { color: var(--a3-accent-text); }
 
 /* ---------- Media + placeholders ---------- */
 
 .a3-media {
   position: relative;
   overflow: hidden;
-  background: var(--a3-surface-2);
+  background: var(--a3-surface);
   border-radius: var(--a3-radius);
 }
 
@@ -236,182 +280,170 @@ h4, .h4, .h5 {
   object-fit: cover;
 }
 
-/* Honest placeholder: tells the team exactly which photo goes here. */
+/* Placeholder: a quiet frame with crop marks and the shot description. */
 .a3-shot {
   box-sizing: border-box;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 0.6rem;
+  gap: 0.4rem;
   width: 100%;
   height: 100%;
   min-height: inherit;
-  padding: 2rem;
+  padding: 2.4rem;
+  --m: var(--a3-line-strong);
   background:
-    radial-gradient(120% 90% at 70% 20%, rgba(59, 227, 127, 0.14), transparent 60%),
-    repeating-linear-gradient(135deg, rgba(237, 239, 236, 0.03) 0 2px, transparent 2px 14px),
-    var(--a3-surface-2);
+    linear-gradient(var(--m), var(--m)) 1.2rem 1.2rem / 1.6rem 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) 1.2rem 1.2rem / 1px 1.6rem no-repeat,
+    linear-gradient(var(--m), var(--m)) calc(100% - 1.2rem) 1.2rem / 1.6rem 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) calc(100% - 1.2rem) 1.2rem / 1px 1.6rem no-repeat,
+    linear-gradient(var(--m), var(--m)) 1.2rem calc(100% - 1.2rem) / 1.6rem 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) 1.2rem calc(100% - 1.2rem) / 1px 1.6rem no-repeat,
+    linear-gradient(var(--m), var(--m)) calc(100% - 1.2rem) calc(100% - 1.2rem) / 1.6rem 1px no-repeat,
+    linear-gradient(var(--m), var(--m)) calc(100% - 1.2rem) calc(100% - 1.2rem) / 1px 1.6rem no-repeat,
+    var(--a3-surface);
   color: var(--a3-muted);
   font-size: 1.3rem;
   line-height: 1.45;
 }
 
+.a3-shot > span:last-child { max-width: 40ch; }
+
 .a3-shot__tag {
-  align-self: flex-start;
-  font-family: var(--a3-display);
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--a3-accent);
-  font-size: 1.2rem;
+  color: var(--a3-muted);
+  opacity: 0.8;
 }
 
-/* ---------- Cards ---------- */
+/* ---------- Panels & items ---------- */
 
+/* Panel: forms, calculators, bundle maths. */
 .a3-card {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.4rem;
-  padding: 2.4rem;
+  gap: 1.6rem;
+  padding: 3.2rem;
   background: var(--a3-surface);
-  border: 1px solid var(--a3-line);
   border-radius: var(--a3-radius);
   color: var(--a3-text);
   text-decoration: none;
-  transition: border-color 0.3s, transform 0.4s var(--a3-ease);
 }
 
-a.a3-card:hover { border-color: var(--a3-line-strong); transform: translateY(-3px); }
-
-.a3-card h3 { margin: 0; font-size: 2.8rem; }
+.a3-card h3 { margin: 0; font-size: 2.4rem; }
 .a3-card p { margin: 0; }
 
-/* ---------- Tables (specs, size charts, bundle maths) ---------- */
+/* Item: an entry in a list, separated by a rule rather than a box. */
+.a3-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--a3-line);
+  color: var(--a3-text);
+  text-decoration: none;
+}
+
+.a3-item h3 { margin: 0; font-size: 2.2rem; letter-spacing: -0.02em; }
+.a3-item p { margin: 0; }
+
+a.a3-item:hover h3 { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+
+/* ---------- Tables ---------- */
 
 .a3-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .a3-table th,
 .a3-table td {
   text-align: left;
-  padding: 1.2rem 1rem;
+  padding: 1.3rem 1.2rem 1.3rem 0;
   border-bottom: 1px solid var(--a3-line);
   vertical-align: top;
 }
 
-.a3-table th {
-  color: var(--a3-muted);
-  font-weight: 500;
-  width: 40%;
-}
+.a3-table th { color: var(--a3-muted); font-weight: 400; width: 40%; }
 
 .a3-table thead th {
-  font-family: var(--a3-display);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
   font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--a3-muted);
   width: auto;
 }
 
 .a3-table tfoot td,
-.a3-table tfoot th {
-  border-bottom: 0;
-  color: var(--a3-text);
-  font-weight: 700;
-}
+.a3-table tfoot th { border-bottom: 0; color: var(--a3-text); font-weight: 600; }
 
 .a3-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
 /* ---------- Lists ---------- */
 
-.a3-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  gap: 0.8rem;
-}
+.a3-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
 
-.a3-list li {
-  position: relative;
-  padding-left: 2.4rem;
-  line-height: 1.5;
-}
+.a3-list li { position: relative; padding-left: 2.2rem; line-height: 1.5; }
 
-.a3-list li::before {
-  position: absolute;
-  left: 0;
-  top: 0;
-  font-weight: 700;
-}
+.a3-list li::before { position: absolute; left: 0; top: 0; }
 
-.a3-list--yes li::before { content: '✓'; color: var(--a3-accent); }
-.a3-list--no li::before { content: '✕'; color: var(--a3-warn); }
-.a3-list--dash li::before { content: '—'; color: var(--a3-muted); }
+.a3-list--yes li::before { content: '+'; color: var(--a3-accent-text); font-weight: 600; }
+.a3-list--no li::before { content: '–'; color: var(--a3-muted); font-weight: 600; }
+.a3-list--dash li::before { content: '–'; color: var(--a3-muted); }
 
 /* ---------- Accordion ---------- */
 
 .a3-acc { border-top: 1px solid var(--a3-line); }
-
 .a3-acc details { border-bottom: 1px solid var(--a3-line); }
 
 .a3-acc summary {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
   gap: 2rem;
-  padding: 2rem 0;
+  padding: 2.2rem 0;
   cursor: pointer;
   list-style: none;
   font-weight: 600;
-  font-size: 1.7rem;
+  font-size: 1.8rem;
+  letter-spacing: -0.01em;
 }
 
 .a3-acc summary::-webkit-details-marker { display: none; }
 
 .a3-acc summary::after {
   content: '+';
-  font-size: 2.4rem;
+  font-weight: 400;
+  font-size: 2.2rem;
   line-height: 1;
-  color: var(--a3-accent);
-  transition: transform 0.3s var(--a3-ease);
+  color: var(--a3-muted);
+  transition: transform 0.25s var(--a3-ease);
 }
 
 .a3-acc details[open] summary::after { transform: rotate(45deg); }
 
-.a3-acc__body {
-  padding: 0 0 2.4rem;
-  color: var(--a3-muted);
-  line-height: 1.65;
-  max-width: 70ch;
-}
-
+.a3-acc__body { padding: 0 0 2.6rem; color: var(--a3-muted); line-height: 1.65; max-width: 66ch; }
 .a3-acc__body p:first-child { margin-top: 0; }
+.a3-acc__body a { color: var(--a3-text); }
 
 /* ---------- Forms ---------- */
 
-.a3-field { display: grid; gap: 0.6rem; }
+.a3-field { display: grid; gap: 0.8rem; }
 
-.a3-field label {
-  font-size: 1.3rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--a3-muted);
-}
+.a3-field label { font-size: 1.4rem; font-weight: 500; color: var(--a3-muted); }
 
 .a3-input,
 .a3-select,
 .a3-textarea {
   width: 100%;
-  min-height: 4.8rem;
-  padding: 1rem 1.4rem;
-  background: var(--a3-surface-2);
+  min-height: 5.2rem;
+  padding: 1.2rem 1.4rem;
+  background: var(--a3-bg);
   color: var(--a3-text);
   border: 1px solid var(--a3-line-strong);
   border-radius: var(--a3-radius);
@@ -424,108 +456,86 @@ a.a3-card:hover { border-color: var(--a3-line-strong); transform: translateY(-3p
 .a3-input:focus,
 .a3-select:focus,
 .a3-textarea:focus {
-  outline: 2px solid var(--a3-accent);
+  outline: 2px solid var(--a3-accent-text);
   outline-offset: 1px;
   border-color: transparent;
 }
 
 .a3-notice {
-  padding: 1.4rem 1.8rem;
-  border-left: 3px solid var(--a3-accent);
-  background: var(--a3-surface-2);
-  border-radius: 0 var(--a3-radius) var(--a3-radius) 0;
+  padding: 1.6rem 0 1.6rem 2rem;
+  border-left: 2px solid var(--a3-accent-text);
   line-height: 1.55;
 }
 
 .a3-notice--warn { border-left-color: var(--a3-warn); }
 
-/* Only visible in the theme editor: prompts for missing setup. */
+/* Theme editor only: prompts for missing setup. */
 .a3-setup {
   padding: 1.6rem 2rem;
   border: 1px dashed var(--a3-warn);
   color: var(--a3-warn);
-  border-radius: var(--a3-radius);
   font-size: 1.4rem;
 }
 
-/* ---------- Reveal (complements Dawn's scroll-trigger) ---------- */
+/* ---------- Reveal: a quiet fade, media only ---------- */
 
-.a3-reveal {
+.a3-reveal { opacity: 1; }
+
+.js .a3-media.a3-reveal,
+.js .a3-reveal.a3-media {
   opacity: 0;
-  transform: translateY(2.4rem);
-  transition: opacity 0.9s var(--a3-ease), transform 0.9s var(--a3-ease);
-  transition-delay: calc(var(--a3-i, 0) * 80ms);
+  transition: opacity 0.9s var(--a3-ease);
 }
 
-.a3-reveal.is-in {
-  opacity: 1;
-  transform: none;
-}
+.js .a3-media.a3-reveal.is-in { opacity: 1; }
 
-.no-js .a3-reveal,
-.shopify-design-mode .a3-reveal { opacity: 1; transform: none; }
+.shopify-design-mode .a3-reveal { opacity: 1 !important; }
 
 @media (prefers-reduced-motion: reduce) {
-  .a3-reveal { opacity: 1; transform: none; transition: none; }
-  .a3-btn, .a3-card { transition: none; }
+  .js .a3-media.a3-reveal { opacity: 1; transition: none; }
+  .a3-btn { transition: none; }
 }
 
-/* ---------- Dawn overrides for the dark system ---------- */
-
-body { background: var(--a3-bg); }
-
-.header-wrapper { backdrop-filter: saturate(140%) blur(10px); }
-
-.header__menu-item,
-.footer-block__heading,
-.announcement-bar__message {
-  letter-spacing: 0.06em;
-}
-
-.announcement-bar__message { font-size: 1.3rem; }
-
-.button:not(.button--secondary):not(.button--tertiary) {
-  font-family: var(--a3-display);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-size: 1.6rem;
-}
-
-.product__title h1 { font-size: clamp(3.4rem, 2.6rem + 2vw, 5.2rem); }
-
-.price-item--regular { font-weight: 600; }
-
-@media screen and (max-width: 749px) {
-  .a3-section { padding-block: var(--a3-pad-top-m, 5.6rem) var(--a3-pad-bottom-m, 5.6rem); }
-  .a3-head { margin-bottom: 2.8rem; }
-}
-
-/* ---------- Value comparison ---------- */
+/* ---------- Price comparison ---------- */
 
 .a3-compare {
   display: grid;
   gap: 0.6rem;
-  padding: 1.4rem 1.6rem;
-  border: 1px solid var(--a3-line);
-  border-radius: var(--a3-radius);
-  background: rgba(11, 13, 12, 0.4);
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--a3-line);
+  font-variant-numeric: tabular-nums;
 }
 
-.a3-compare__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-}
-
+.a3-compare__row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .a3-compare__label { color: var(--a3-muted); font-size: 1.4rem; }
+.a3-compare__price { font-weight: 600; font-size: 1.8rem; }
+.a3-compare__row:first-child .a3-compare__price { color: var(--a3-accent-text); }
+.a3-compare__note { margin: 0.4rem 0 0; }
 
-.a3-compare__price {
-  font-family: var(--a3-display);
-  font-weight: 700;
-  font-size: 2.2rem;
-  letter-spacing: 0.02em;
+/* ---------- Dawn overrides ---------- */
+
+body { background: var(--a3-ink); }
+
+.header-wrapper { backdrop-filter: saturate(140%) blur(10px); }
+
+.header__menu-item { font-size: 1.5rem; letter-spacing: -0.005em; }
+
+.announcement-bar__message { font-size: 1.3rem; letter-spacing: 0; }
+
+.button:not(.button--secondary):not(.button--tertiary) {
+  font-family: var(--a3-sans);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-transform: none;
+  font-size: 1.6rem;
 }
 
-.a3-compare__note { margin: 0.4rem 0 0; }
+.product__title h1 { font-size: clamp(3.2rem, 2.4rem + 1.8vw, 4.8rem); letter-spacing: -0.03em; }
+
+.price-item--regular { font-weight: 600; }
+
+@media screen and (max-width: 749px) {
+  .a3-section { padding-block: var(--a3-pad-top-m, 6.4rem) var(--a3-pad-bottom-m, 6.4rem); }
+  .a3-head { margin-bottom: 3.6rem; }
+  .a3-card { padding: 2.4rem; }
+}

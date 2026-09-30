@@ -3,7 +3,6 @@
     "builder": {
       "type": "a3gk-builder",
       "settings": {
-        "eyebrow": "Custom kit builder",
         "heading": "Build your kit",
         "team_link": "shopify://pages/team-orders",
         "returns_link": "/policies/refund-policy",
@@ -74,12 +73,11 @@
       ],
       "settings": {
         "anchor": "",
-        "eyebrow": "Builder questions",
         "heading": "Before you design",
         "schema": true,
-        "surface": true,
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "tone": "raised"
       }
     }
   },

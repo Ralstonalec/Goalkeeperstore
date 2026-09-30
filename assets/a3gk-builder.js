@@ -947,9 +947,9 @@
             <tbody>${lines
               .map((l) => `<tr><th scope="row">${esc(l.label)}</th><td>${l.price == null ? '—' : fmt(l.price)}</td></tr>`)
               .join('')}</tbody>
-            <tfoot><tr><th scope="row">Total</th><td>${known ? fmt(total) : 'Not yet available'}</td></tr></tfoot>
+            <tfoot><tr><th scope="row">Total</th><td class="${known ? '' : 'is-unknown'}">${known ? fmt(total) : 'Not available yet'}</td></tr></tfoot>
           </table>
-          <p class="a3b-lead"><strong>Lead time:</strong> ${esc(this.cfg.leadTime || 'To be confirmed — ordering opens once it is.')}</p>
+          <p class="a3b-lead"><strong>Lead time:</strong> ${esc(this.cfg.leadTime || 'Not confirmed yet. Ordering opens once it is.')}</p>
           ${this.cfg.customNote ? `<p class="a3-small">${esc(this.cfg.customNote)} ${this.cfg.returnsUrl ? `<a href="${esc(this.cfg.returnsUrl)}">Returns policy</a>.` : ''}</p>` : ''}
           ${missing.length ? `<ul class="a3-list a3-list--dash a3b-missing">${missing.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>` : ''}
           <label class="a3b-ack"><input type="checkbox" data-ack ${canOrder ? '' : 'disabled'}> I've checked my design, sizes and the lead time above.</label>

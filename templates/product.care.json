@@ -182,7 +182,6 @@
         "q3"
       ],
       "settings": {
-        "eyebrow": "Care questions",
         "heading": "Before you buy",
         "schema": true,
         "padding_top": 48,
@@ -204,13 +203,12 @@
         "link"
       ],
       "settings": {
-        "eyebrow": "Buying more than one?",
         "heading": "Bundles are cheaper \u2014 and we show the maths.",
         "text": "<p>Every bundle lists the individual prices next to the bundle price, so you can check the saving yourself.</p>",
         "layout": "split",
-        "surface": true,
         "padding_top": 64,
-        "padding_bottom": 64
+        "padding_bottom": 64,
+        "tone": "raised"
       }
     }
   },
