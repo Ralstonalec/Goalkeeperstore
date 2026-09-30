@@ -56,6 +56,14 @@ tools/       validate_templates.py: checks templates against section schemas
 
 With the Shopify CLI instead: `shopify theme dev` / `shopify theme push`. The `.shopifyignore` file keeps `docs/`, `content/` and `tools/` out of the upload.
 
+## Design preview on Vercel
+
+Vercel can't run the store: Liquid, cart, checkout and accounts only work on Shopify. This repo *does* include a static **design preview** for Vercel. It shows the homepage, builder, bundles, size guide, team orders, about, FAQ, guides and policy drafts, rendered from the same theme files. Forms and checkout are disabled, and a banner says it's a preview.
+
+- Import the repo in Vercel. `vercel.json` sets everything: install `npm install`, build `npm run build:preview`, output `dist/`.
+- Local: `npm install && npm run build:preview`, then serve `dist/`.
+- Each push to `main` redeploys the preview. The Shopify theme is unaffected, because `.shopifyignore` keeps these files out of the theme.
+
 ## Before pushing changes
 
 ```sh

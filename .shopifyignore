@@ -2,3 +2,8 @@ docs/*
 content/*
 tools/*
 README.md
+package.json
+package-lock.json
+vercel.json
+node_modules/*
+dist/*

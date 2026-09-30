@@ -113,7 +113,8 @@
     justify-content: flex-start;
     align-items: flex-end;
     text-align: right;
-    padding: 12rem var(--a3-gutter) 2rem;
+    /* Extra right padding: the parallax layer is scaled up ~8%. */
+    padding: 12rem calc(var(--a3-gutter) + 6vw) 2rem var(--a3-gutter);
   }
 
   .a3-hero__media .a3-shot__tag { align-self: flex-end; }

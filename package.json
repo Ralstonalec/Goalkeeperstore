@@ -1,0 +1,17 @@
+{
+  "name": "a3gk-theme",
+  "private": true,
+  "description": "A3GK Shopify theme. The build script only produces a static design preview for Vercel; the real store runs on Shopify.",
+  "type": "module",
+  "scripts": {
+    "build:preview": "node tools/preview/build.mjs",
+    "validate": "python3 tools/validate_templates.py"
+  },
+  "devDependencies": {
+    "liquidjs": "^10.29.0",
+    "marked": "^14.1.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
