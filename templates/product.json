@@ -36,10 +36,9 @@
           }
         },
         "tagline": {
-          "type": "text",
+          "type": "custom_liquid",
           "settings": {
-            "text": "{{ product.metafields.a3gk.tagline.value }}",
-            "text_style": "subtitle"
+            "custom_liquid": "{%- if product.metafields.a3gk.tagline != blank -%}<p class=\"product__text subtitle\">{{ product.metafields.a3gk.tagline.value | escape }}</p>{%- endif -%}"
           }
         }
       },
