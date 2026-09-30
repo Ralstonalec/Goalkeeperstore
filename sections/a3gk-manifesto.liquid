@@ -1,0 +1,97 @@
+{%- comment -%}
+  Manifesto: a stack of huge lines that light up one by one as they scroll
+  through the middle of the screen. Uses CSS scroll-driven animation where
+  supported; everywhere else the lines are simply shown.
+{%- endcomment -%}
+<section class="a3-manifesto a3-tone--{{ section.settings.tone }}" aria-label="{{ section.settings.label | escape }}">
+  <div class="a3-wrap">
+    <ol class="a3-manifesto__list" role="list">
+      {%- for block in section.blocks -%}
+        <li class="a3-manifesto__line" {{ block.shopify_attributes }}>
+          <span class="a3-manifesto__n" aria-hidden="true">{{ forloop.index | prepend: '0' }}</span>
+          <span class="a3-manifesto__t">{{ block.settings.text | escape }}</span>
+        </li>
+      {%- endfor -%}
+    </ol>
+    {%- if section.settings.footnote != blank -%}
+      <p class="a3-manifesto__foot">{{ section.settings.footnote | escape }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-manifesto {
+    padding-block: clamp(9.6rem, 12vw, 16rem);
+    background: var(--a3-bg);
+    color: var(--a3-text);
+  }
+  .a3-manifesto__list { list-style: none; margin: 0; padding: 0; display: grid; gap: clamp(1.2rem, 2vw, 2.4rem); }
+  .a3-manifesto__line {
+    display: grid;
+    grid-template-columns: 5.6rem 1fr;
+    align-items: baseline;
+    gap: 1.6rem;
+    padding-bottom: clamp(1.2rem, 2vw, 2.4rem);
+    border-bottom: 1px solid var(--a3-line);
+  }
+  .a3-manifesto__n { font-size: 1.2rem; font-weight: 600; letter-spacing: 0.16em; color: var(--a3-accent, #3be37f); }
+  .a3-manifesto__t {
+    font-size: clamp(3.6rem, 1.6rem + 5vw, 10rem);
+    font-weight: 800;
+    font-stretch: 125%;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+    text-transform: uppercase;
+  }
+  .a3-manifesto__foot { margin: 4.8rem 0 0 7.2rem; font-size: 1.6rem; color: var(--a3-muted); }
+
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .a3-manifesto__t {
+        animation: a3-manifesto-lit linear both;
+        animation-timeline: view();
+        animation-range: entry 10% cover 45%;
+      }
+    }
+  }
+  @keyframes a3-manifesto-lit {
+    from { opacity: 0.14; transform: translateX(-2rem); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media screen and (max-width: 749px) {
+    .a3-manifesto__line { grid-template-columns: 3.2rem 1fr; gap: 0.8rem; }
+    .a3-manifesto__foot { margin-left: 4rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK manifesto",
+  "tag": "div",
+  "class": "a3gk-manifesto-section",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Accessible label", "default": "What we do" },
+    { "type": "text", "id": "footnote", "label": "Footnote" },
+    {
+      "type": "select",
+      "id": "tone",
+      "label": "Tone",
+      "options": [
+        { "value": "ink", "label": "Ink" },
+        { "value": "raised", "label": "Raised" },
+        { "value": "paper", "label": "Paper" }
+      ],
+      "default": "ink"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "line",
+      "name": "Line",
+      "settings": [{ "type": "text", "id": "text", "label": "Line", "default": "Curate hard." }]
+    }
+  ],
+  "presets": [{ "name": "A3GK manifesto" }]
+}
+{% endschema %}

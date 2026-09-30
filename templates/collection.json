@@ -1,11 +1,10 @@
 {
   "sections": {
-    "banner": {
-      "type": "main-collection-banner",
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
-        "show_collection_description": true,
-        "show_collection_image": false,
-        "color_scheme": "scheme-1"
+        "art": "lines",
+        "size": "compact"
       }
     },
     "product-grid": {
@@ -30,7 +29,7 @@
     }
   },
   "order": [
-    "banner",
+    "hero",
     "product-grid"
   ]
 }

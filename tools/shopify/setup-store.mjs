@@ -46,6 +46,7 @@ const PAGES = [
   { handle: 'feedback', title: 'Feedback', template: 'feedback' },
   { handle: 'you-told-us', title: 'You told us', template: 'you-told-us' },
   { handle: 'about', title: 'About', template: 'about' },
+  { handle: 'mission', title: 'Our mission', template: 'mission' },
   { handle: 'contact', title: 'Contact', template: 'contact' },
   { handle: 'faq', title: 'FAQ', template: 'faq' },
 ];
@@ -85,10 +86,11 @@ const MENUS = [
     title: 'Main menu',
     items: [
       ['Glove care', 'collection', 'glove-care'],
-      ['Kit builder', 'page', 'builder'],
+      ['Kit designer', 'page', 'builder'],
       ['Tape & socks', 'collection', 'tape-socks'],
       ['Protection', 'collection', 'protection'],
       ['Bundles', 'page', 'bundles'],
+      ['Mission', 'page', 'mission'],
       ['Guides', 'blog', 'guides'],
       ['Team orders', 'page', 'team-orders'],
     ],
@@ -122,6 +124,7 @@ const MENUS = [
     title: 'Learn',
     items: [
       ['About', 'page', 'about'],
+      ['Our mission', 'page', 'mission'],
       ['Guides', 'blog', 'guides'],
       ['You told us', 'page', 'you-told-us'],
       ['Feedback', 'page', 'feedback'],

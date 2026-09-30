@@ -4,17 +4,14 @@
  */
 {
   "sections": {
-    "intro": {
-      "type": "a3gk-statement",
-      "blocks": {},
-      "block_order": [],
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
+        "kicker": "Team & club orders",
+        "art": "render",
+        "render": "kit",
         "heading": "One keeper or the whole academy.",
-        "text": "<p>Custom padded kit, glove care and tape for clubs, academies and schools. Volume pricing, one point of contact, and lead times we'll actually hit.</p>",
-        "layout": "split",
-        "padding_top": 96,
-        "padding_bottom": 48,
-        "tone": "ink"
+        "text": "<p>Custom padded kit, glove care and tape for clubs, academies and schools. Volume pricing, one point of contact, and lead times we'll actually hit.</p>"
       }
     },
     "how": {
@@ -169,7 +166,7 @@
     }
   },
   "order": [
-    "intro",
+    "hero",
     "how",
     "tiers",
     "form",

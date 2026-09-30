@@ -4,6 +4,16 @@
  */
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "FAQ",
+        "heading": "Straight answers.",
+        "text": "<p>Sizing, care, shipping, custom kit and returns. If your question isn't here, <a href=\"/pages/contact\">ask us</a>.</p>",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "sizing": {
       "type": "a3gk-faq",
       "blocks": {
@@ -161,6 +171,7 @@
     }
   },
   "order": [
+    "hero",
     "sizing",
     "care",
     "shipping",

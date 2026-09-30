@@ -1,0 +1,184 @@
+{
+  "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "The mission",
+        "heading": "Keepers first. Not an afterthought.",
+        "text": "<p>A specialist goalkeeper store, built by someone who knows keepers and actually listens to them. Quality over price, at prices that are fair. If a product isn't good enough to recommend, we don't sell it.</p>",
+        "art": "scene",
+        "size": "tall",
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Tell us what to fix",
+        "button_2_link": "/pages/feedback"
+      }
+    },
+    "manifesto": {
+      "type": "a3gk-manifesto",
+      "blocks": {
+        "l0": {
+          "type": "line",
+          "settings": {
+            "text": "Curate hard."
+          }
+        },
+        "l1": {
+          "type": "line",
+          "settings": {
+            "text": "Say what isn't good."
+          }
+        },
+        "l2": {
+          "type": "line",
+          "settings": {
+            "text": "Show the maths."
+          }
+        },
+        "l3": {
+          "type": "line",
+          "settings": {
+            "text": "Show the real lead time."
+          }
+        },
+        "l4": {
+          "type": "line",
+          "settings": {
+            "text": "Listen. Then change things."
+          }
+        }
+      },
+      "block_order": [
+        "l0",
+        "l1",
+        "l2",
+        "l3",
+        "l4"
+      ],
+      "settings": {
+        "footnote": "This is practice, not a slogan."
+      }
+    },
+    "principles": {
+      "type": "a3gk-statement",
+      "blocks": {
+        "p0": {
+          "type": "point",
+          "settings": {
+            "title": "If it isn't good enough to recommend, we don't sell it.",
+            "text": "<p>A small range, only for keepers. No budget filler. Every product is sampled and used before it goes on sale.</p>"
+          }
+        },
+        "p1": {
+          "type": "point",
+          "settings": {
+            "title": "Own brand where we can beat the big names fairly.",
+            "text": "<p>Glove care, tape and socks: the things you buy again and again. Made to our spec and priced for repeat buying, not for margin.</p>"
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "title": "Honesty over hype.",
+            "text": "<p>Product takes, sizing, care advice, lead times and bundle maths are all straight. Every product page says who it isn't for.</p>"
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "title": "Fair prices that don't move.",
+            "text": "<p>No hidden fees, no surprise shipping, no fake “was / now” discounts on our own products.</p>"
+          }
+        },
+        "p4": {
+          "type": "point",
+          "settings": {
+            "title": "Feedback that's real.",
+            "text": "<p>We ask short, specific questions after delivery, every return asks why, and changes you caused go on the <a href=\"/pages/you-told-us\">changes log</a>.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "p0",
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "heading": "What we hold ourselves to.",
+        "text": "",
+        "layout": "split",
+        "padding_top": 112,
+        "padding_bottom": 112,
+        "tone": "paper"
+      }
+    },
+    "roadmap": {
+      "type": "a3gk-steps",
+      "blocks": {
+        "s0": {
+          "type": "step",
+          "settings": {
+            "label": "Now",
+            "title": "Care, tape, socks and custom kit",
+            "text": "<p>Our own glove care, tape and grip socks. Custom padded kit from the designer. Gloves we stock from brands that have earned it.</p>",
+            "current": true
+          }
+        },
+        "s1": {
+          "type": "step",
+          "settings": {
+            "label": "Next",
+            "title": "Protection and a kit bag",
+            "text": "<p>Own-brand protection and a bag, only after samples pass a real keeper test.</p>",
+            "current": false
+          }
+        },
+        "s2": {
+          "type": "step",
+          "settings": {
+            "label": "One day",
+            "title": "Our own gloves",
+            "text": "<p>When we find a manufacturer who can actually do them right, and our samples hold up against pro references. Not before. Slow on purpose.</p>",
+            "current": false
+          }
+        }
+      },
+      "block_order": [
+        "s0",
+        "s1",
+        "s2"
+      ],
+      "settings": {
+        "anchor": "",
+        "heading": "Where we're going.",
+        "text": "",
+        "footnote": "No dates on the gloves. We'll tell you when they're ready, not before.",
+        "padding_top": 112,
+        "padding_bottom": 112,
+        "tone": "ink"
+      }
+    },
+    "feedback": {
+      "type": "a3gk-feedback-log",
+      "settings": {
+        "heading": "You told us. We changed it.",
+        "limit": 3,
+        "cta_label": "Tell us something",
+        "cta_link": "/pages/feedback",
+        "all_label": "See every change",
+        "padding_top": 96,
+        "padding_bottom": 112,
+        "all_link": "/pages/you-told-us"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "manifesto",
+    "principles",
+    "roadmap",
+    "feedback"
+  ]
+}

@@ -132,7 +132,7 @@ const guideCards = (limit = 99) => `
     </div>
   </section>`;
 
-async function renderSections(template) {
+async function renderSections(template, title = '') {
   let html = '';
   for (const id of template.order) {
     const sec = template.sections[id];
@@ -149,10 +149,17 @@ async function renderSections(template) {
       return { id: bid, type: b.type, settings: withDefaults(bdefs[b.type]?.settings, b.settings), shopify_attributes: '' };
     });
     const section = { id, settings: withDefaults(schema.settings, sec.settings), blocks };
+    // AI design runs from this same Vercel project (api/design.js). Only switch
+    // it on when the key is configured, so the preview never shows a dead feature.
+    if (sec.type === 'a3gk-builder' && !section.settings.ai_endpoint && (process.env.ANTHROPIC_API_KEY || process.env.A3GK_AI_PREVIEW)) {
+      section.settings.ai_endpoint = '/api/design';
+    }
     html += await engine.parseAndRender(src, {
       section,
       request: { design_mode: false, path: '/' },
       template: { name: 'page' },
+      page: { title },
+      page_title: title,
       shop: { money_format: '${{amount}}' },
       routes: { cart_url: '/cart', cart_add_url: '/cart/add', account_login_url: '/account/login', root_url: '/' },
       form: {},
@@ -172,8 +179,9 @@ const WORDMARK_CSS = styles.splice(0).join('');
 
 const NAV = [
   ['Glove care', '/collections/glove-care'],
-  ['Kit builder', '/pages/builder'],
+  ['Kit designer', '/pages/builder'],
   ['Bundles', '/pages/bundles'],
+  ['Mission', '/pages/mission'],
   ['Size guide', '/pages/size-guide'],
   ['Guides', '/blogs/guides'],
   ['Team orders', '/pages/team-orders'],
@@ -201,6 +209,7 @@ function page(title, body, description = '') {
   .visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .pv-bar{background:#eeebe3;color:#121310;text-align:center;font-size:1.3rem;padding:.8rem 1.6rem;font-weight:500}
   .pv-announce{background:#000;text-align:center;font-size:1.3rem;padding:.8rem 1.6rem;color:#97948b}
+  :root{--a3b-offset:6.5rem}
   .pv-header{position:sticky;top:0;z-index:20;background:rgba(14,15,13,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(237,239,236,.12)}
   .pv-header__in{display:flex;align-items:center;justify-content:space-between;gap:2rem;max-width:136rem;margin:0 auto;padding:1.8rem clamp(1.6rem,4vw,5.6rem)}
   .pv-logo{display:block;color:#eeebe3;text-decoration:none}.pv-logo .a3-logo{height:2.8rem}
@@ -239,9 +248,9 @@ ${css}
 <main id="MainContent">${body}</main>
 <footer class="pv-footer"><div class="pv-footer__in">
   <div><h4>A3GK</h4><p class="a3-small">Goalkeepers only. If it isn't good enough to recommend, we don't sell it.</p></div>
-  <div><h4>Shop</h4><ul><li><a href="/collections/glove-care">Glove care</a></li><li><a href="/collections/tape-socks">Tape &amp; socks</a></li><li><a href="/collections/protection">Protection</a></li><li><a href="/pages/bundles">Bundles</a></li><li><a href="/pages/builder">Kit builder</a></li><li><a href="/collections/gloves">Gloves</a></li></ul></div>
+  <div><h4>Shop</h4><ul><li><a href="/collections/glove-care">Glove care</a></li><li><a href="/collections/tape-socks">Tape &amp; socks</a></li><li><a href="/collections/protection">Protection</a></li><li><a href="/pages/bundles">Bundles</a></li><li><a href="/pages/builder">Kit designer</a></li><li><a href="/collections/gloves">Gloves</a></li></ul></div>
   <div><h4>Help</h4><ul><li><a href="/pages/size-guide">Size guide</a></li><li><a href="/policies/shipping-policy">Shipping</a></li><li><a href="/policies/refund-policy">Returns</a></li><li><a href="/pages/faq">FAQ</a></li><li><a href="/pages/contact">Contact</a></li><li><a href="/pages/team-orders">Team orders</a></li></ul></div>
-  <div><h4>Learn</h4><ul><li><a href="/pages/about">About</a></li><li><a href="/blogs/guides">Guides</a></li><li><a href="/pages/you-told-us">You told us</a></li><li><a href="/pages/feedback">Feedback</a></li></ul></div>
+  <div><h4>Learn</h4><ul><li><a href="/pages/about">About</a></li><li><a href="/pages/mission">Our mission</a></li><li><a href="/blogs/guides">Guides</a></li><li><a href="/pages/you-told-us">You told us</a></li><li><a href="/pages/feedback">Feedback</a></li></ul></div>
 </div></footer>
 ${WORDMARK}
 <script src="/assets/a3gk.js" defer></script>
@@ -275,22 +284,22 @@ const routes = [
   ['/pages/feedback', 'page.feedback', 'Feedback'],
   ['/pages/you-told-us', 'page.you-told-us', 'You told us'],
   ['/pages/about', 'page.about', 'About'],
+  ['/pages/mission', 'page.mission', 'Our mission'],
   ['/pages/contact', 'page.contact', 'Contact'],
   ['/pages/faq', 'page.faq', 'FAQ'],
   ['/collections/gloves', 'collection.gloves', 'Gloves'],
 ];
 
 for (const [route, tpl, title] of routes) {
-  write(route, page(title, await renderSections(readTemplate(tpl)), title));
+  write(route, page(title, await renderSections(readTemplate(tpl), title), title));
 }
+
+const pageHero = (settings, title = '') =>
+  renderSections({ sections: { hero: { type: 'a3gk-page-hero', settings } }, order: ['hero'] }, title);
 
 // Collections that only exist once products are added in Shopify.
 const soon = (heading, text) =>
-  `<section class="a3-section" style="--a3-pad-top:120px;--a3-pad-bottom:120px"><div class="a3-wrap a3-wrap--narrow">
-    <span class="a3-badge">Coming soon</span>
-    <h1 style="font-size:clamp(3.6rem,2.4rem + 3vw,6.4rem);margin:1.6rem 0 2.4rem">${heading}</h1>
-    <p class="a3-lede">${text}</p>
-    <p><a class="a3-link" href="/pages/builder">Try the kit builder</a></p></div></section>`;
+  pageHero({ kicker: 'Coming soon', heading, text: `<p>${text}</p>`, art: 'lines', size: 'tall', button_label: 'Design your kit', button_link: '/pages/builder' }, heading);
 for (const [handle, name] of [
   ['glove-care', 'Glove care'],
   ['tape-socks', 'Tape & socks'],
@@ -299,17 +308,22 @@ for (const [handle, name] of [
   ['bundles', 'Bundles'],
   ['all', 'Shop'],
 ]) {
-  write(`/collections/${handle}`, page(name, soon(name, 'Products go live here once they have passed testing and are in stock.'), name));
+  write(`/collections/${handle}`, page(name, await soon(name, 'Products go live here once they have passed testing and are in stock.'), name));
 }
-write('/cart', page('Cart', soon('Cart', 'The cart and checkout run on the live Shopify store. This is a design preview.'), 'Cart'));
+write('/cart', page('Cart', await soon('Cart', 'The cart and checkout run on the live Shopify store. This is a design preview.'), 'Cart'));
 
 // Guides blog
 write(
   '/blogs/guides',
-  page('Keeper guides', guideCards() , 'Goalkeeper guides: glove care, choosing gloves, padding, sizing.')
+  page(
+    'Keeper guides',
+    (await pageHero({ kicker: 'Guides', heading: 'Keeper guides', text: '<p>Care, fit, padding and what’s actually worth buying. Written by keepers.</p>', art: 'lines', size: 'compact' })) + guideCards(),
+    'Goalkeeper guides: glove care, choosing gloves, padding, sizing.'
+  )
 );
 for (const g of guides) {
-  write(`/blogs/guides/${g.handle}`, page(g.title, `<article class="pv-prose"><h1>${g.title}</h1>${g.body}</article>`, g.seo_description || ''));
+  const hero = await pageHero({ kicker: 'Guide', heading: g.title, text: g.seo_description ? `<p>${g.seo_description}</p>` : '', art: 'lines', size: 'medium' });
+  write(`/blogs/guides/${g.handle}`, page(g.title, hero + `<article class="pv-prose">${g.body.replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')}</article>`, g.seo_description || ''));
 }
 
 // Policies (drafts)
@@ -322,9 +336,6 @@ for (const [handle, file] of [
   write(`/policies/${handle}`, page(handle.replace('-', ' '), `<article class="pv-prose">${marked.parse(md)}</article>`));
 }
 
-fs.writeFileSync(
-  path.join(OUT, '404.html'),
-  page('Not found', soon('Not here', 'That page lives on the live Shopify store, or doesn\'t exist yet.'))
-);
+fs.writeFileSync(path.join(OUT, '404.html'), page('Not found', await renderSections(readTemplate('404'), 'Not found')));
 
 console.log(`A3GK preview built → ${path.relative(ROOT, OUT)}/`);

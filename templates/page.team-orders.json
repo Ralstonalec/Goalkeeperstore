@@ -1,16 +1,13 @@
 {
   "sections": {
-    "intro": {
-      "type": "a3gk-statement",
-      "blocks": {},
-      "block_order": [],
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
+        "kicker": "Team & club orders",
+        "art": "render",
+        "render": "kit",
         "heading": "One keeper or the whole academy.",
-        "text": "<p>Custom padded kit, glove care and tape for clubs, academies and schools. Volume pricing, one point of contact, and lead times we'll actually hit.</p>",
-        "layout": "split",
-        "padding_top": 96,
-        "padding_bottom": 48,
-        "tone": "ink"
+        "text": "<p>Custom padded kit, glove care and tape for clubs, academies and schools. Volume pricing, one point of contact, and lead times we'll actually hit.</p>"
       }
     },
     "how": {
@@ -68,14 +65,14 @@
           "type": "tier",
           "settings": {
             "label": "Tier 1",
-            "title": "5\u20139 pieces"
+            "title": "5–9 pieces"
           }
         },
         "s1": {
           "type": "tier",
           "settings": {
             "label": "Tier 2",
-            "title": "10\u201324 pieces"
+            "title": "10–24 pieces"
           }
         },
         "s2": {
@@ -94,7 +91,7 @@
       "settings": {
         "anchor": "",
         "heading": "The more keepers, the less each",
-        "text": "<p>Pricing depends on garment and quantity. Tiers below are confirmed once our manufacturer pricing is final \u2014 until then, ask and we'll quote.</p>",
+        "text": "<p>Pricing depends on garment and quantity. Tiers below are confirmed once our manufacturer pricing is final — until then, ask and we'll quote.</p>",
         "footnote": "Tiers apply per order, across mixed sizes. Names and numbers can differ per piece.",
         "padding_top": 80,
         "padding_bottom": 80,
@@ -137,7 +134,7 @@
           "type": "qa",
           "settings": {
             "question": "How do we pay?",
-            "answer": "<p>Through normal Shopify checkout \u2014 card, Shop Pay and the usual methods. We'll send a checkout link for the agreed quote.</p>"
+            "answer": "<p>Through normal Shopify checkout — card, Shop Pay and the usual methods. We'll send a checkout link for the agreed quote.</p>"
           }
         },
         "q3": {
@@ -165,7 +162,7 @@
     }
   },
   "order": [
-    "intro",
+    "hero",
     "how",
     "tiers",
     "form",

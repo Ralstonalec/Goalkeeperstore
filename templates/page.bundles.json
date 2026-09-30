@@ -1,16 +1,13 @@
 {
   "sections": {
-    "intro": {
-      "type": "a3gk-statement",
-      "blocks": {},
-      "block_order": [],
+    "hero": {
+      "type": "a3gk-page-hero",
       "settings": {
+        "kicker": "Bundles",
+        "art": "render",
+        "render": "bundle",
         "heading": "Buy together, pay less. The maths is right there.",
-        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices \u2014 just today's prices, added up.</p>",
-        "layout": "stack",
-        "padding_top": 96,
-        "padding_bottom": 24,
-        "tone": "ink"
+        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices — just today's prices, added up.</p>"
       }
     },
     "starter": {
@@ -45,7 +42,7 @@
         "anchor": "refill",
         "heading": "Refill",
         "who": "Anyone already using our care line.",
-        "why": "<p>Just the two you go through fastest \u2014 wash and spray. Built for one-click reorder and refill reminders.</p>",
+        "why": "<p>Just the two you go through fastest — wash and spray. Built for one-click reorder and refill reminders.</p>",
         "shot": "Wash and spray bottles side by side, clean studio shot.",
         "padding_top": 80,
         "padding_bottom": 80,
@@ -94,7 +91,7 @@
       ],
       "settings": {
         "heading": "Want it in your colours?",
-        "text": "<p>Custom kit isn't a fixed bundle \u2014 build jersey and shorts or pants together in the kit builder and the full price shows before you pay.</p>",
+        "text": "<p>Custom kit isn't a fixed bundle — build jersey and shorts or pants together in the kit builder and the full price shows before you pay.</p>",
         "layout": "split",
         "padding_top": 80,
         "padding_bottom": 80,
@@ -126,7 +123,7 @@
     }
   },
   "order": [
-    "intro",
+    "hero",
     "starter",
     "matchday",
     "refill",

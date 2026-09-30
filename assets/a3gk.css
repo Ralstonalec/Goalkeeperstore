@@ -693,3 +693,133 @@ a:hover .a3-render svg,
     radial-gradient(90% 50% at 80% 0%, rgba(59, 227, 127, 0.05), transparent 60%),
     var(--a3-bg);
 }
+
+/* ======================================================================
+   Dawn skin: product, collection, cart, search, blog, article, account.
+   Brings Shopify's built-in templates into the same cinematic system.
+   ====================================================================== */
+
+/* Page hero replaces Dawn's own titles where both would show. */
+.a3gk-page-hero-section + .shopify-section .main-page-title,
+.a3gk-page-hero-section + .shopify-section .template-search__header,
+.a3gk-page-hero-section + .shopify-section .title-wrapper--no-top-margin > .title,
+.a3gk-page-hero-section + .shopify-section .blog__title { display: none; }
+
+/* Headings */
+.main-page-title,
+.collection-hero__title,
+.title--primary,
+.blog__title,
+.article-template__title,
+.customer h1 {
+  font-family: var(--a3-sans);
+  font-weight: 800;
+  font-stretch: 118%;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+.product__title h1 { font-weight: 800; font-stretch: 118%; letter-spacing: -0.035em; line-height: 0.95; }
+.product__text.caption-with-letter-spacing,
+.card__information .caption-with-letter-spacing {
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--a3-muted);
+}
+
+/* Product page */
+.product__info-wrapper { padding-top: 1.6rem; }
+.product .price { font-size: 2.2rem; letter-spacing: -0.02em; }
+.product-form__input .form__label { font-size: 1.2rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--a3-muted); }
+.product-form__input input[type='radio'] + label {
+  border-radius: var(--a3-radius, 4px);
+  border-color: var(--a3-line-strong);
+  font-weight: 500;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.product-form__input input[type='radio']:checked + label { background: #eeebe3; color: #0e0f0d; border-color: #eeebe3; }
+.product__media-item .media,
+.product-media-container {
+  background: radial-gradient(60% 60% at 50% 32%, #2d322c 0%, #171a16 55%, #0b0c0a 100%);
+  border-radius: var(--a3-radius, 4px);
+  overflow: hidden;
+}
+.product__description { color: rgba(238, 235, 227, 0.82); line-height: 1.65; }
+.product-form__submit { min-height: 5.6rem; }
+.quantity { border-radius: var(--a3-radius, 4px); }
+
+/* Cards (collection grid, related products, search) */
+.card-wrapper .card {
+  border-radius: calc(var(--a3-radius, 4px) * 2);
+  transition: transform 0.5s var(--a3-ease), box-shadow 0.5s var(--a3-ease);
+}
+.card-wrapper:hover .card { transform: translateY(-4px); box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.8); }
+.card__inner.color-scheme-1,
+.card--standard .card__inner { background: radial-gradient(60% 60% at 50% 32%, #262a25 0%, #151714 70%); }
+.card__heading { font-size: 1.7rem; font-weight: 600; letter-spacing: -0.015em; }
+.card__heading a { text-decoration: none; }
+.card-information .price { font-weight: 600; }
+.badge { border-radius: 999px; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Collection toolbar and facets */
+.facets-container { border-bottom: 1px solid var(--a3-line); padding-bottom: 1.6rem; }
+.facets__summary,
+.facet-filters__label,
+.product-count__text { font-size: 1.3rem; letter-spacing: 0.04em; color: var(--a3-muted); }
+.collection .grid { row-gap: 4rem; }
+
+/* Cart */
+.cart__items { border-bottom-color: var(--a3-line); }
+.cart-item__name { font-weight: 600; font-size: 1.7rem; letter-spacing: -0.015em; text-decoration: none; }
+.cart-item__media .cart-item__image { border-radius: var(--a3-radius, 4px); background: #171916; }
+.cart__footer .totals__total-value { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; }
+.cart__checkout-button { min-height: 5.6rem; }
+.cart__empty-text { font-weight: 800; font-stretch: 118%; letter-spacing: -0.035em; }
+.cart-drawer .drawer__inner { background: #0e0f0d; border-left: 1px solid var(--a3-line); }
+.cart-drawer .drawer__heading { font-weight: 800; font-stretch: 118%; letter-spacing: -0.03em; }
+
+/* Search */
+.search__input.field__input { border-radius: var(--a3-radius, 4px); }
+.template-search__results { margin-top: 2.4rem; }
+
+/* Blog + article */
+.blog-articles .article-card { border-radius: calc(var(--a3-radius, 4px) * 2); overflow: hidden; }
+.article-card__title { font-weight: 700; font-stretch: 112%; letter-spacing: -0.025em; }
+.article-template__content {
+  max-width: 72rem;
+  margin-inline: auto;
+  font-size: 1.8rem;
+  line-height: 1.7;
+  color: rgba(238, 235, 227, 0.88);
+}
+.article-template__content h2 { margin-top: 5.6rem; font-size: clamp(2.8rem, 2rem + 1.4vw, 3.8rem); font-stretch: 112%; letter-spacing: -0.03em; }
+.article-template__content h3 { margin-top: 3.6rem; }
+.article-template__content blockquote { margin: 3.2rem 0; padding: 0.4rem 0 0.4rem 2.4rem; border-left: 2px solid var(--a3-accent); color: #c9c6be; font-size: 2rem; }
+.article-template__content table { width: 100%; border-collapse: collapse; font-size: 1.5rem; }
+.article-template__content th,
+.article-template__content td { text-align: left; padding: 1rem; border-bottom: 1px solid var(--a3-line); }
+.article-template__hero-container { max-width: 120rem; margin-inline: auto; }
+.article-template__hero-container .article-template__hero-medium { border-radius: calc(var(--a3-radius, 4px) * 2); }
+
+/* Generic pages (policies, pages without their own template) */
+.shopify-policy__container { max-width: 76rem; padding-block: 12rem 9.6rem; }
+.shopify-policy__title h1 { font-family: var(--a3-sans); font-weight: 800; font-stretch: 118%; font-size: clamp(4rem, 2rem + 4vw, 7.2rem); letter-spacing: -0.035em; line-height: 0.95; }
+.shopify-policy__body,
+.main-page-title + .rte { font-size: 1.7rem; line-height: 1.7; color: rgba(238, 235, 227, 0.88); }
+.shopify-policy__body h2,
+.shopify-policy__body h3 { margin-top: 4rem; letter-spacing: -0.02em; }
+
+/* Accounts */
+.customer:not(.account):not(.order) { padding-block: 8rem 9.6rem; }
+.customer .field__input { border-radius: var(--a3-radius, 4px); }
+.customer button { min-height: 5.2rem; }
+
+/* Forms everywhere */
+.field__input,
+.select__select,
+.customer .field input { background: rgba(238, 235, 227, 0.03); }
+.field:after,
+.select:after { box-shadow: 0 0 0 1px var(--a3-line-strong); }
+.field__input:focus,
+.select__select:focus { box-shadow: 0 0 0 2px var(--a3-accent); }

@@ -1,5 +1,15 @@
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "FAQ",
+        "heading": "Straight answers.",
+        "text": "<p>Sizing, care, shipping, custom kit and returns. If your question isn't here, <a href=\"/pages/contact\">ask us</a>.</p>",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "sizing": {
       "type": "a3gk-faq",
       "blocks": {
@@ -38,7 +48,7 @@
           "type": "qa",
           "settings": {
             "question": "How often should I wash my gloves?",
-            "answer": "<p>After every session if you can \u2014 or at least rinse them. Dirt and sweat break down latex faster than use does.</p>"
+            "answer": "<p>After every session if you can — or at least rinse them. Dirt and sweat break down latex faster than use does.</p>"
           }
         },
         "q1": {
@@ -131,7 +141,7 @@
           "type": "qa",
           "settings": {
             "question": "Can I return something?",
-            "answer": "<p>Non-custom items can be returned or exchanged under our <a href=\"/policies/refund-policy\">returns policy</a>. We'll always ask why \u2014 it's how we get better.</p>"
+            "answer": "<p>Non-custom items can be returned or exchanged under our <a href=\"/policies/refund-policy\">returns policy</a>. We'll always ask why — it's how we get better.</p>"
           }
         },
         "q1": {
@@ -157,6 +167,7 @@
     }
   },
   "order": [
+    "hero",
     "sizing",
     "care",
     "shipping",

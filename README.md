@@ -12,7 +12,7 @@ assets/      a3gk.css (design system), a3gk.js (reveals/parallax),
 sections/    a3gk-*.liquid: all custom sections (see below). Everything else is Dawn.
 snippets/    a3gk-media (image or honest placeholder), a3gk-value-compare, a3gk-status-badge
 templates/   homepage, product (default/care/apparel/bundle/builder-base),
-             pages (builder, bundles, size guide, team orders, feedback, about, contact, FAQ),
+             pages (designer, bundles, size guide, team orders, feedback, about, mission, contact, FAQ),
              gloves collection
 config/      A3GK colour schemes and fonts
 docs/        SETUP.md (launch runbook — start here), PRODUCTS.md, SOURCING.md,
@@ -31,7 +31,9 @@ tools/       validate_templates.py: checks templates against section schemas
 | `a3gk-care-showcase` | Own-brand care line with a side-by-side price against a named big-brand equivalent |
 | `a3gk-honest-picks` | 2–4 products, each with a take plus "good for" and "not ideal for". Empty state: "Our own gloves? Not yet." |
 | `a3gk-builder-teaser` | Homepage builder promo |
-| `a3gk-builder` | **Custom kit builder**: front/back SVG preview, colours, pattern, collar and sleeves, name and number, crest, padding zones, sizes. Prices come from real variants and the lead time is shown before cart. Save, re-edit and share link. |
+| `a3gk-builder` | **3D kit designer** (three.js, drag to turn; flat front/back fallback): 16 patterns, 6 typefaces, 20-colour palette, collars, finishes, trims, name/number/motto placements, crests, padding zones, sizes. Optional **AI**: describe a vibe for three kit designs, or describe a crest. Prices come from real variants and the lead time is shown before cart. Save, re-edit and share link. |
+| `a3gk-page-hero` | Cinematic hero for every inner page. Title falls back to the page/collection/blog/article title. |
+| `a3gk-manifesto` | Huge lines that light up as they scroll past (mission page) |
 | `a3gk-feedback-log` | "Keepers tell us things. We change things." A dated changelog with an honest empty state |
 | `a3gk-bundle` | Bundle with automatic "separately vs bundle" maths from live prices |
 | `a3gk-product-details` | Honest product-page content from `a3gk.*` metafields: why, fit, specs, how-to, comparison, lead time |
@@ -63,6 +65,7 @@ Vercel can't run the store: Liquid, cart, checkout and accounts only work on Sho
 
 - Import the repo in Vercel. `vercel.json` sets everything: install `npm install`, build `npm run build:preview`, output `dist/`.
 - Local: `npm install && npm run build:preview`, then serve `dist/`.
+- `api/design.js` is the AI design function (Vercel serverless). It needs `ANTHROPIC_API_KEY` and `ALLOWED_ORIGINS`; see [docs/SETUP.md](docs/SETUP.md) §5b.
 - Each push to `main` redeploys the preview. The Shopify theme is unaffected, because `.shopifyignore` keeps these files out of the theme.
 
 ## Before pushing changes
@@ -75,4 +78,4 @@ shopify theme check                   # Shopify's linter (if you have the CLI)
 
 ## Licences
 
-Dawn is © Shopify, used under its licence (see `LICENSE.md`). Archivo is under the SIL Open Font License 1.1.
+Dawn is © Shopify, used under its licence (see `LICENSE.md`). Archivo is under the SIL Open Font License 1.1. three.js (`assets/a3gk-three.module.min.js`, r160) is © Three.js Authors under the MIT licence.

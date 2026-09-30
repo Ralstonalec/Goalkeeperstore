@@ -4,6 +4,16 @@
  */
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Contact",
+        "heading": "Talk to a keeper.",
+        "text": "<p>Sizing, care, an order or the designer. You get a reply from someone who knows the kit.</p>",
+        "art": "lines",
+        "size": "compact"
+      }
+    },
     "form": {
       "type": "a3gk-contact-form",
       "settings": {
@@ -68,6 +78,7 @@
     }
   },
   "order": [
+    "hero",
     "form",
     "faq"
   ]
