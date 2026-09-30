@@ -87,7 +87,19 @@
                       {{ block.settings.subtext }}
                     </div>
                   {%- when 'link_list' -%}
-                    {%- if block.settings.menu != blank -%}
+                    {%- comment -%} A3GK: built-in links until the footer menus exist in admin. {%- endcomment -%}
+                    {%- assign a3_footer_set = '' -%}
+                    {%- if block.settings.menu == blank -%}
+                      {%- assign a3_heading = block.settings.heading | downcase | strip -%}
+                      {%- case a3_heading -%}
+                        {%- when 'shop', 'help', 'learn' -%}{%- assign a3_footer_set = a3_heading -%}
+                      {%- endcase -%}
+                    {%- endif -%}
+                    {%- if a3_footer_set != blank -%}
+                      <ul class="footer-block__details-content list-unstyled">
+                        {%- render 'a3gk-nav', set: a3_footer_set, variant: 'footer' -%}
+                      </ul>
+                    {%- elsif block.settings.menu != blank -%}
                       <ul class="footer-block__details-content list-unstyled">
                         {%- for link in block.settings.menu.links -%}
                           <li>

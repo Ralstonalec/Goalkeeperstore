@@ -7,9 +7,9 @@
         "heading": "Keeper kit, done properly.",
         "subheading": "<p>Glove care, tape, grip socks and custom padded kit. Made for keepers, priced to be bought again.</p>",
         "button_1_label": "Shop glove care",
-        "button_1_link": "shopify://collections/glove-care",
+        "button_1_link": "/collections/glove-care",
         "button_2_label": "Build your kit",
-        "button_2_link": "shopify://pages/builder",
+        "button_2_link": "/pages/builder",
         "height": 92,
         "overlay": 30,
         "parallax": true
@@ -22,7 +22,7 @@
           "type": "link",
           "settings": {
             "label": "How we choose what to sell",
-            "url": "shopify://pages/about"
+            "url": "/pages/about"
           }
         }
       },
@@ -45,7 +45,7 @@
           "type": "category",
           "settings": {
             "title": "Glove care",
-            "link": "shopify://collections/glove-care",
+            "link": "/collections/glove-care",
             "status": "soon",
             "note": "Wash, grip spray, deodorizer",
             "shot": "Grip spray misting onto a latex palm, backlit, droplets frozen mid-air."
@@ -55,7 +55,7 @@
           "type": "category",
           "settings": {
             "title": "Kit builder",
-            "link": "shopify://pages/builder",
+            "link": "/pages/builder",
             "status": "soon",
             "note": "Padded jerseys, shorts and pants in your colours",
             "shot": "Custom padded jersey laid flat, number and crest in focus, side light."
@@ -65,7 +65,7 @@
           "type": "category",
           "settings": {
             "title": "Tape & socks",
-            "link": "shopify://collections/tape-socks",
+            "link": "/collections/tape-socks",
             "status": "soon",
             "shot": "Finger tape being wrapped, close-up of hands in the dressing room.",
             "note": "Finger tape and grip socks"
@@ -75,7 +75,7 @@
           "type": "category",
           "settings": {
             "title": "Protection",
-            "link": "shopify://collections/protection",
+            "link": "/collections/protection",
             "status": "soon",
             "shot": "Padded shorts, hip pad detail, on a keeper getting up from a dive.",
             "note": "Padded shorts and pants"
@@ -85,7 +85,7 @@
           "type": "category",
           "settings": {
             "title": "Gloves",
-            "link": "shopify://collections/gloves",
+            "link": "/collections/gloves",
             "status": "none",
             "note": "Why we don't sell our own yet",
             "shot": "Worn glove on a wet pitch, shallow depth of field.",
@@ -96,7 +96,7 @@
           "type": "category",
           "settings": {
             "title": "Bags",
-            "link": "shopify://collections/bags",
+            "link": "/collections/bags",
             "status": "soon",
             "note": "Once a sample passes testing",
             "shot": "Kit bag with glove compartment open, gloves hanging to air."
@@ -164,7 +164,7 @@
       "settings": {
         "heading": "Glove care",
         "cta_label": "Care bundles",
-        "cta_link": "shopify://pages/bundles",
+        "cta_link": "/pages/bundles",
         "padding_top": 96,
         "padding_bottom": 96,
         "tone": "paper",
@@ -176,7 +176,7 @@
       "settings": {
         "empty_heading": "No A3GK gloves. Not yet.",
         "empty_link_label": "How to choose goalkeeper gloves",
-        "empty_link": "shopify://blogs/guides",
+        "empty_link": "/blogs/guides",
         "padding_top": 112,
         "padding_bottom": 96,
         "tone": "ink",
@@ -220,7 +220,7 @@
       "settings": {
         "heading": "Design your own padded kit.",
         "button_label": "Open the builder",
-        "link": "shopify://pages/builder",
+        "link": "/pages/builder",
         "padding_top": 96,
         "padding_bottom": 96,
         "tone": "raised",
@@ -233,29 +233,24 @@
         "heading": "What keepers told us, and what we changed",
         "limit": 3,
         "cta_label": "Send us feedback",
-        "cta_link": "shopify://pages/feedback",
+        "cta_link": "/pages/feedback",
         "all_label": "All changes",
-        "all_link": "shopify://pages/you-told-us",
+        "all_link": "/pages/you-told-us",
         "padding_top": 112,
         "padding_bottom": 96,
         "tone": "paper"
       }
     },
     "guides": {
-      "type": "featured-blog",
+      "type": "a3gk-prose",
       "settings": {
-        "heading": "Keeper guides",
-        "heading_size": "h1",
-        "blog": "guides",
-        "post_limit": 3,
-        "columns_desktop": 3,
-        "color_scheme": "scheme-1",
-        "show_image": true,
-        "show_date": false,
-        "show_author": false,
-        "show_view_all": true,
-        "padding_top": 48,
-        "padding_bottom": 96
+        "heading": "",
+        "intro": "",
+        "html": "<div class=\"a3-head\" style=\"margin-bottom:3.2rem\"><h2>Guides</h2><p><a class=\"a3-link\" href=\"/blogs/guides\">All guides</a></p></div><div class=\"a3-grid\" style=\"--a3-min: 28rem\"><a class=\"a3-item\" href=\"/blogs/guides/how-to-design-goalkeeper-kit\"><h3>Designing your kit in the builder</h3><p class=\"a3-muted\">Step by step through the A3GK kit builder: colours, name and number, crest, padding zones, sizing, proofs and delivery times.</p></a><a class=\"a3-item\" href=\"/blogs/guides/how-to-choose-goalkeeper-gloves\"><h3>How to choose goalkeeper gloves</h3><p class=\"a3-muted\">Cuts, latex, fingersaves and the surface you play on. A buying guide from a keeper store that doesn't sell its own gloves yet.</p></a><a class=\"a3-item\" href=\"/blogs/guides/how-to-clean-goalkeeper-gloves\"><h3>How to look after goalkeeper gloves</h3><p class=\"a3-muted\">Washing, drying and storing goalkeeper gloves so the latex lasts. What to do after every session, what never to do, and when a glove is finished.</p></a></div>",
+        "narrow": false,
+        "tone": "ink",
+        "padding_top": 96,
+        "padding_bottom": 112
       }
     }
   },

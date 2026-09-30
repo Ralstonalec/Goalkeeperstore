@@ -14,6 +14,15 @@
 {%- endcomment -%}
 {%- liquid
   assign s = section.settings
+  capture team_url
+    render 'a3gk-href', url: s.team_link
+  endcapture
+  capture returns_url
+    render 'a3gk-href', url: s.returns_link
+  endcapture
+  capture size_url
+    render 'a3gk-href', url: '/pages/size-guide#apparel'
+  endcapture
 -%}
 {{ 'a3gk-builder.css' | asset_url | stylesheet_tag }}
 
@@ -50,8 +59,9 @@
         "moneyFormat": {{ shop.money_format | json }},
         "cartUrl": {{ routes.cart_url | json }},
         "cartAddUrl": {{ routes.cart_add_url | append: '.js' | json }},
-        "teamUrl": {{ s.team_link | json }},
-        "returnsUrl": {{ s.returns_link | json }},
+        "teamUrl": {{ team_url | strip | json }},
+        "returnsUrl": {{ returns_url | strip | json }},
+        "sizeGuideUrl": {{ size_url | strip | json }},
         "loginUrl": {{ routes.account_login_url | json }},
         "customer": {% if customer %}true{% else %}false{% endif %},
         "designMode": {{ request.design_mode | json }}
@@ -59,7 +69,7 @@
     </script>
 
     <noscript>
-      <p class="a3-notice a3-wrap">The kit builder needs JavaScript. You can still order a custom kit by <a href="{{ s.team_link | default: routes.root_url }}">contacting us</a>.</p>
+      <p class="a3-notice a3-wrap">The kit builder needs JavaScript. You can still order a custom kit by <a href="{{ team_url | strip | default: routes.root_url }}">contacting us</a>.</p>
     </noscript>
 
     <div class="a3b" data-a3b-root hidden>

@@ -112,7 +112,7 @@
           "settings": {
             "title": "Specs",
             "size_label": "Size guide",
-            "size_link": "shopify://pages/size-guide"
+            "size_link": "/pages/size-guide"
           }
         },
         "value": {
@@ -158,7 +158,7 @@
           "type": "qa",
           "settings": {
             "question": "Will it damage my latex?",
-            "answer": "<p>Glove care should clean and restore without drying the latex out. Follow the directions on the label, rinse in cool or lukewarm water, and always air-dry away from radiators and direct sun \u2014 heat does more damage to latex than anything in a bottle.</p>"
+            "answer": "<p>Glove care should clean and restore without drying the latex out. Follow the directions on the label, rinse in cool or lukewarm water, and always air-dry away from radiators and direct sun — heat does more damage to latex than anything in a bottle.</p>"
           }
         },
         "q2": {
@@ -195,7 +195,7 @@
           "type": "link",
           "settings": {
             "label": "See care bundles and the savings",
-            "url": "shopify://pages/bundles"
+            "url": "/pages/bundles"
           }
         }
       },
@@ -203,7 +203,7 @@
         "link"
       ],
       "settings": {
-        "heading": "Bundles are cheaper \u2014 and we show the maths.",
+        "heading": "Bundles are cheaper — and we show the maths.",
         "text": "<p>Every bundle lists the individual prices next to the bundle price, so you can check the saving yourself.</p>",
         "layout": "split",
         "padding_top": 64,

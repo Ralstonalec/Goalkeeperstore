@@ -25,6 +25,11 @@
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">
+              {%- comment -%} A3GK: use the built-in menu until the store's menu has been set up. {%- endcomment -%}
+              {%- capture a3_custom_menu -%}{%- for l in section.settings.menu.links -%}{%- if l.url contains 'glove-care' or l.url contains 'builder' -%}1{%- endif -%}{%- endfor -%}{%- endcapture -%}
+              {%- if a3_custom_menu == blank -%}
+                {%- render 'a3gk-nav', set: 'main', variant: 'drawer' -%}
+              {%- else -%}
               {%- for link in section.settings.menu.links -%}
                 <li>
                   {%- if link.links != blank -%}
@@ -137,6 +142,7 @@
                   {%- endif -%}
                 </li>
               {%- endfor -%}
+              {%- endif -%}
             </ul>
           </nav>
           <div class="menu-drawer__utility-links">

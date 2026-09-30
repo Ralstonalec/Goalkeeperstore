@@ -32,7 +32,9 @@ Anything marked **[TBC]** needs a real answer from you before launch. Grep the r
 
 ## 1b. Create the pages, collections, blog and menus (one command)
 
-The theme holds the *templates*, but Shopify only shows a page once it exists in admin. Until then, only the homepage works. This script creates everything the theme links to:
+**Every page works as soon as the theme is live, with no setup.** Shopify only serves `/pages/builder` once a page with that handle exists in admin. Until then, the theme serves built-in copies of each page, collection and guide from the homepage, at addresses like `/?view=builder`. All links, the header menu and the footer point there automatically. The built-in copies are marked `noindex` so search engines skip them.
+
+Creating the real pages gives you proper URLs (`/pages/builder`) and search-engine visibility, and links switch over automatically. This script creates everything the theme links to:
 - 9 pages, each with its template
 - 6 collections, published to the Online Store
 - the Guides blog, with the 5 guides from `content/guides/`
@@ -53,6 +55,8 @@ It never touches products, prices or policies, and it's safe to re-run: anything
 3. Treat the token like a password and don't commit it. When setup is done, you can uninstall the app.
 
 If you'd rather click through it yourself, §3, §5 and §6 below list the same items so you can create them by hand.
+
+After editing a page template or a guide, run `npm run gen:fallbacks` so the built-in copies stay in sync.
 
 ## 2. Settings
 

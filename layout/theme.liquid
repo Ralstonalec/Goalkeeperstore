@@ -15,11 +15,26 @@
       <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
     {%- endunless -%}
 
+    {%- liquid
+      assign a3_view_title = ''
+      if template.name == 'index' and template.suffix != blank
+        capture a3_view_title
+          render 'a3gk-view-title', view: template.suffix
+        endcapture
+      endif
+    -%}
+    {%- if a3_view_title != blank -%}
+      {%- comment -%} Built-in fallback view: keep it out of search until the real page exists. {%- endcomment -%}
+      <meta name="robots" content="noindex, follow">
+    {%- endif -%}
+
     <title>
-      {{ page_title }}
+      {% if a3_view_title != blank %}{{ a3_view_title | strip }} &ndash; {{ shop.name }}{% else %}{{ page_title }}{% endif %}
+      {%- if a3_view_title == blank -%}
       {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
       {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
       {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+      {%- endif -%}
     </title>
 
     {% if page_description %}
@@ -335,7 +350,12 @@
       {%- render 'cart-drawer' -%}
     {%- endif -%}
 
-    {% sections 'header-group' %}
+    {%- comment -%}
+      A3GK: links to pages/collections/guides not yet created in admin are
+      pointed at their built-in versions (see snippets/a3gk-href.liquid).
+    {%- endcomment -%}
+    {%- capture a3_header -%}{% sections 'header-group' %}{%- endcapture -%}
+    {%- render 'a3gk-rewrite-links', html: a3_header -%}
 
     <main
       id="MainContent"
@@ -344,10 +364,12 @@
       tabindex="-1"
       data-template="{{ template.name }}"
     >
-      {{ content_for_layout }}
+      {%- capture a3_main -%}{{ content_for_layout }}{%- endcapture -%}
+      {%- render 'a3gk-rewrite-links', html: a3_main -%}
     </main>
 
-    {% sections 'footer-group' %}
+    {%- capture a3_footer -%}{% sections 'footer-group' %}{%- endcapture -%}
+    {%- render 'a3gk-rewrite-links', html: a3_footer -%}
 
     <ul hidden>
       <li id="a11y-refresh-page-message">{{ 'accessibility.refresh_page' | t }}</li>

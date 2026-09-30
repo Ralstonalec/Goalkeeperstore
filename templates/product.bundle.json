@@ -112,7 +112,7 @@
           "settings": {
             "title": "Specs",
             "size_label": "Size guide",
-            "size_link": "shopify://pages/size-guide"
+            "size_link": "/pages/size-guide"
           }
         },
         "value": {

@@ -52,7 +52,7 @@ tools/       validate_templates.py: checks templates against section schemas
 ## Deploy
 
 1. Shopify admin → Online Store → Themes → **Add theme → Connect from GitHub** → this repo.
-2. Create the pages, collections, blog and menus with `npm run setup:store`. It needs an Admin API token; see [docs/SETUP.md](docs/SETUP.md) §1b. Without this step, only the homepage exists.
+2. Every page works straight away through built-in fallback views (`/?view=builder` and so on). For proper URLs and search visibility, create the real pages, collections, blog and menus with `npm run setup:store`. It needs an Admin API token; see [docs/SETUP.md](docs/SETUP.md) §1b. Links switch over automatically.
 3. Follow the rest of **[docs/SETUP.md](docs/SETUP.md)**: products, apps, policies.
 
 With the Shopify CLI instead: `shopify theme dev` / `shopify theme push`. The `.shopifyignore` file keeps `docs/`, `content/` and `tools/` out of the upload.
@@ -68,6 +68,7 @@ Vercel can't run the store: Liquid, cart, checkout and accounts only work on Sho
 ## Before pushing changes
 
 ```sh
+npm run gen:fallbacks                 # refresh built-in page copies after editing templates/guides
 python3 tools/validate_templates.py   # template settings vs section schemas
 shopify theme check                   # Shopify's linter (if you have the CLI)
 ```
