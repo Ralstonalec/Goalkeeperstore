@@ -16,7 +16,8 @@ Target prices come from your brief. They are **targets, not decisions**. Set fin
 | Mini / travel set | Own-brand care | `care` | [TBC] | [TBC] |
 | Care bundle (wash + spray + deodorizer) | Bundle | `bundle` | $25–35 | [TBC] |
 | Finger tape | Own-brand | default | [TBC] | [TBC] |
-| Grip socks | Own-brand if MOQ works | `apparel` | [TBC] | [TBC] |
+| Grip socks (traditional) | Own-brand if MOQ works | `apparel` | [TBC] | [TBC] |
+| Grip socks (split-toe) | Own-brand if MOQ works | `apparel` | [TBC] | [TBC] |
 | Padded shorts / pants (stock, not custom) | Own-brand protection — **later**, per brief | `apparel` | $40–70 | Later |
 | Custom padded jersey / shorts / pants | Builder base | `builder-base` | [TBC] | [TBC] |
 | Bag | Own-brand — **only after samples pass** | default | [TBC] | Later |

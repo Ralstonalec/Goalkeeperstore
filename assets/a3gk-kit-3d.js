@@ -205,8 +205,49 @@ onmessage = function (e) {
     return geo;
   }
 
+  // Draped garments baked by tools/drape/drape.mjs (a3gk-kit-meshes.js).
+  function bakedName(kind, opts) {
+    if (kind === 'jersey') return opts.sleeve === 'short' ? 'jerseyShort' : 'jerseyLong';
+    if (kind === 'bottoms') return opts.bottom === 'pants' ? 'pants' : 'shorts';
+    return null;
+  }
+  function decode(b64, Type) {
+    const bin = atob(b64);
+    const u8 = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) u8[i] = bin.charCodeAt(i);
+    return new Type(u8.buffer);
+  }
+  function bakedGeometry(m) {
+    const q = decode(m.pos, Uint16Array);
+    const pos = new Float32Array(q.length);
+    for (let i = 0; i < q.length; i += 3)
+      for (let k = 0; k < 3; k++) pos[i + k] = m.min[k] + (q[i + k] / 65535) * (m.max[k] - m.min[k]);
+    const qu = decode(m.uv, Uint16Array);
+    const uv = new Float32Array(qu.length);
+    for (let i = 0; i < qu.length; i++) uv[i] = (qu[i] / 65535) * 2;
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+    if (m.ao) {
+      const a = decode(m.ao, Uint8Array);
+      const col = new Float32Array(a.length * 3);
+      for (let i = 0; i < a.length; i++) col[i * 3] = col[i * 3 + 1] = col[i * 3 + 2] = a[i] / 255;
+      geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    } else {
+      geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(pos.length).fill(1), 3));
+    }
+    geo.setIndex(new THREE.BufferAttribute(decode(m.index, m.index32 ? Uint32Array : Uint16Array), 1));
+    m.groups.forEach(([start, count, mat]) => geo.addGroup(start, count, mat));
+    geo.computeVertexNormals();
+    geo.computeBoundingBox();
+    geo.computeBoundingSphere();
+    return geo;
+  }
+
   function garmentGeometry(kind, opts) {
     const k = kind + JSON.stringify(opts);
+    const baked = window.A3GKMeshes && window.A3GKMeshes[bakedName(kind, opts)];
+    if (!geoCache.has(k) && baked) geoCache.set(k, Promise.resolve().then(() => bakedGeometry(baked)));
     if (!geoCache.has(k)) {
       const buildHere = () => Promise.resolve().then(() => options.garment.buildGarment(kind, opts));
       const raw = worker

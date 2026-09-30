@@ -542,7 +542,7 @@
           sleeve: s.sleeve,
           collar: s.collar,
           finish: s.finish,
-          socks: s.socks && !!bottom,
+          socks: false, // A3GK sells grip socks separately; not part of custom kit
           trim: s.colors.trim,
           textures: this.textures3d(),
           knit: this._knit,
@@ -587,7 +587,7 @@
       try {
         // Plain <script> tags, not import(): classic scripts load from any CDN
         // without CORS, which module imports need.
-        await Promise.all([this.cfg.threeUrl, this.cfg.garmentUrl, this.cfg.kit3dUrl].map(loadScript));
+        await Promise.all([this.cfg.threeUrl, this.cfg.garmentUrl, this.cfg.kit3dUrl, this.cfg.meshesUrl].filter(Boolean).map(loadScript));
         const THREE = window.THREE;
         const mod = window.A3GKKit3D;
         const garment = window.A3GKGarment;
@@ -762,7 +762,6 @@
       panes.base = `
         <h2 class="a3b-h">What are you building?</h2>
         ${this.choice('base', BASES.map((b) => ({ id: b.id, html: `<strong>${esc(b.label)}</strong><span class="a3-small">${esc(b.note)}</span>` })), s.base, 'Base garment', 'a3b-choices--cards')}
-        ${this.group('Socks', this.toggle('socks', s.socks, 'Include matching socks in the preview'), 'Socks are shown so you can see the full look.')}
         <p class="a3-small">Ordering for a squad? ${this.cfg.teamUrl ? `<a href="${esc(this.cfg.teamUrl)}">Team orders</a> get volume pricing.` : 'Contact us about team pricing.'}</p>`;
 
       const bottomsExtra = [
@@ -776,8 +775,6 @@
         ${this.group('Pattern', this.swatches('colors.pattern', s.colors.pattern, 'Pattern colour'))}
         ${this.group('Trim (collar, cuffs, hems)', this.swatches('colors.trim', s.colors.trim, 'Trim colour'))}
         ${this.group('Shorts / pants', this.swatches('colors.bottoms', s.colors.bottoms, 'Bottoms colour', bottomsExtra))}
-        ${this.group('Socks', this.swatches('colors.socks', s.colors.socks, 'Sock colour'))}
-        ${this.group('Sock band', this.swatches('colors.sockTop', s.colors.sockTop, 'Sock band colour'))}
         <p class="a3-small">These are the colours our manufacturer can actually print.</p>`;
 
       panes.pattern = `
@@ -1341,7 +1338,6 @@
               : s.crest.type === 'ai'
                 ? `AI-designed crest (${s.crest.placement}, ${s.crest.size}); SVG in _spec`
                 : `${s.crest.type}${s.crest.text ? ' "' + s.crest.text + '"' : ''}, ${c(s.crest.color)} (${s.crest.placement}, ${s.crest.size})`,
-        Socks: s.socks && this.bottomPart() ? `${c(s.colors.socks)}, band ${c(s.colors.sockTop)} (preview only)` : undefined,
         Padding: this.parts()
           .map((p) => `${p}: ${this.zonesFor(p).map((z) => ZONE_LABELS[z]).join(', ') || 'none'}`)
           .join('; '),
