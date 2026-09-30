@@ -6,7 +6,9 @@
 
   Usage (ES module, THREE passed in so the theme controls the three.js file):
     const { createKitScene } = await import(kitUrl);
-    const scene = createKitScene(THREE, container, { onRender });
+    const scene = createKitScene(THREE, container, { garment, onRender });
+  garment is the a3gk-kit-garment.js module (passed in so asset URLs stay
+  versioned by the theme).
     scene.update({ parts, sleeve, collar, finish, textures, knit });
     scene.setView('back');
 */
@@ -27,18 +29,42 @@ export function createKitScene(THREE, container, options = {}) {
   let camDist = 12.5;
   let target = new THREE.Vector3(0, 0, 0);
 
-  /* ---------- lights: dark studio, floodlight key, green rim ---------- */
-  scene.add(new THREE.HemisphereLight(0xe9f2ec, 0x0b0c0a, 0.9));
-  const key = new THREE.DirectionalLight(0xffffff, 2.3);
-  key.position.set(-4, 6, 7);
+  /* ---------- studio: soft environment + floodlight key + green rim ---------- */
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = (() => {
+    // A small softbox room, pre-filtered for image-based lighting.
+    const room = new THREE.Scene();
+    const box = new THREE.Mesh(new THREE.BoxGeometry(12, 8, 12), new THREE.MeshBasicMaterial({ color: 0x15171a, side: THREE.BackSide }));
+    room.add(box);
+    const panel = (w, h, color, x, y, z, ry, rx = 0) => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
+      m.position.set(x, y, z);
+      m.rotation.set(rx, ry, 0);
+      room.add(m);
+    };
+    panel(5, 3, 0xffffff, -3.5, 2.5, 4, Math.PI * 0.8); // key softbox
+    panel(3, 5, 0x9aa2a8, 5.5, 0.5, 1, -Math.PI / 2); // fill strip
+    panel(2, 5, 0x48d98a, 3, 1, -5.5, 0); // green rim strip
+    panel(2, 5, 0xd8dde2, -4, 1, -5, 0.3); // back rim
+    panel(8, 8, 0x5c6066, 0, 3.9, 0, 0, Math.PI / 2); // ceiling bounce
+    const env = pmrem.fromScene(room, 0.04).texture;
+    room.traverse((o) => {
+      if (o.geometry) o.geometry.dispose();
+      if (o.material) o.material.dispose();
+    });
+    return env;
+  })();
+  scene.add(new THREE.HemisphereLight(0xe9f2ec, 0x0b0c0a, 0.25));
+  const key = new THREE.DirectionalLight(0xffffff, 2.6);
+  key.position.set(-5, 5, 6);
   scene.add(key);
-  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.7);
+  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.25);
   fill.position.set(6, 2, 4);
   scene.add(fill);
-  const rim = new THREE.DirectionalLight(0x3be37f, 1.6);
+  const rim = new THREE.DirectionalLight(0x3be37f, 2.2);
   rim.position.set(3, 4, -7);
   scene.add(rim);
-  const rim2 = new THREE.DirectionalLight(0xffffff, 0.9);
+  const rim2 = new THREE.DirectionalLight(0xffffff, 1.4);
   rim2.position.set(-5, 3, -6);
   scene.add(rim2);
 
@@ -95,29 +121,98 @@ export function createKitScene(THREE, container, options = {}) {
 
   const materials = [];
   function fabric(map, bump, finish) {
-    const m = new THREE.MeshStandardMaterial({
+    const m = new THREE.MeshPhysicalMaterial({
       map,
+      vertexColors: true, // baked ambient occlusion
       bumpMap: bump,
-      bumpScale: finish === 'mesh' ? 2.2 : 0.8,
-      roughness: finish === 'sheen' ? 0.48 : finish === 'mesh' ? 0.78 : 0.88,
+      bumpScale: finish === 'mesh' ? 2.4 : 1,
+      roughness: finish === 'sheen' ? 0.55 : finish === 'mesh' ? 0.85 : 0.8,
       metalness: 0,
+      // Fabric sheen: the soft grazing highlight that makes cloth (and
+      // especially dark cloth) read as cloth.
+      sheen: 1,
+      sheenRoughness: finish === 'sheen' ? 0.3 : finish === 'mesh' ? 0.55 : 0.45,
+      sheenColor: new THREE.Color(finish === 'sheen' ? 0xc8c8c8 : finish === 'mesh' ? 0x8c8c8c : 0xa8a8a8),
+      envMapIntensity: finish === 'sheen' ? 1.1 : 0.85,
       side: THREE.FrontSide,
     });
     materials.push(m);
     return m;
   }
-  const inner = new THREE.MeshStandardMaterial({ color: 0x0c0d0b, roughness: 1, side: THREE.BackSide });
+  const inner = new THREE.MeshStandardMaterial({ color: 0x0b0c0a, roughness: 1, side: THREE.BackSide, vertexColors: true });
 
-  function texFrom(canvas) {
-    const t = new THREE.CanvasTexture(canvas);
-    t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+  const geoCache = new Map();
+  function garmentGeometry(kind, opts) {
+    const k = kind + JSON.stringify(opts);
+    if (geoCache.has(k)) return geoCache.get(k);
+    const g = options.garment.buildGarment(kind, opts);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(g.position, 3));
+    geo.setAttribute('normal', new THREE.BufferAttribute(g.normal, 3));
+    geo.setAttribute('uv', new THREE.BufferAttribute(g.uv, 2));
+    geo.setAttribute('color', new THREE.BufferAttribute(g.color, 3));
+    g.groups.forEach((r) => geo.addGroup(r.start, r.count, r.materialIndex));
+    geo.computeBoundingSphere();
+    geoCache.set(k, geo);
+    return geo;
+  }
+
+  function wrapRepeat(t) {
+    if (t && t.wrapS !== THREE.RepeatWrapping) {
+      t.wrapS = THREE.RepeatWrapping;
+      t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      t.needsUpdate = true;
+    }
     return t;
   }
 
-  function withInner(geo, mat) {
+  // Vertical rib texture for the collar band.
+  const ribTex = (() => {
+    const c = document.createElement('canvas');
+    c.width = 64;
+    c.height = 8;
+    const g = c.getContext('2d');
+    for (let x = 0; x < 64; x++) {
+      const v = 128 + 110 * Math.sin((x / 64) * Math.PI * 2 * 8);
+      g.fillStyle = `rgb(${v},${v},${v})`;
+      g.fillRect(x, 0, 1, 8);
+    }
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(12, 1);
+    return t;
+  })();
+
+  // A strip rising from the neck edge, leaning in (crew) or out (polo).
+  function collarBand(pts, height, lean) {
+    const n = pts.length;
+    const pos = [];
+    const uv = [];
+    const index = [];
+    for (let i = 0; i <= n; i++) {
+      const [x, y, z] = pts[i % n];
+      const r = Math.hypot(x, z) || 1;
+      const ox = (x / r) * 0.012;
+      const oz = (z / r) * 0.012;
+      pos.push(x + ox, y - 0.02, z + oz);
+      pos.push(x + ox - (x / r) * lean, y + height, z + oz - (z / r) * lean);
+      uv.push(i / n, 0, i / n, 1);
+      if (i < n) {
+        const a = i * 2;
+        index.push(a, a + 2, a + 1, a + 1, a + 2, a + 3);
+      }
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    geo.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    geo.setIndex(index);
+    geo.computeVertexNormals();
+    return geo;
+  }
+
+  function withInner(geo, mats) {
     const g = new THREE.Group();
-    g.add(new THREE.Mesh(geo, mat));
+    g.add(new THREE.Mesh(geo, mats));
     g.add(new THREE.Mesh(geo, inner));
     return g;
   }
@@ -129,7 +224,8 @@ export function createKitScene(THREE, container, options = {}) {
 
   function disposeKit() {
     kit.traverse((o) => {
-      if (o.geometry) o.geometry.dispose();
+      // Garment geometry is cached; only dispose one-off parts (collar, socks).
+      if (o.geometry && !o.userData.cached) o.geometry.dispose();
     });
     materials.splice(0).forEach((m) => m.dispose());
     kit.clear();
@@ -142,61 +238,49 @@ export function createKitScene(THREE, container, options = {}) {
     const bottom = parts.find((p) => p !== 'jersey');
 
     if (hasJersey) {
-      const torso = new THREE.Group();
-      torso.scale.set(1, 1, 0.62);
-      torso.add(withInner(latheFrom(TORSO_KEYS, 0, 2.4), fabric(textures.torso, bumpTex, finish)));
+      const geo = garmentGeometry('jersey', { sleeve: sleeve === 'short' ? 'short' : 'long' });
+      const mats = [textures.torso, textures.sleeveR, textures.sleeveL].map((t) => fabric(wrapRepeat(t), bumpTex, finish));
+      const jersey = withInner(geo, mats);
+      jersey.children.forEach((c) => (c.userData.cached = true));
+      kit.add(jersey);
 
-      const tube = { crew: 0.035, v: 0.028, polo: 0.075, wrap: 0.05 }[collar] || 0.035;
-      const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(0.315, tube, 16, 96),
-        new THREE.MeshStandardMaterial({ color: spec.trim, roughness: 0.8 })
-      );
-      materials.push(ring.material);
-      ring.rotation.x = Math.PI / 2;
-      ring.position.y = 2.39 + (collar === 'polo' ? 0.03 : 0);
-      torso.add(ring);
-      kit.add(torso);
-
-      const long = sleeve !== 'short';
-      const len = long ? 1.6 : 0.62;
-      [1, -1].forEach((dir) => {
-        const geo = new THREE.CylinderGeometry(0.29, long ? 0.19 : 0.25, len, 48, 12, true);
-        geo.translate(0, -len / 2, 0);
-        const arm = withInner(geo, fabric(dir > 0 ? textures.sleeveR : textures.sleeveL, bumpTex, finish));
-        arm.position.set(0.8 * dir, 2.06, 0);
-        arm.rotation.z = 0.6 * dir;
-        arm.scale.set(1, 1, 0.8);
-        kit.add(arm);
+      // Ribbed collar band that follows the real neck opening.
+      const pts = options.garment.neckCurve({ sleeve });
+      const height = { crew: 0.07, v: 0.05, polo: 0.16, wrap: 0.1 }[collar] || 0.07;
+      const band = collarBand(pts, height, collar === 'polo' ? 0.05 : 0.012);
+      const bandMat = new THREE.MeshPhysicalMaterial({
+        color: spec.trim,
+        roughness: 0.8,
+        sheen: 1,
+        sheenRoughness: 0.5,
+        sheenColor: new THREE.Color(0x555555),
+        bumpMap: ribTex,
+        bumpScale: 1.4,
+        side: THREE.DoubleSide,
       });
+      materials.push(bandMat);
+      kit.add(new THREE.Mesh(band, bandMat));
     }
 
     if (bottom) {
-      const hip = new THREE.Group();
-      hip.scale.set(1, 1, 0.6); // sits just inside the jersey hem
-      const hipKeys = [[-0.55, 0.93], [-0.2, 0.9], [0.15, 0.87]];
-      hip.add(withInner(latheFrom(hipKeys, -0.55, 0.15, 12), fabric(textures.hip, bumpTex, finish)));
-      kit.add(hip);
+      const geo = garmentGeometry('bottoms', { bottom });
+      const mats = [textures.hip, textures.legR, textures.legL].map((t) => fabric(wrapRepeat(t), bumpTex, finish));
+      const bottoms = withInner(geo, mats);
+      bottoms.children.forEach((c) => (c.userData.cached = true));
+      kit.add(bottoms);
 
       const pants = bottom === 'pants';
-      const legLen = pants ? 2.05 : 0.72;
-      [1, -1].forEach((dir) => {
-        const geo = new THREE.CylinderGeometry(0.47, pants ? 0.29 : 0.5, legLen, 48, 16, true);
-        geo.translate(0, -legLen / 2, 0);
-        const leg = withInner(geo, fabric(dir > 0 ? textures.legR : textures.legL, bumpTex, finish));
-        leg.position.set(0.44 * dir, -0.45, 0);
-        leg.rotation.z = 0.04 * dir;
-        leg.scale.set(1, 1, 0.78);
-        kit.add(leg);
-      });
-
       if (spec.socks) {
         const sockTop = pants ? -2.3 : -1.32;
         const sockLen = pants ? 0.55 : 1.3;
         [1, -1].forEach((dir) => {
-          const geo = new THREE.CylinderGeometry(0.235, 0.2, sockLen, 32, 4, true);
+          const geo = new THREE.CylinderGeometry(0.235, 0.2, sockLen, 48, 8, true);
           geo.translate(0, -sockLen / 2, 0);
-          const sock = withInner(geo, fabric(textures.sock, bumpTex, 'matte'));
-          sock.position.set((pants ? 0.52 : 0.47) * dir, sockTop, 0);
+          const g = new THREE.Group();
+          g.add(new THREE.Mesh(geo, fabric(textures.sock, bumpTex, 'matte')));
+          const sock = g;
+          sock.children[0].material.vertexColors = false;
+          sock.position.set((pants ? 0.585 : 0.5) * dir, sockTop, 0);
           sock.scale.set(1, 1, 0.9);
           kit.add(sock);
         });
@@ -358,6 +442,7 @@ export function createKitScene(THREE, container, options = {}) {
 
   function dispose() {
     ro.disconnect();
+    geoCache.forEach((g) => g.dispose());
     cancelAnimationFrame(raf);
     disposeKit();
     renderer.dispose();

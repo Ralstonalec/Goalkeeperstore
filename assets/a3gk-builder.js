@@ -62,6 +62,23 @@
     'Classy: navy and gold',
   ];
 
+  // Starting points, Spized-style: each is a full look the keeper can then
+  // change. Colours are palette names, resolved against the store's palette.
+  const PRESETS = [
+    { id: 'night-shift', name: 'Night Shift', c: ['navy', 'black', 'volt', 'volt', 'volt', 'navy', 'volt', 'secondary'], pattern: 'lightning', scale: 'm', sleeves: 'solid', collar: 'v', finish: 'sheen', font: 'stencil' },
+    { id: 'pitch-black', name: 'Pitch Black', c: ['black', 'pitch green', 'white', 'pitch green', 'white', 'black', 'pitch green', 'match'], pattern: 'shards', scale: 'm', sleeves: 'solid', collar: 'crew', finish: 'matte', font: 'block' },
+    { id: 'ember', name: 'Ember', c: ['orange', 'black', 'black', 'red', 'black', 'black', 'orange', 'secondary'], pattern: 'fade', scale: 'l', sleeves: 'pattern', collar: 'crew', finish: 'sheen', font: 'wide' },
+    { id: 'ice', name: 'Ice', c: ['white', 'sky', 'navy', 'sky', 'navy', 'white', 'sky', 'secondary'], pattern: 'topo', scale: 's', sleeves: 'match', collar: 'polo', finish: 'mesh', font: 'classic' },
+    { id: 'royal-line', name: 'Royal Line', c: ['royal', 'navy', 'white', 'white', 'white', 'royal', 'white', 'secondary'], pattern: 'pinstripes', scale: 'm', sleeves: 'solid', collar: 'wrap', finish: 'matte', font: 'classic' },
+    { id: 'hooped', name: 'Hooped', c: ['red', 'black', 'white', 'black', 'white', 'black', 'red', 'secondary'], pattern: 'hoops', scale: 'l', sleeves: 'match', collar: 'crew', finish: 'matte', font: 'slab' },
+    { id: 'urban-camo', name: 'Urban Camo', c: ['charcoal', 'black', 'volt', 'grey', 'volt', 'black', 'volt', 'secondary'], pattern: 'camo', scale: 'm', sleeves: 'pattern', collar: 'crew', finish: 'matte', font: 'stencil' },
+    { id: 'sunburst', name: 'Sunburst', c: ['yellow', 'black', 'black', 'orange', 'black', 'black', 'yellow', 'secondary'], pattern: 'halftone', scale: 'l', sleeves: 'solid', collar: 'v', finish: 'sheen', font: 'rounded' },
+    { id: 'deep-water', name: 'Deep Water', c: ['teal', 'navy', 'white', 'sky', 'white', 'navy', 'teal', 'secondary'], pattern: 'waves', scale: 'm', sleeves: 'pattern', collar: 'crew', finish: 'sheen', font: 'wide' },
+    { id: 'retro-90', name: '90s Keeper', c: ['purple', 'pink', 'volt', 'pink', 'white', 'purple', 'pink', 'secondary'], pattern: 'chevron', scale: 'l', sleeves: 'pattern', collar: 'polo', finish: 'matte', font: 'slab' },
+    { id: 'gold-standard', name: 'Gold Standard', c: ['black', 'black', 'gold', 'gold', 'gold', 'black', 'gold', 'match'], pattern: 'sash', scale: 'm', sleeves: 'solid', collar: 'v', finish: 'sheen', font: 'classic' },
+    { id: 'grid-lock', name: 'Grid Lock', c: ['grey', 'charcoal', 'volt', 'volt', 'black', 'charcoal', 'volt', 'secondary'], pattern: 'grid', scale: 's', sleeves: 'solid', collar: 'wrap', finish: 'mesh', font: 'block' },
+  ];
+
   /* ---------------- helpers ---------------- */
 
   const P = () => window.A3GKPaint;
@@ -235,7 +252,7 @@
       }
       this.palette = parsePalette(this.cfg.palette);
       this.paddingMap = parsePaddingMap(this.cfg.paddingMap);
-      this.activeTab = this.cfg.aiEndpoint ? 'vibe' : 'base';
+      this.activeTab = 'designs';
       this.showPadding = false;
       this.mode = '3d';
       this.view = 'front';
@@ -251,6 +268,16 @@
       ['torso', 'sleeveL', 'sleeveR', 'hip', 'legL', 'legR', 'sock'].forEach((k) => (this.tex[k] = document.createElement('canvas')));
       this.state = this.initialState();
       this.root.hidden = false;
+
+      // On desktop, size the stage so the whole designer fits the first screen.
+      const fit = () => {
+        if (window.innerWidth < 990) return this.root.style.removeProperty('--a3b-stage-h');
+        const top = this.root.getBoundingClientRect().top + window.scrollY;
+        const h = Math.max(560, window.innerHeight - Math.max(0, top - window.scrollY));
+        this.root.style.setProperty('--a3b-stage-h', `${Math.min(h, window.innerHeight)}px`);
+      };
+      fit();
+      window.addEventListener('resize', fit);
 
       this.whenPainterReady(() => {
         this.bindStage();
@@ -535,18 +562,22 @@
     async init3d() {
       const probe = document.createElement('canvas');
       const gl = probe.getContext('webgl2') || probe.getContext('webgl');
-      if (!gl || !this.cfg.threeUrl || !this.cfg.kit3dUrl) {
+      if (!gl || !this.cfg.threeUrl || !this.cfg.kit3dUrl || !this.cfg.garmentUrl) {
+        this.root.dataset.no3d = gl ? 'config' : 'webgl';
         this.setMode('flat', true);
         return;
       }
       try {
-        const [THREE, mod] = await Promise.all([import(this.cfg.threeUrl), import(this.cfg.kit3dUrl)]);
+        const [THREE, mod, garment] = await Promise.all([import(this.cfg.threeUrl), import(this.cfg.kit3dUrl), import(this.cfg.garmentUrl)]);
         this.THREE = THREE;
-        this.kit3d = mod.createKitScene(THREE, this.stage3d, {});
-        this.stage3d.classList.add('is-ready');
+        this.kit3d = mod.createKitScene(THREE, this.stage3d, { garment });
+        // Let the "building" label paint before the garment mesh is generated.
+        await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
         this.setMode('3d', true);
+        this.stage3d.classList.add('is-ready');
       } catch (e) {
         console.warn('A3GK: 3D unavailable, using flat view', e);
+        this.root.dataset.no3d = 'load';
         this.setMode('flat', true);
       }
     }
@@ -592,8 +623,8 @@
     }
 
     tabList() {
-      const tabs = [];
-      if (this.cfg.aiEndpoint) tabs.push({ id: 'vibe', label: 'Vibe ✦' });
+      const tabs = [{ id: 'designs', label: 'Designs' }];
+      if (this.cfg.aiEndpoint) tabs.push({ id: 'vibe', label: 'AI design ✦' });
       return tabs.concat([
         { id: 'base', label: 'Base' },
         { id: 'colours', label: 'Colours' },
@@ -635,6 +666,7 @@
         if (on && focus) b.focus();
       });
       this.panes.querySelectorAll('[role="tabpanel"]').forEach((p) => (p.hidden = p.dataset.pane !== id));
+      this.renderStepNav();
       // Bring the new step's top into view under the sticky tabs.
       const stuck = this.tabs.getBoundingClientRect().bottom;
       const top = this.panes.getBoundingClientRect().top;
@@ -690,6 +722,14 @@
             <p class="a3-small">AI suggestions are a starting point. You'll see and approve a proof before anything is made.</p>
           </div>`;
       }
+
+      panes.designs = `
+        <h2 class="a3b-h">Start from a design</h2>
+        <p class="a3-muted">Pick a look, then make it yours: every colour, pattern, number and crest can be changed in the next steps.</p>
+        <div class="a3b-presets">${PRESETS.map(
+          (d) =>
+            `<button type="button" class="a3b-preset" data-action="preset" data-id="${d.id}" aria-label="Start from ${esc(d.name)}"><span class="a3b-preset__img"><img alt="" data-preset-img="${d.id}" width="200" height="${this.parts().length > 1 ? 400 : 240}"></span><span class="a3b-preset__name">${esc(d.name)}</span></button>`
+        ).join('')}</div>`;
 
       panes.base = `
         <h2 class="a3b-h">What are you building?</h2>
@@ -792,8 +832,107 @@
       this.renderSizes();
       this.renderSaved();
       this.drawThumbs();
+      this.drawPresetThumbs();
       this.restoreAi();
+      this.renderStepNav();
       this.updateContrast();
+    }
+
+    renderStepNav() {
+      const nav = this.querySelector('[data-a3b-stepnav]');
+      if (!nav) return;
+      const list = this.tabList();
+      const i = list.findIndex((t) => t.id === this.activeTab);
+      const prev = list[i - 1];
+      const next = list[i + 1];
+      nav.innerHTML = `
+        <button type="button" class="a3b-stepnav__btn" data-step="${prev ? prev.id : ''}" ${prev ? '' : 'disabled'}>← ${prev ? esc(prev.label) : 'Back'}</button>
+        <span class="a3b-stepnav__count">Step ${i + 1} of ${list.length}</span>
+        ${next ? `<button type="button" class="a3-btn a3b-stepnav__next" data-step="${next.id}">Next: ${esc(next.label)} →</button>` : `<button type="button" class="a3-btn a3b-stepnav__next" data-step="summary">Review &amp; order ↓</button>`}`;
+      nav.onclick = (e) => {
+        const b = e.target.closest('[data-step]');
+        if (!b || !b.dataset.step) return;
+        if (b.dataset.step === 'summary') {
+          this.summary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        this.openTab(b.dataset.step, true);
+      };
+    }
+
+    presetDesign(d) {
+      const [primary, secondary, trim, pattern, number, socks, sockTop, bottoms] = d.c;
+      const hx = (n, i) => this.hex(n, i);
+      return {
+        colors: {
+          primary: hx(primary, 0),
+          secondary: hx(secondary, 0),
+          trim: hx(trim, 1),
+          pattern: hx(pattern, 2),
+          number: hx(number, 1),
+          outline: 'none',
+          socks: hx(socks, 0),
+          sockTop: hx(sockTop, 2),
+          bottoms: bottoms === 'match' || bottoms === 'secondary' ? bottoms : hx(bottoms, 0),
+        },
+        pattern: d.pattern,
+        patternScale: d.scale,
+        sleeves: d.sleeves,
+        collar: d.collar,
+        finish: d.finish,
+        font: d.font,
+        cuffs: true,
+        hemTrim: true,
+        sidePanels: d.pattern !== 'hoops',
+        crest: { color: hx(trim, 1), textColor: hx(primary, 0) },
+      };
+    }
+
+    // Preset thumbnails are painted once per base garment and cached, a few
+    // per frame so the page stays responsive.
+    drawPresetThumbs() {
+      const imgs = [...this.panes.querySelectorAll('img[data-preset-img]')];
+      if (!imgs.length) return;
+      const key = this.parts().join(',');
+      this._presetThumbs = this._presetThumbs || {};
+      const cache = (this._presetThumbs[key] = this._presetThumbs[key] || {});
+      const todo = [];
+      imgs.forEach((img) => {
+        const id = img.dataset.presetImg;
+        if (cache[id]) img.src = cache[id];
+        else todo.push(img);
+      });
+      const step = () => {
+        const img = todo.shift();
+        if (!img) return;
+        const id = img.dataset.presetImg;
+        if (!cache[id]) {
+          const d = PRESETS.find((x) => x.id === id);
+          cache[id] = this.flatPreview(this.sanitize(this.merge(this.state, this.kitPatch(this.presetDesign(d)))), 200);
+        }
+        if (img.isConnected) img.src = cache[id];
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    flatPreview(state, width) {
+      const tex = {};
+      ['torso', 'sleeveL', 'sleeveR', 'hip', 'legL', 'legR', 'sock'].forEach((k) => (tex[k] = document.createElement('canvas')));
+      const paint = P();
+      paint.paintTorso(tex.torso, state, {});
+      paint.paintSleeve(tex.sleeveL, state, 'l');
+      paint.paintSleeve(tex.sleeveR, state, 'r');
+      paint.paintHip(tex.hip, state);
+      paint.paintLeg(tex.legL, state, 'l', this.bottomPart());
+      paint.paintLeg(tex.legR, state, 'r', this.bottomPart());
+      const c = document.createElement('canvas');
+      paint.paintFlat(c, state, 'front', tex, this.parts());
+      const out = document.createElement('canvas');
+      out.width = width * 2;
+      out.height = Math.round((c.height / c.width) * width * 2);
+      out.getContext('2d').drawImage(c, 0, 0, out.width, out.height);
+      return out.toDataURL('image/png');
     }
 
     restoreAi() {
@@ -1239,6 +1378,13 @@
       if (!btn) return;
       const action = btn.dataset.action;
       if (action === 'ai-kit') this.aiKit(btn);
+      if (action === 'preset') {
+        const d = PRESETS.find((x) => x.id === btn.dataset.id);
+        if (d) {
+          this.applyPatch(this.kitPatch(this.presetDesign(d)));
+          this.flash(`${d.name} applied. Change anything in the next steps.`);
+        }
+      }
       if (action === 'ai-crest') this.aiCrest(btn);
       if (action === 'ai-apply') {
         const d = this._aiKits && this._aiKits[+btn.dataset.i];

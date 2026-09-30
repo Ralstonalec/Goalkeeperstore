@@ -4,55 +4,6 @@
  */
 {
   "sections": {
-    "hero": {
-      "type": "a3gk-page-hero",
-      "settings": {
-        "kicker": "Kit designer",
-        "heading": "Design your kit",
-        "text": "<p>Padded jersey, shorts or pants. Sixteen patterns, six typefaces, your crest, your number. Turn it in 3D, then order with the price and lead time in front of you.</p>",
-        "art": "render",
-        "render": "kit",
-        "size": "medium",
-        "button_label": "Start designing",
-        "button_link": "#designer"
-      },
-      "blocks": {
-        "f0": {
-          "type": "fact",
-          "settings": {
-            "value": "3D",
-            "label": "Drag to turn it"
-          }
-        },
-        "f1": {
-          "type": "fact",
-          "settings": {
-            "value": "16",
-            "label": "Patterns"
-          }
-        },
-        "f2": {
-          "type": "fact",
-          "settings": {
-            "value": "6",
-            "label": "Typefaces"
-          }
-        },
-        "f3": {
-          "type": "fact",
-          "settings": {
-            "value": "Proof",
-            "label": "Before anything is made"
-          }
-        }
-      },
-      "block_order": [
-        "f0",
-        "f1",
-        "f2",
-        "f3"
-      ]
-    },
     "builder": {
       "type": "a3gk-builder",
       "settings": {
@@ -136,7 +87,6 @@
     }
   },
   "order": [
-    "hero",
     "builder",
     "faq"
   ]
