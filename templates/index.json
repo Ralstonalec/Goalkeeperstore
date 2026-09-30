@@ -11,9 +11,34 @@
         "button_2_label": "Build your kit",
         "button_2_link": "/pages/builder",
         "height": 92,
-        "overlay": 30,
+        "overlay": 10,
         "parallax": true
-      }
+      },
+      "blocks": {
+        "p1": {
+          "type": "proof",
+          "settings": {
+            "text": "Goalkeepers only. Nothing else."
+          }
+        },
+        "p2": {
+          "type": "proof",
+          "settings": {
+            "text": "Tested on match gloves before it's sold"
+          }
+        },
+        "p3": {
+          "type": "proof",
+          "settings": {
+            "text": "Custom padded kit, made to order"
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ]
     },
     "why": {
       "type": "a3gk-statement",
@@ -48,7 +73,8 @@
             "link": "/collections/glove-care",
             "status": "soon",
             "note": "Wash, grip spray, deodorizer",
-            "shot": "Grip spray misting onto a latex palm, backlit, droplets frozen mid-air."
+            "shot": "Grip spray misting onto a latex palm, backlit, droplets frozen mid-air.",
+            "render": "bundle"
           }
         },
         "builder": {
@@ -58,7 +84,8 @@
             "link": "/pages/builder",
             "status": "soon",
             "note": "Padded jerseys, shorts and pants in your colours",
-            "shot": "Custom padded jersey laid flat, number and crest in focus, side light."
+            "shot": "Custom padded jersey laid flat, number and crest in focus, side light.",
+            "render": "kit"
           }
         },
         "tape": {
@@ -68,7 +95,8 @@
             "link": "/collections/tape-socks",
             "status": "soon",
             "shot": "Finger tape being wrapped, close-up of hands in the dressing room.",
-            "note": "Finger tape and grip socks"
+            "note": "Finger tape and grip socks",
+            "render": "tape"
           }
         },
         "protection": {
@@ -78,7 +106,8 @@
             "link": "/collections/protection",
             "status": "soon",
             "shot": "Padded shorts, hip pad detail, on a keeper getting up from a dive.",
-            "note": "Padded shorts and pants"
+            "note": "Padded shorts and pants",
+            "render": "shorts"
           }
         },
         "gloves": {
@@ -89,7 +118,8 @@
             "status": "none",
             "note": "Why we don't sell our own yet",
             "shot": "Worn glove on a wet pitch, shallow depth of field.",
-            "status_label": "Not yet"
+            "status_label": "Not yet",
+            "render": "scene"
           }
         },
         "bags": {
@@ -99,7 +129,8 @@
             "link": "/collections/bags",
             "status": "soon",
             "note": "Once a sample passes testing",
-            "shot": "Kit bag with glove compartment open, gloves hanging to air."
+            "shot": "Kit bag with glove compartment open, gloves hanging to air.",
+            "render": "bag"
           }
         }
       },
@@ -127,7 +158,8 @@
           "settings": {
             "fallback_title": "Grip spray",
             "one_liner": "Brings tired latex back to tacky.",
-            "shot": "Grip spray bottle on wet turf, floodlight rim light, label legible."
+            "shot": "Grip spray bottle on wet turf, floodlight rim light, label legible.",
+            "render": "spray"
           }
         },
         "wash": {
@@ -135,7 +167,8 @@
           "settings": {
             "fallback_title": "Glove wash",
             "one_liner": "Lifts dirt and sweat without stripping the latex.",
-            "shot": "Glove wash bottle beside a basin, gloves soaking, foam on latex."
+            "shot": "Glove wash bottle beside a basin, gloves soaking, foam on latex.",
+            "render": "wash"
           }
         },
         "deo": {
@@ -143,7 +176,8 @@
           "settings": {
             "fallback_title": "Deodorizer",
             "one_liner": "For the bag. You know why.",
-            "shot": "Deodorizer being sprayed into a glove cuff, kit bag behind."
+            "shot": "Deodorizer being sprayed into a glove cuff, kit bag behind.",
+            "render": "deo"
           }
         },
         "bundle": {
@@ -151,7 +185,8 @@
           "settings": {
             "fallback_title": "Care bundle",
             "one_liner": "Wash, spray and deodorizer in one order.",
-            "shot": "All three care products lined up on a bench, top-down, dark slate."
+            "shot": "All three care products lined up on a bench, top-down, dark slate.",
+            "render": "bundle"
           }
         }
       },
@@ -252,10 +287,20 @@
         "padding_top": 96,
         "padding_bottom": 112
       }
+    },
+    "marquee": {
+      "type": "a3gk-marquee",
+      "settings": {
+        "items": "Goalkeepers only\nGlove care\nCustom padded kit\nTested on match gloves\nMade to order\nPriced to be bought again",
+        "speed": 45,
+        "outline": true,
+        "tone": "ink"
+      }
     }
   },
   "order": [
     "hero",
+    "marquee",
     "why",
     "categories",
     "care",

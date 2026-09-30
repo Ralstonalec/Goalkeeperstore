@@ -1,0 +1,108 @@
+{%- comment -%}
+  One product drawn as SVG, standing on y≈462 in a 400×500 space.
+  Used by a3gk-render.liquid, which supplies the gradients (prefix p).
+  Accepts: kind, p
+{%- endcomment -%}
+{%- case kind -%}
+  {%- when 'spray' -%}
+    <g class="a3r-spray">
+      <rect x="128" y="108" width="24" height="18" rx="4" fill="#161815"/>
+      <rect x="146" y="98" width="108" height="42" rx="12" fill="url(#{{ p }}-cap)"/>
+      <rect x="146" y="98" width="108" height="10" rx="5" fill="#fff" opacity=".18"/>
+      <path d="M160 140 Q148 172 156 204 L169 202 Q165 174 176 140 Z" fill="url(#{{ p }}-cap)" opacity=".85"/>
+      <rect x="182" y="140" width="36" height="22" fill="#141613"/>
+      <rect x="170" y="160" width="60" height="20" rx="3" fill="url(#{{ p }}-body)"/>
+      <path d="M172 164h56M172 169h56M172 174h56" stroke="#000" stroke-opacity=".35" stroke-width="1"/>
+      <path d="M144 452Q144 462 154 462H246Q256 462 256 452V234Q256 206 232 196L226 180H174L168 196Q144 206 144 234Z" fill="url(#{{ p }}-body)"/>
+      <rect x="144" y="262" width="112" height="130" fill="url(#{{ p }}-label)"/>
+      <text x="200" y="306" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="125%" font-size="25" fill="#121310">A3GK</text>
+      <rect x="176" y="318" width="48" height="2.5" fill="#1f8f4e"/>
+      <text x="200" y="342" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="700" font-size="11" letter-spacing="2.2" fill="#121310">GRIP SPRAY</text>
+      <text x="200" y="360" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="500" font-size="7.5" letter-spacing="1.4" fill="#121310" opacity=".6">FOR LATEX PALMS</text>
+      <rect x="156" y="212" width="9" height="238" rx="4.5" fill="url(#{{ p }}-sheen)"/>
+    </g>
+  {%- when 'wash' -%}
+    <g class="a3r-wash">
+      <rect x="164" y="186" width="72" height="40" rx="8" fill="url(#{{ p }}-cap)"/>
+      <rect x="164" y="186" width="72" height="11" rx="5.5" fill="#fff" opacity=".2"/>
+      <rect x="164" y="214" width="72" height="3" fill="#000" opacity=".25"/>
+      <path d="M128 452Q128 462 140 462H260Q272 462 272 452V264Q272 234 244 227L232 224H168L156 227Q128 234 128 264Z" fill="url(#{{ p }}-body)"/>
+      <rect x="128" y="286" width="144" height="122" fill="url(#{{ p }}-label)"/>
+      <text x="200" y="330" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="125%" font-size="30" fill="#121310">A3GK</text>
+      <rect x="170" y="343" width="60" height="2.5" fill="#1f8f4e"/>
+      <text x="200" y="368" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="700" font-size="12" letter-spacing="2.4" fill="#121310">GLOVE WASH</text>
+      <text x="200" y="386" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="500" font-size="7.5" letter-spacing="1.4" fill="#121310" opacity=".6">HAND WASH · COOL WATER</text>
+      <rect x="142" y="240" width="10" height="210" rx="5" fill="url(#{{ p }}-sheen)"/>
+    </g>
+  {%- when 'deo' -%}
+    <g class="a3r-deo">
+      <rect x="214" y="136" width="20" height="10" rx="3" fill="#161815"/>
+      <rect x="186" y="128" width="30" height="46" rx="5" fill="url(#{{ p }}-cap)"/>
+      <rect x="186" y="128" width="30" height="8" rx="4" fill="#fff" opacity=".2"/>
+      <rect x="181" y="172" width="38" height="22" rx="3" fill="url(#{{ p }}-body)"/>
+      <path d="M168 452Q168 462 178 462H222Q232 462 232 452V216Q232 202 220 198L214 192H186L180 198Q168 202 168 216Z" fill="url(#{{ p }}-body)"/>
+      <rect x="168" y="250" width="64" height="168" fill="url(#{{ p }}-label)"/>
+      <text x="200" y="278" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="125%" font-size="15" fill="#121310">A3GK</text>
+      <text transform="translate(204 402) rotate(-90)" font-family="'A3GK Sans',sans-serif" font-weight="700" font-size="11" letter-spacing="2.4" fill="#121310">DEODORIZER</text>
+      <rect x="176" y="222" width="7" height="228" rx="3.5" fill="url(#{{ p }}-sheen)"/>
+    </g>
+  {%- when 'tape' -%}
+    <g class="a3r-tape">
+      <path d="M300 318L318 320L324 432Q312 440 304 430Z" fill="#e6e3da"/>
+      <path d="M90 300V372A110 40 0 0 0 310 372V300Z" fill="url(#{{ p }}-tapeside)"/>
+      <ellipse cx="200" cy="300" rx="110" ry="40" fill="#f7f5ef"/>
+      <ellipse cx="200" cy="300" rx="110" ry="40" fill="none" stroke="#000" stroke-opacity=".08"/>
+      <ellipse cx="200" cy="300" rx="60" ry="22" fill="url(#{{ p }}-cap)"/>
+      <ellipse cx="200" cy="302" rx="45" ry="15.5" fill="#101210"/>
+      <text x="200" y="352" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="125%" font-size="17" fill="#121310" opacity=".85">A3GK</text>
+      <text x="200" y="366" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="600" font-size="6.5" letter-spacing="1.6" fill="#121310" opacity=".55">FINGER TAPE</text>
+      <ellipse cx="160" cy="292" rx="40" ry="8" fill="#fff" opacity=".6"/>
+    </g>
+  {%- when 'socks' -%}
+    <g class="a3r-socks">
+      <path d="M168 92H252V300Q252 318 264 330L320 372Q350 394 332 426Q318 448 284 440L186 410Q154 400 158 366L168 300Z" fill="url(#{{ p }}-body)"/>
+      <path d="M168 92H252V126H168Z" fill="url(#{{ p }}-cap)"/>
+      <path d="M168 132H252" stroke="#3be37f" stroke-width="3"/>
+      <path d="M176 150V290M188 150V292M200 150V294M212 150V294M224 150V294M236 150V292" stroke="#fff" stroke-opacity=".035" stroke-width="3"/>
+      <g fill="#3be37f">
+        <circle cx="206" cy="416" r="5"/><circle cx="228" cy="423" r="5"/><circle cx="250" cy="430" r="5"/><circle cx="272" cy="434" r="5"/><circle cx="294" cy="434" r="5"/>
+        <circle cx="196" cy="398" r="4" opacity=".8"/><circle cx="318" cy="424" r="4" opacity=".8"/>
+      </g>
+      <text transform="translate(218 270) rotate(-90)" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="125%" font-size="20" fill="#eeebe3" opacity=".9">A3GK</text>
+      <rect x="176" y="140" width="8" height="160" rx="4" fill="url(#{{ p }}-sheen)"/>
+    </g>
+  {%- when 'kit' -%}
+    <g class="a3r-kit" transform="translate(20 22) scale(.9)">
+      <path d="M108 80Q78 92 62 140L24 318L60 332L94 200L100 170Z" style="fill: var(--k2, #3be37f)"/>
+      <path d="M292 80Q322 92 338 140L376 318L340 332L306 200L300 170Z" style="fill: var(--k2, #3be37f)"/>
+      <path d="M28.6 296.5L24 318L60 332L64.6 310.5ZM371.4 296.5L376 318L340 332L335.4 310.5Z" style="fill: var(--k3, #eeebe3)"/>
+      <path d="M150 62L165 58Q200 92 235 58L250 62L292 80L300 170L304 440Q200 452 96 440L100 170L108 80Z" style="fill: var(--k1, #121310)"/>
+      <path d="M100 170L124 176L120 443L96 440ZM300 170L276 176L280 443L304 440Z" style="fill: var(--k2, #3be37f)"/>
+      <path d="M96 440Q200 452 304 440L303.6 428Q200 440 96.4 428Z" style="fill: var(--k3, #eeebe3)"/>
+      <path d="M165 58Q200 92 235 58L228 55Q200 80 172 55Z" style="fill: var(--k3, #eeebe3)"/>
+      <path d="M150 62L165 58Q200 92 235 58L250 62L292 80L300 170L304 440Q200 452 96 440L100 170L108 80Z" fill="url(#{{ p }}-cloth)"/>
+      <path d="M232 118h32v18q0 14-16 22q-16-8-16-22Z" style="fill: var(--k2, #3be37f)"/>
+      <text x="152" y="158" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="75%" font-size="48" style="fill: var(--k3, #eeebe3)">1</text>
+    </g>
+  {%- when 'shorts' -%}
+    <g class="a3r-shorts" transform="translate(0 110)">
+      <path d="M88 50H312L336 250L214 262L200 120L186 262L64 250Z" fill="url(#{{ p }}-body)"/>
+      <path d="M90 30H310L312 52H88Z" fill="#eeebe3"/>
+      <path d="M312 50L336 250L322 252L299 52ZM88 50L64 250L78 252L101 52Z" fill="#3be37f"/>
+      <g fill="#fff" fill-opacity=".07" stroke="#3be37f" stroke-opacity=".5" stroke-dasharray="4 3">
+        <ellipse cx="96" cy="112" rx="16" ry="32"/><ellipse cx="304" cy="112" rx="16" ry="32"/>
+        <ellipse cx="104" cy="200" rx="18" ry="30"/><ellipse cx="296" cy="200" rx="18" ry="30"/>
+      </g>
+      <path d="M200 52V120" stroke="#000" stroke-opacity=".4" stroke-width="1.5"/>
+    </g>
+  {%- when 'bag' -%}
+    <g class="a3r-bag">
+      <path d="M150 240Q150 180 200 180Q250 180 250 240" fill="none" stroke="#1b1d1a" stroke-width="12" stroke-linecap="round"/>
+      <rect x="70" y="236" width="260" height="196" rx="70" fill="url(#{{ p }}-body)"/>
+      <path d="M104 262H296" stroke="#3be37f" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="96" cy="334" rx="22" ry="90" fill="#000" opacity=".25"/>
+      <rect x="170" y="318" width="60" height="30" rx="4" fill="#eeebe3"/>
+      <text x="200" y="339" text-anchor="middle" font-family="'A3GK Sans',sans-serif" font-weight="800" font-stretch="125%" font-size="15" fill="#121310">A3GK</text>
+      <rect x="110" y="270" width="10" height="150" rx="5" fill="url(#{{ p }}-sheen)"/>
+    </g>
+{%- endcase -%}

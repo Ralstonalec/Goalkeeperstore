@@ -1,0 +1,91 @@
+{%- comment -%}
+  Studio-lit concept render of an A3GK product, drawn in SVG. Stands in for
+  photography until real product shots exist, and is labelled as a render.
+
+  Accepts:
+  - kind: spray | wash | deo | tape | socks | kit | shorts | bag | bundle
+  - uid: unique string for gradient ids (e.g. block.id)
+  - tone: 'ink' (dark studio) or 'paper' (light studio). Default ink.
+  - caption: false to hide the "Concept render" label
+  - label: accessible description override
+{%- endcomment -%}
+{%- liquid
+  assign p = uid | default: kind | prepend: 'a3r-' | handleize
+  assign tone = tone | default: 'ink'
+  case kind
+    when 'spray'
+      assign desc = 'A3GK grip spray bottle'
+    when 'wash'
+      assign desc = 'A3GK glove wash bottle'
+    when 'deo'
+      assign desc = 'A3GK deodorizer bottle'
+    when 'tape'
+      assign desc = 'Roll of A3GK finger tape'
+    when 'socks'
+      assign desc = 'A3GK grip sock'
+    when 'kit'
+      assign desc = 'Custom padded A3GK keeper jersey'
+    when 'shorts'
+      assign desc = 'Padded keeper shorts with hip and thigh pads'
+    when 'bag'
+      assign desc = 'A3GK kit bag'
+    when 'bundle'
+      assign desc = 'A3GK glove wash, grip spray and deodorizer'
+  endcase
+-%}
+<div class="a3-render a3-render--{{ tone }}" role="img" aria-label="{{ label | default: desc | escape }} (concept render)">
+  <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMax meet" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="{{ p }}-bg" cx="50%" cy="30%" r="75%">
+        {%- if tone == 'paper' -%}
+          <stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#ebe7de"/><stop offset="1" stop-color="#d9d4c8"/>
+        {%- else -%}
+          <stop offset="0" stop-color="#2d322c"/><stop offset=".5" stop-color="#171a16"/><stop offset="1" stop-color="#0b0c0a"/>
+        {%- endif -%}
+      </radialGradient>
+      <linearGradient id="{{ p }}-floor" x1="0" y1="0" x2="0" y2="1">
+        {%- if tone == 'paper' -%}
+          <stop offset="0" stop-color="#d6d1c4"/><stop offset="1" stop-color="#e8e4da"/>
+        {%- else -%}
+          <stop offset="0" stop-color="#0b0c0a"/><stop offset="1" stop-color="#151814"/>
+        {%- endif -%}
+      </linearGradient>
+      <radialGradient id="{{ p }}-shadow" cx="50%" cy="50%" r="50%">
+        <stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient id="{{ p }}-body" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#0c0d0b"/><stop offset=".18" stop-color="#2c302a"/><stop offset=".32" stop-color="#1c1f1b"/>
+        <stop offset=".78" stop-color="#121411"/><stop offset=".94" stop-color="#262a25"/><stop offset="1" stop-color="#0d0e0c"/>
+      </linearGradient>
+      <linearGradient id="{{ p }}-cap" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#1c8f4c"/><stop offset=".25" stop-color="#5cf09a"/><stop offset=".45" stop-color="#3be37f"/>
+        <stop offset=".85" stop-color="#23b460"/><stop offset="1" stop-color="#157a3f"/>
+      </linearGradient>
+      <linearGradient id="{{ p }}-label" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#bdb8ad"/><stop offset=".2" stop-color="#f4f1ea"/><stop offset=".6" stop-color="#e6e2d8"/><stop offset="1" stop-color="#a9a499"/>
+      </linearGradient>
+      <linearGradient id="{{ p }}-tapeside" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#b9b5aa"/><stop offset=".25" stop-color="#f3f1ea"/><stop offset=".7" stop-color="#dcd8ce"/><stop offset="1" stop-color="#9f9b91"/>
+      </linearGradient>
+      <linearGradient id="{{ p }}-sheen" x1="0" x2="0" y1="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".3" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="{{ p }}-cloth" x1="0" x2="1" y1="0" y2="0">
+        <stop offset="0" stop-color="#000" stop-opacity=".35"/><stop offset=".25" stop-color="#000" stop-opacity="0"/>
+        <stop offset=".5" stop-color="#fff" stop-opacity=".07"/><stop offset=".75" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/>
+      </linearGradient>
+    </defs>
+    <rect x="-2000" y="455" width="4400" height="400" fill="url(#{{ p }}-floor)" opacity=".7"/>
+    <ellipse cx="200" cy="464" rx="{% if kind == 'bundle' or kind == 'bag' %}180{% else %}110{% endif %}" ry="14" fill="url(#{{ p }}-shadow)"/>
+    {%- if kind == 'bundle' -%}
+      <g transform="translate(-96 52) scale(.88)">{%- render 'a3gk-render-part', kind: 'wash', p: p -%}</g>
+      <g transform="translate(130 58) scale(.86)">{%- render 'a3gk-render-part', kind: 'deo', p: p -%}</g>
+      <g transform="translate(12 22) scale(.95)">{%- render 'a3gk-render-part', kind: 'spray', p: p -%}</g>
+    {%- else -%}
+      {%- render 'a3gk-render-part', kind: kind, p: p -%}
+    {%- endif -%}
+  </svg>
+  {%- unless caption == false -%}
+    <span class="a3-render__cap">Concept render</span>
+  {%- endunless -%}
+</div>

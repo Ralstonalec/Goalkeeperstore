@@ -4,7 +4,16 @@
 >
   <div class="a3-wrap a3-teaser__grid">
     <div class="a3-teaser__media a3-media a3-reveal">
-      {%- render 'a3gk-media', image: section.settings.image, shot: section.settings.shot -%}
+      {%- if section.settings.image != blank -%}
+        {%- render 'a3gk-media', image: section.settings.image, shot: section.settings.shot -%}
+      {%- else -%}
+        <div class="a3-kitcycle" data-a3-kitcycle>
+          {%- render 'a3gk-render', kind: 'kit', uid: section.id, caption: false -%}
+          <div class="a3-kitcycle__swatches" aria-hidden="true">
+            <span style="--s1:#121310;--s2:#3be37f"></span><span style="--s1:#ff6a13;--s2:#121310"></span><span style="--s1:#2f55d4;--s2:#d7ff3a"></span><span style="--s1:#ff4fa3;--s2:#14213d"></span><span style="--s1:#d7ff3a;--s2:#121310"></span>
+          </div>
+        </div>
+      {%- endif -%}
     </div>
     <div class="a3-teaser__body">
       {%- if section.settings.eyebrow != blank -%}
@@ -46,6 +55,16 @@
   @media screen and (min-width: 990px) {
     .a3-teaser__grid { grid-template-columns: 1fr 1fr; gap: 8rem; }
   }
+  .a3-kitcycle { position: relative; width: 100%; height: 100%; }
+  .a3-kitcycle svg path, .a3-kitcycle svg text { transition: fill 0.9s var(--a3-ease); }
+  .a3-kitcycle__swatches { position: absolute; left: 50%; bottom: 2.4rem; transform: translateX(-50%); display: flex; gap: 0.8rem; }
+  .a3-kitcycle__swatches span {
+    width: 1.8rem; height: 1.8rem; border-radius: 50%;
+    background: linear-gradient(135deg, var(--s1) 50%, var(--s2) 50%);
+    box-shadow: 0 0 0 1px rgba(238, 235, 227, 0.25);
+    transition: transform 0.3s var(--a3-ease), box-shadow 0.3s;
+  }
+  .a3-kitcycle__swatches span.is-on { transform: scale(1.25); box-shadow: 0 0 0 2px #eeebe3; }
 {% endstylesheet %}
 
 {% schema %}

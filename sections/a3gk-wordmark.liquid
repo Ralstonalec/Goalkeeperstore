@@ -1,0 +1,38 @@
+{%- comment -%} Full-width A3GK wordmark, used at the foot of every page. {%- endcomment -%}
+<div class="a3-footmark a3-tone--{{ section.settings.tone }}">
+  <div class="a3-wrap">
+    {%- if section.settings.line != blank -%}
+      <p class="a3-footmark__line">{{ section.settings.line | escape }}</p>
+    {%- endif -%}
+    {%- render 'a3gk-logo', size: 'footer' -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .a3-footmark { background: #000; color: #eeebe3; padding: 4rem 0 2.4rem; overflow: hidden; }
+  .a3-footmark .a3-wordmark { color: #1b1e1a; margin-bottom: -1.2%; }
+  .a3-footmark__line { margin: 0 0 2.4rem; font-size: 1.3rem; color: #97948b; letter-spacing: 0.02em; }
+  .a3-footmark.a3-tone--paper { background: var(--a3-paper); }
+  .a3-footmark.a3-tone--paper .a3-wordmark { color: #d6d1c4; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK wordmark",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "line", "label": "Line above", "default": "Built by keepers, for the one who wears different colours." },
+    {
+      "type": "select",
+      "id": "tone",
+      "label": "Background",
+      "options": [
+        { "value": "ink", "label": "Dark" },
+        { "value": "paper", "label": "Light" }
+      ],
+      "default": "ink"
+    }
+  ],
+  "presets": [{ "name": "A3GK wordmark" }]
+}
+{% endschema %}

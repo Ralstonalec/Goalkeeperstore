@@ -1,0 +1,85 @@
+{%- comment -%}
+  Slow scrolling band of short phrases between sections.
+  Pauses on hover; static for reduced-motion users.
+{%- endcomment -%}
+{%- liquid
+  assign items = section.settings.items | newline_to_br | split: '<br />'
+-%}
+<div class="a3-marquee a3-tone--{{ section.settings.tone }}{% if section.settings.outline %} a3-marquee--outline{% endif %}" role="marquee" aria-label="{{ section.settings.items | newline_to_br | split: '<br />' | join: ', ' | strip_newlines | escape }}">
+  <div class="a3-marquee__track" style="--a3-speed: {{ section.settings.speed }}s" aria-hidden="true">
+    {%- for n in (1..2) -%}
+      <div class="a3-marquee__set">
+        {%- for item in items -%}
+          {%- assign t = item | strip -%}
+          {%- if t != blank -%}
+            <span class="a3-marquee__item">{{ t | escape }}</span>
+            <span class="a3-marquee__dot"></span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .a3-marquee {
+    background: var(--a3-bg);
+    color: var(--a3-text);
+    overflow: hidden;
+    border-top: 1px solid var(--a3-line);
+    border-bottom: 1px solid var(--a3-line);
+    padding: 2.4rem 0;
+  }
+
+  .a3-marquee__track { display: flex; width: max-content; animation: a3-marquee var(--a3-speed, 40s) linear infinite; }
+  .a3-marquee:hover .a3-marquee__track { animation-play-state: paused; }
+  .a3-marquee__set { display: flex; align-items: center; }
+
+  .a3-marquee__item {
+    padding: 0 3.2rem;
+    font-size: clamp(3.2rem, 2rem + 3vw, 6.4rem);
+    font-weight: 800;
+    font-stretch: 125%;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  .a3-marquee--outline .a3-marquee__item:nth-child(4n + 3) {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--a3-text);
+  }
+
+  .a3-marquee__dot { width: 1rem; height: 1rem; border-radius: 50%; background: var(--a3-green, #3be37f); flex: 0 0 auto; }
+
+  @keyframes a3-marquee { to { transform: translateX(-50%); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .a3-marquee__track { animation: none; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK marquee",
+  "tag": "section",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Phrases (one per line)", "default": "Goalkeepers only\nGlove care\nCustom padded kit\nTested on match gloves\nMade to order" },
+    { "type": "range", "id": "speed", "label": "Loop duration", "min": 10, "max": 90, "step": 5, "unit": "s", "default": 45 },
+    { "type": "checkbox", "id": "outline", "label": "Alternate outlined words", "default": true },
+    {
+      "type": "select",
+      "id": "tone",
+      "label": "Background",
+      "options": [
+        { "value": "ink", "label": "Dark" },
+        { "value": "raised", "label": "Dark, raised" },
+        { "value": "paper", "label": "Light" }
+      ],
+      "default": "ink"
+    }
+  ],
+  "presets": [{ "name": "A3GK marquee" }]
+}
+{% endschema %}

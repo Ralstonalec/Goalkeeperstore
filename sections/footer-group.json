@@ -54,9 +54,17 @@
         "padding_top": 56,
         "padding_bottom": 40
       }
+    },
+    "a3gk_wordmark": {
+      "type": "a3gk-wordmark",
+      "settings": {
+        "line": "Built by keepers, for the one who wears different colours.",
+        "tone": "ink"
+      }
     }
   },
   "order": [
-    "footer"
+    "footer",
+    "a3gk_wordmark"
   ]
 }

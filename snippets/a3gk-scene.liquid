@@ -1,0 +1,97 @@
+{%- comment -%}
+  Night-match scene for the hero: floodlights, haze, a lit pitch and the goal.
+  Drawn in SVG so the homepage looks finished before real footage exists.
+  Replaced automatically when a hero image or video is set.
+  Accepts: uid
+{%- endcomment -%}
+{%- assign p = uid | default: 'hero' | prepend: 'a3s-' | handleize -%}
+<svg class="a3-scene" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Floodlit goalmouth at night" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="{{ p }}-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#020302"/>
+      <stop offset=".38" stop-color="#07100b"/>
+      <stop offset=".47" stop-color="#10231a"/>
+      <stop offset=".48" stop-color="#0d2016"/>
+      <stop offset="1" stop-color="#050c08"/>
+    </linearGradient>
+    <radialGradient id="{{ p }}-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#f4fff8" stop-opacity=".95"/>
+      <stop offset=".08" stop-color="#d9ffe9" stop-opacity=".5"/>
+      <stop offset=".35" stop-color="#9fe8bf" stop-opacity=".12"/>
+      <stop offset="1" stop-color="#9fe8bf" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="{{ p }}-beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8fff1" stop-opacity=".16"/>
+      <stop offset="1" stop-color="#e8fff1" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="{{ p }}-pool" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#2f7a4d" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#2f7a4d" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="{{ p }}-haze" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#cfe9da" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#cfe9da" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="{{ p }}-net" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <path d="M0 0H14M0 0V14" stroke="#e9f3ec" stroke-width="1.1" stroke-opacity=".32" fill="none"/>
+    </pattern>
+    <filter id="{{ p }}-blur" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="18"/></filter>
+    <filter id="{{ p }}-soft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#{{ p }}-sky)"/>
+
+  <!-- stands -->
+  <path d="M0 400 L0 330 Q400 300 800 312 Q1200 300 1600 322 L1600 410 Z" fill="#040705"/>
+  <g fill="#cfe9da" opacity=".22">
+    <rect x="120" y="338" width="3" height="3"/><rect x="260" y="330" width="3" height="3"/><rect x="415" y="326" width="3" height="3"/>
+    <rect x="1180" y="322" width="3" height="3"/><rect x="1330" y="328" width="3" height="3"/><rect x="1470" y="332" width="3" height="3"/>
+  </g>
+
+  <!-- floodlights -->
+  <g filter="url(#{{ p }}-blur)">
+    <path d="M250 100 L-150 1000 L760 1000 Z" fill="url(#{{ p }}-beam)"/>
+    <path d="M1350 80 L860 1000 L1800 1000 Z" fill="url(#{{ p }}-beam)"/>
+  </g>
+  <circle cx="250" cy="100" r="260" fill="url(#{{ p }}-glow)"/>
+  <circle cx="1350" cy="80" r="300" fill="url(#{{ p }}-glow)"/>
+  <g fill="#f6fff9">
+    <rect x="214" y="88" width="72" height="20" rx="3"/>
+    <rect x="1308" y="68" width="84" height="22" rx="3"/>
+  </g>
+  <g fill="#0b120e" opacity=".9">
+    <rect x="246" y="108" width="8" height="240"/>
+    <rect x="1346" y="90" width="8" height="250"/>
+  </g>
+
+  <!-- pitch -->
+  <ellipse cx="1060" cy="640" rx="640" ry="230" fill="url(#{{ p }}-pool)"/>
+  <g fill="#ffffff" opacity=".025">
+    <path d="M800 470 L560 470 L-300 1000 L140 1000 Z"/>
+    <path d="M800 470 L1040 470 L1460 1000 L1900 1000 Z"/>
+    <path d="M800 470 L320 470 L-900 1000 L-560 1000 Z"/>
+  </g>
+  <g fill="none" stroke="#e9f5ee" stroke-opacity=".3" stroke-width="3">
+    <path d="M-40 582 L1640 582"/>
+    <path d="M580 582 L400 810 L1720 810 L1540 582"/>
+    <path d="M820 582 L776 668 L1344 668 L1300 582"/>
+    <path d="M920 810 Q1060 900 1200 810"/>
+  </g>
+  <ellipse cx="1060" cy="738" rx="6" ry="3" fill="#e9f5ee" opacity=".55"/>
+
+  <!-- goal: net (back, roof, sides), then the frame -->
+  <path d="M918 544 L918 424 L1202 424 L1202 544 Z" fill="url(#{{ p }}-net)"/>
+  <path d="M880 360 L1240 360 L1202 424 L918 424 Z" fill="url(#{{ p }}-net)" opacity=".75"/>
+  <path d="M880 582 L880 360 L918 424 L918 544 Z" fill="url(#{{ p }}-net)" opacity=".9"/>
+  <path d="M1240 582 L1240 360 L1202 424 L1202 544 Z" fill="url(#{{ p }}-net)" opacity=".9"/>
+  <path d="M918 544 L1202 544 M880 582 L918 544 M1240 582 L1202 544" stroke="#e9f3ec" stroke-opacity=".25" stroke-width="2" fill="none"/>
+  <g stroke="#f4fbf6" stroke-linecap="square" fill="none">
+    <path d="M880 584 V360 H1240 V584" stroke-width="13" filter="url(#{{ p }}-soft)" stroke-opacity=".5"/>
+    <path d="M880 584 V360 H1240 V584" stroke-width="9"/>
+  </g>
+  <ellipse cx="1060" cy="600" rx="260" ry="18" fill="#000" opacity=".35" filter="url(#{{ p }}-soft)"/>
+
+  <!-- haze -->
+  <ellipse cx="800" cy="470" rx="900" ry="120" fill="url(#{{ p }}-haze)"/>
+  <ellipse cx="1060" cy="400" rx="500" ry="160" fill="url(#{{ p }}-haze)"/>
+</svg>

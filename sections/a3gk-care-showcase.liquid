@@ -18,7 +18,7 @@
             {%- if p != blank and p.featured_media != blank -%}
               {%- render 'a3gk-media', image: p.featured_media.preview_image, sizes: '(min-width: 990px) 25vw, 100vw' -%}
             {%- else -%}
-              {%- render 'a3gk-media', image: block.settings.image, shot: block.settings.shot -%}
+              {%- render 'a3gk-media', image: block.settings.image, shot: block.settings.shot, render: block.settings.render, uid: block.id, tone: section.settings.tone -%}
             {%- endif -%}
           </div>
 
@@ -114,6 +114,7 @@
         { "type": "text", "id": "fallback_title", "label": "Title (before product exists)", "default": "Grip spray" },
         { "type": "text", "id": "one_liner", "label": "One-line description" },
         { "type": "image_picker", "id": "image", "label": "Image (before product exists)" },
+        { "type": "select", "id": "render", "label": "Concept render (until a photo is added)", "options": [{ "value": "none", "label": "None (photo frame)" }, { "value": "spray", "label": "Grip spray" }, { "value": "wash", "label": "Glove wash" }, { "value": "deo", "label": "Deodorizer" }, { "value": "bundle", "label": "Care bundle" }, { "value": "tape", "label": "Tape" }, { "value": "socks", "label": "Grip sock" }, { "value": "kit", "label": "Custom jersey" }, { "value": "shorts", "label": "Padded shorts" }, { "value": "bag", "label": "Kit bag" }, { "value": "scene", "label": "Floodlit goal" }], "default": "none" },
         { "type": "text", "id": "shot", "label": "Photo brief", "default": "Bottle on wet turf, floodlight rim light, label legible." },
         { "type": "header", "content": "Comparison" },
         { "type": "paragraph", "content": "Leave blank to use the product's a3gk.benchmark_* metafields. No comparison shows unless a name and price are both set." },
