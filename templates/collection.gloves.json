@@ -1,0 +1,51 @@
+{
+  "sections": {
+    "honest": {
+      "type": "a3gk-honest-picks",
+      "settings": {
+        "eyebrow": "Gloves",
+        "empty_heading": "Our own gloves? Not yet.",
+        "empty_link_label": "How to choose your next gloves",
+        "empty_link": "shopify://blogs/guides",
+        "padding_top": 112,
+        "padding_bottom": 64
+      }
+    },
+    "sizer": {
+      "type": "a3gk-statement",
+      "blocks": {
+        "l0": {
+          "type": "link",
+          "settings": {
+            "label": "Find your glove size",
+            "url": "shopify://pages/size-guide"
+          }
+        },
+        "l1": {
+          "type": "link",
+          "settings": {
+            "label": "Glove care that makes them last",
+            "url": "shopify://collections/glove-care"
+          }
+        }
+      },
+      "block_order": [
+        "l0",
+        "l1"
+      ],
+      "settings": {
+        "eyebrow": "Meanwhile",
+        "heading": "We can still help you buy the right pair.",
+        "text": "<p>Our size guide has a hand-measurement calculator and honest advice on cuts. Whatever brand you buy, measure first.</p>",
+        "layout": "split",
+        "surface": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "honest",
+    "sizer"
+  ]
+}

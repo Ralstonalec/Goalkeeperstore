@@ -1,0 +1,161 @@
+{%- comment -%}
+  Short list of products with an honest take each — not a grid.
+  With no products linked it shows the "not yet" message, which is the
+  correct state for gloves until one passes testing.
+{%- endcomment -%}
+{%- liquid
+  assign linked = 0
+  for block in section.blocks
+    if block.settings.product != blank
+      assign linked = linked | plus: 1
+    endif
+  endfor
+-%}
+<section
+  class="a3-section"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap">
+    {%- if linked == 0 -%}
+      <div class="a3-notyet">
+        <div class="a3-notyet__media a3-media a3-reveal">
+          {%- render 'a3gk-media', image: section.settings.empty_image, shot: section.settings.empty_shot -%}
+        </div>
+        <div class="a3-notyet__body">
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          <h2 class="a3-reveal" style="--a3-i: 1">{{ section.settings.empty_heading | escape }}</h2>
+          <div class="a3-lede a3-reveal" style="--a3-i: 2">{{ section.settings.empty_text }}</div>
+          {%- if section.settings.empty_link_label != blank -%}
+            <p class="a3-reveal" style="--a3-i: 3">
+              <a class="a3-link" href="{{ section.settings.empty_link | default: '#' }}">{{ section.settings.empty_link_label | escape }}</a>
+            </p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- else -%}
+      <div class="a3-head">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <p class="a3-eyebrow a3-reveal">{{ section.settings.eyebrow | escape }}</p>
+          {%- endif -%}
+          <h2 class="a3-reveal" style="--a3-i: 1">{{ section.settings.heading | escape }}</h2>
+        </div>
+        {%- if section.settings.text != blank -%}
+          <div class="a3-reveal" style="--a3-i: 2">{{ section.settings.text }}</div>
+        {%- endif -%}
+      </div>
+
+      <div class="a3-picks">
+        {%- for block in section.blocks -%}
+          {%- assign p = block.settings.product -%}
+          {%- if p != blank -%}
+            <article class="a3-pick a3-reveal" {{ block.shopify_attributes }}>
+              <a class="a3-pick__media a3-media" href="{{ p.url }}" tabindex="-1" aria-hidden="true">
+                {%- render 'a3gk-media', image: p.featured_media.preview_image, sizes: '(min-width: 990px) 40vw, 100vw' -%}
+              </a>
+              <div class="a3-pick__body">
+                <h3><a href="{{ p.url }}">{{ p.title | escape }}</a></h3>
+                <p class="a3-pick__price">{{ p.price | money }}</p>
+                {%- if block.settings.take != blank -%}
+                  <div class="a3-lede">{{ block.settings.take }}</div>
+                {%- endif -%}
+                <div class="a3-pick__fit">
+                  {%- if block.settings.good_for != blank -%}
+                    <div>
+                      <h4 class="a3-small">Good for</h4>
+                      <ul class="a3-list a3-list--yes">
+                        {%- assign lines = block.settings.good_for | newline_to_br | split: '<br />' -%}
+                        {%- for line in lines -%}
+                          {%- assign l = line | strip -%}
+                          {%- if l != blank -%}<li>{{ l | escape }}</li>{%- endif -%}
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endif -%}
+                  {%- if block.settings.not_for != blank -%}
+                    <div>
+                      <h4 class="a3-small">Not ideal for</h4>
+                      <ul class="a3-list a3-list--no">
+                        {%- assign lines = block.settings.not_for | newline_to_br | split: '<br />' -%}
+                        {%- for line in lines -%}
+                          {%- assign l = line | strip -%}
+                          {%- if l != blank -%}<li>{{ l | escape }}</li>{%- endif -%}
+                        {%- endfor -%}
+                      </ul>
+                    </div>
+                  {%- endif -%}
+                </div>
+                <p><a class="a3-link" href="{{ p.url }}">Full take &amp; specs</a></p>
+              </div>
+            </article>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-notyet { display: grid; gap: 4rem; align-items: center; }
+  .a3-notyet__media { aspect-ratio: 4 / 3; }
+  .a3-notyet h2 { font-size: clamp(3.6rem, 2.4rem + 3vw, 6.4rem); margin: 0 0 2rem; }
+
+  .a3-picks { display: grid; gap: 6rem; }
+  .a3-pick { display: grid; gap: 3.2rem; align-items: center; }
+  .a3-pick__media { aspect-ratio: 1; display: block; }
+  .a3-pick h3 { margin: 0; font-size: clamp(3rem, 2rem + 2vw, 4.8rem); }
+  .a3-pick h3 a { color: inherit; text-decoration: none; }
+  .a3-pick__price { font-family: var(--a3-display); font-weight: 700; font-size: 2.4rem; color: var(--a3-accent); margin: 0.4rem 0 1.6rem; }
+  .a3-pick__fit { display: grid; gap: 2.4rem; margin: 2.4rem 0; }
+  .a3-pick__fit h4 { margin: 0 0 1rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: inherit; }
+
+  @media screen and (min-width: 990px) {
+    .a3-notyet { grid-template-columns: 1fr 1fr; gap: 8rem; }
+    .a3-pick { grid-template-columns: 1fr 1fr; gap: 6rem; }
+    .a3-pick:nth-child(even) .a3-pick__media { order: 2; }
+    .a3-pick__fit { grid-template-columns: 1fr 1fr; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK honest picks",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Gloves" },
+    { "type": "text", "id": "heading", "label": "Heading (with products)", "default": "Gloves we'd actually wear" },
+    { "type": "richtext", "id": "text", "label": "Intro (with products)" },
+    { "type": "header", "content": "Empty state" },
+    { "type": "paragraph", "content": "Shown when no products are linked. This is the honest default for gloves." },
+    { "type": "text", "id": "empty_heading", "label": "Heading", "default": "Our own gloves? Not yet." },
+    {
+      "type": "richtext",
+      "id": "empty_text",
+      "label": "Text",
+      "default": "<p>Gloves are the one thing a keeper can't compromise on, so we won't put our name on a pair until a manufacturer can match pro-level latex, cut and stitching — tested side by side against the gloves serious keepers already trust. That could take a year. We're fine with that.</p><p>Until then: our care line makes the gloves you already own last longer, and our guides will help you pick your next pair, whoever makes it.</p>"
+    },
+    { "type": "text", "id": "empty_link_label", "label": "Link label", "default": "How to choose your next gloves" },
+    { "type": "url", "id": "empty_link", "label": "Link" },
+    { "type": "image_picker", "id": "empty_image", "label": "Image" },
+    { "type": "text", "id": "empty_shot", "label": "Placeholder shot description", "default": "Close-up of a worn glove palm: latex texture, stitching at the fingertips, scuffs from real use." },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 96 }
+  ],
+  "blocks": [
+    {
+      "type": "pick",
+      "name": "Pick",
+      "limit": 4,
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "richtext", "id": "take", "label": "Our honest take (2–3 sentences)" },
+        { "type": "textarea", "id": "good_for", "label": "Good for", "info": "One per line: surface, position, keeper type." },
+        { "type": "textarea", "id": "not_for", "label": "Not ideal for", "info": "One per line. Be specific." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "A3GK honest picks" }]
+}
+{% endschema %}

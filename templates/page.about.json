@@ -1,0 +1,106 @@
+{
+  "sections": {
+    "intro": {
+      "type": "a3gk-statement",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "About A3GK",
+        "heading": "Built for the one who wears different colours.",
+        "text": "<p>A3GK exists because keepers are an afterthought at most football shops. We sell a small range, only for keepers, and only things we'd use ourselves.</p>",
+        "layout": "split",
+        "surface": false,
+        "padding_top": 112,
+        "padding_bottom": 64
+      }
+    },
+    "standards": {
+      "type": "a3gk-statement",
+      "blocks": {
+        "p0": {
+          "type": "point",
+          "settings": {
+            "title": "If it isn't good enough to recommend, we don't sell it.",
+            "text": "<p>Every product is sampled and used before it goes on sale. Plenty don't make it.</p>"
+          }
+        },
+        "p1": {
+          "type": "point",
+          "settings": {
+            "title": "Our own brand where we can beat the big names fairly.",
+            "text": "<p>Glove care, tape and socks: the things you buy again and again. We have them made to our spec by manufacturers we've tested, and price them for repeat buying \u2014 not for margin.</p>"
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "title": "Honest takes, including the downsides.",
+            "text": "<p>Every product page says who it's for and who it isn't for.</p>"
+          }
+        },
+        "p3": {
+          "type": "point",
+          "settings": {
+            "title": "No fake discounts.",
+            "text": "<p>No inflated \"was\" prices. Bundle savings are calculated from real, current prices.</p>"
+          }
+        },
+        "p4": {
+          "type": "point",
+          "settings": {
+            "title": "Real lead times.",
+            "text": "<p>Especially for custom kit. We'd rather quote longer and deliver early.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "p0",
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "eyebrow": "How we pick",
+        "heading": "Our rules",
+        "text": "",
+        "layout": "split",
+        "surface": true,
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "gloves": {
+      "type": "a3gk-statement",
+      "blocks": {},
+      "block_order": [],
+      "settings": {
+        "eyebrow": "On gloves",
+        "heading": "One day, our own gloves.",
+        "text": "<p>When we find a manufacturer who can actually do them right \u2014 pro-level latex, cut and stitching, tested side by side against the gloves serious keepers already wear. Not before. It might take a year or more, and we're fine with that.</p>",
+        "layout": "split",
+        "surface": false,
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    },
+    "feedback": {
+      "type": "a3gk-feedback-log",
+      "settings": {
+        "limit": 3,
+        "cta_label": "Tell us something",
+        "cta_link": "shopify://pages/feedback",
+        "all_label": "Every change we've made",
+        "all_link": "shopify://pages/you-told-us",
+        "padding_top": 64,
+        "padding_bottom": 112
+      }
+    }
+  },
+  "order": [
+    "intro",
+    "standards",
+    "gloves",
+    "feedback"
+  ]
+}

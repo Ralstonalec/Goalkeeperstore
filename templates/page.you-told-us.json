@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "log": {
+      "type": "a3gk-feedback-log",
+      "settings": {
+        "eyebrow": "Changelog",
+        "heading": "You told us. We changed it.",
+        "limit": 0,
+        "cta_label": "Tell us something",
+        "cta_link": "shopify://pages/feedback",
+        "all_label": "",
+        "padding_top": 96,
+        "padding_bottom": 96
+      }
+    }
+  },
+  "order": [
+    "log"
+  ]
+}

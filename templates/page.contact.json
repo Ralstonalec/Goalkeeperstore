@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "form": {
+      "type": "a3gk-contact-form",
+      "settings": {
+        "purpose": "contact",
+        "anchor": "",
+        "eyebrow": "Contact",
+        "heading": "Talk to a keeper",
+        "text": "<p>Questions about sizing, care, an order or the builder \u2014 you'll get a reply from someone who knows the kit.</p>",
+        "surface": false,
+        "button_label": "Send",
+        "message_label": "Message",
+        "response_time": "",
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    },
+    "faq": {
+      "type": "a3gk-faq",
+      "blocks": {
+        "q0": {
+          "type": "qa",
+          "settings": {
+            "question": "Where's my order?",
+            "answer": "<p>Your shipping confirmation email has a tracking link. If you have an account, tracking is also in your order history.</p>"
+          }
+        },
+        "q1": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I pick a glove size?",
+            "answer": "<p>Use our <a href=\"/pages/size-guide\">size guide</a> \u2014 it has a hand-measurement calculator.</p>"
+          }
+        },
+        "q2": {
+          "type": "qa",
+          "settings": {
+            "question": "How do I return something?",
+            "answer": "<p>See our <a href=\"/policies/refund-policy\">returns policy</a>. Start a return from your account or reply to your order email.</p>"
+          }
+        },
+        "q3": {
+          "type": "qa",
+          "settings": {
+            "question": "How long does custom kit take?",
+            "answer": "<p>The lead time is shown in the builder before you pay, and in your order confirmation.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q0",
+        "q1",
+        "q2",
+        "q3"
+      ],
+      "settings": {
+        "anchor": "",
+        "eyebrow": "Quick answers",
+        "heading": "Common questions",
+        "schema": true,
+        "surface": true,
+        "padding_top": 80,
+        "padding_bottom": 80
+      }
+    }
+  },
+  "order": [
+    "form",
+    "faq"
+  ]
+}

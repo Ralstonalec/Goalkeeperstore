@@ -1,0 +1,167 @@
+{%- comment -%}
+  Shopify-native contact form, specialised by "purpose":
+  - contact:  general support
+  - feedback: product/site feedback (feeds the "You told us" log)
+  - team:     team / club order enquiry
+  Submissions arrive in the store's email inbox with the purpose tagged,
+  so they're easy to filter. No app required.
+{%- endcomment -%}
+{%- liquid
+  assign purpose = section.settings.purpose
+  assign fid = 'A3Form-' | append: section.id
+-%}
+<section
+  id="{{ section.settings.anchor | default: section.id | handleize }}"
+  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-form">
+    <div class="a3-form__intro">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="a3-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.text != blank -%}
+        <div class="a3-lede">{{ section.settings.text }}</div>
+      {%- endif -%}
+      {%- if section.settings.response_time != blank -%}
+        <p class="a3-notice">{{ section.settings.response_time | escape }}</p>
+      {%- endif -%}
+      {%- if section.settings.email != blank -%}
+        <p>Or email <a class="a3-link" href="mailto:{{ section.settings.email }}">{{ section.settings.email | escape }}</a></p>
+      {%- endif -%}
+    </div>
+
+    {%- form 'contact', id: fid, class: 'a3-card a3-form__card' -%}
+      {%- if form.posted_successfully? -%}
+        <p class="a3-notice" role="status" tabindex="-1" autofocus>{{ section.settings.success | escape }}</p>
+      {%- elsif form.errors -%}
+        <div class="a3-notice a3-notice--warn" role="alert">{{ form.errors | default_errors }}</div>
+      {%- endif -%}
+
+      <input type="hidden" name="contact[Purpose]" value="{{ purpose }}">
+      <input type="hidden" name="contact[Page]" value="{{ request.path }}">
+
+      <div class="a3-form__grid">
+        <div class="a3-field">
+          <label for="{{ fid }}-name">Name</label>
+          <input class="a3-input" id="{{ fid }}-name" type="text" name="contact[name]" autocomplete="name" value="{{ form.name }}" required>
+        </div>
+        <div class="a3-field">
+          <label for="{{ fid }}-email">Email</label>
+          <input class="a3-input" id="{{ fid }}-email" type="email" name="contact[email]" autocomplete="email" spellcheck="false" autocapitalize="off" value="{{ form.email }}" required>
+        </div>
+
+        {%- case purpose -%}
+          {%- when 'feedback' -%}
+            <div class="a3-field">
+              <label for="{{ fid }}-about">What's it about?</label>
+              <select class="a3-select" id="{{ fid }}-about" name="contact[About]">
+                <option>A product I bought</option>
+                <option>Fit or sizing</option>
+                <option>The kit builder</option>
+                <option>Delivery</option>
+                <option>Something you should stock (or stop stocking)</option>
+                <option>Something else</option>
+              </select>
+            </div>
+            <div class="a3-field">
+              <label for="{{ fid }}-order">Order number (optional)</label>
+              <input class="a3-input" id="{{ fid }}-order" type="text" name="contact[Order]">
+            </div>
+          {%- when 'team' -%}
+            <div class="a3-field">
+              <label for="{{ fid }}-club">Club / team</label>
+              <input class="a3-input" id="{{ fid }}-club" type="text" name="contact[Club]" required>
+            </div>
+            <div class="a3-field">
+              <label for="{{ fid }}-qty">Roughly how many keepers / pieces?</label>
+              <input class="a3-input" id="{{ fid }}-qty" type="text" name="contact[Quantity]" inputmode="numeric" required>
+            </div>
+            <div class="a3-field">
+              <label for="{{ fid }}-date">When do you need it by?</label>
+              <input class="a3-input" id="{{ fid }}-date" type="date" name="contact[Needed by]">
+            </div>
+            <div class="a3-field">
+              <label for="{{ fid }}-what">What do you need?</label>
+              <select class="a3-select" id="{{ fid }}-what" name="contact[Items]">
+                <option>Custom keeper kits (builder)</option>
+                <option>Glove care for the squad</option>
+                <option>Tape / socks in bulk</option>
+                <option>A mix — let's talk</option>
+              </select>
+            </div>
+          {%- else -%}
+            <div class="a3-field">
+              <label for="{{ fid }}-topic">Topic</label>
+              <select class="a3-select" id="{{ fid }}-topic" name="contact[Topic]">
+                <option>An order</option>
+                <option>Sizing</option>
+                <option>Glove care</option>
+                <option>The kit builder</option>
+                <option>Returns</option>
+                <option>Something else</option>
+              </select>
+            </div>
+            <div class="a3-field">
+              <label for="{{ fid }}-order">Order number (optional)</label>
+              <input class="a3-input" id="{{ fid }}-order" type="text" name="contact[Order]">
+            </div>
+        {%- endcase -%}
+      </div>
+
+      <div class="a3-field">
+        <label for="{{ fid }}-body">{{ section.settings.message_label | escape }}</label>
+        <textarea class="a3-textarea" id="{{ fid }}-body" name="contact[body]" required>{{ form.body }}</textarea>
+      </div>
+
+      <button type="submit" class="a3-btn">{{ section.settings.button_label | escape }}</button>
+    {%- endform -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-form { display: grid; gap: 4rem; align-items: start; }
+  .a3-form h2 { margin: 0 0 1.6rem; font-size: clamp(3.2rem, 2.2rem + 2.4vw, 5.2rem); }
+  .a3-form__card { display: grid; gap: 2rem; }
+  .a3-form__grid { display: grid; gap: 2rem; }
+  @media screen and (min-width: 750px) {
+    .a3-form__grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media screen and (min-width: 990px) {
+    .a3-form { grid-template-columns: 1fr 1.3fr; gap: 8rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK form",
+  "tag": "div",
+  "settings": [
+    {
+      "type": "select",
+      "id": "purpose",
+      "label": "Purpose",
+      "options": [
+        { "value": "contact", "label": "Contact / support" },
+        { "value": "feedback", "label": "Feedback" },
+        { "value": "team", "label": "Team / club order" }
+      ],
+      "default": "contact"
+    },
+    { "type": "text", "id": "anchor", "label": "Anchor" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Talk to a keeper" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Ask us anything" },
+    { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>You'll get a reply from a person who knows the kit, not a script.</p>" },
+    { "type": "text", "id": "response_time", "label": "Response time promise", "info": "Only promise what you can keep, e.g. 'We reply within 1 working day.'" },
+    { "type": "text", "id": "email", "label": "Direct email (optional)" },
+    { "type": "text", "id": "message_label", "label": "Message label", "default": "Message" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Send" },
+    { "type": "text", "id": "success", "label": "Success message", "default": "Got it — thanks. A real person will reply." },
+    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "presets": [{ "name": "A3GK form" }]
+}
+{% endschema %}

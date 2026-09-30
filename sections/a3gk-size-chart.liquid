@@ -1,0 +1,120 @@
+{%- comment -%}
+  Editable size chart (apparel, protection, socks, brand glove charts).
+  Rows are blocks. With no rows it says the chart isn't confirmed yet
+  rather than showing numbers nobody has checked.
+{%- endcomment -%}
+{%- liquid
+  assign cols = 0
+  if section.settings.col_1 != blank
+    assign cols = 1
+  endif
+  if section.settings.col_2 != blank
+    assign cols = 2
+  endif
+  if section.settings.col_3 != blank
+    assign cols = 3
+  endif
+  if section.settings.col_4 != blank
+    assign cols = 4
+  endif
+  if section.settings.col_5 != blank
+    assign cols = 5
+  endif
+-%}
+<section
+  id="{{ section.settings.anchor | default: section.id | handleize }}"
+  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-wrap--narrow">
+    <h2 class="a3-chart__title">{{ section.settings.heading | escape }}</h2>
+    {%- if section.settings.intro != blank -%}
+      <div class="a3-muted a3-chart__intro">{{ section.settings.intro }}</div>
+    {%- endif -%}
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="a3-table-scroll">
+        <table class="a3-table a3-chart">
+          <thead>
+            <tr>
+              <th scope="col">{{ section.settings.size_label | escape }}</th>
+              {%- if cols >= 1 -%}<th scope="col">{{ section.settings.col_1 | escape }}</th>{%- endif -%}
+              {%- if cols >= 2 -%}<th scope="col">{{ section.settings.col_2 | escape }}</th>{%- endif -%}
+              {%- if cols >= 3 -%}<th scope="col">{{ section.settings.col_3 | escape }}</th>{%- endif -%}
+              {%- if cols >= 4 -%}<th scope="col">{{ section.settings.col_4 | escape }}</th>{%- endif -%}
+              {%- if cols >= 5 -%}<th scope="col">{{ section.settings.col_5 | escape }}</th>{%- endif -%}
+            </tr>
+          </thead>
+          <tbody>
+            {%- for block in section.blocks -%}
+              <tr {{ block.shopify_attributes }}>
+                <th scope="row">{{ block.settings.size | escape }}</th>
+                {%- if cols >= 1 -%}<td>{{ block.settings.v1 | escape }}</td>{%- endif -%}
+                {%- if cols >= 2 -%}<td>{{ block.settings.v2 | escape }}</td>{%- endif -%}
+                {%- if cols >= 3 -%}<td>{{ block.settings.v3 | escape }}</td>{%- endif -%}
+                {%- if cols >= 4 -%}<td>{{ block.settings.v4 | escape }}</td>{%- endif -%}
+                {%- if cols >= 5 -%}<td>{{ block.settings.v5 | escape }}</td>{%- endif -%}
+              </tr>
+            {%- endfor -%}
+          </tbody>
+        </table>
+      </div>
+    {%- else -%}
+      <p class="a3-notice a3-notice--warn">{{ section.settings.empty_text | escape }}</p>
+    {%- endif -%}
+
+    {%- if section.settings.advice != blank -%}
+      <div class="a3-chart__advice">{{ section.settings.advice }}</div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% stylesheet %}
+  .a3-chart__title { margin: 0 0 1.2rem; font-size: clamp(3rem, 2rem + 2vw, 4.4rem); }
+  .a3-chart__intro { margin-bottom: 2.4rem; }
+  .a3-chart th[scope='row'] { color: var(--a3-text); font-weight: 700; width: auto; }
+  .a3-chart__advice { margin-top: 2.4rem; line-height: 1.65; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK size chart",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "anchor", "label": "Anchor", "info": "e.g. apparel — lets you link to /pages/size-guide#apparel" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Apparel & protection" },
+    { "type": "richtext", "id": "intro", "label": "Intro" },
+    { "type": "text", "id": "size_label", "label": "First column label", "default": "Size" },
+    { "type": "text", "id": "col_1", "label": "Column 1 label", "default": "Chest (cm)" },
+    { "type": "text", "id": "col_2", "label": "Column 2 label", "default": "Waist (cm)" },
+    { "type": "text", "id": "col_3", "label": "Column 3 label", "default": "Hip (cm)" },
+    { "type": "text", "id": "col_4", "label": "Column 4 label", "default": "Height (cm)" },
+    { "type": "text", "id": "col_5", "label": "Column 5 label" },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Text when there are no rows",
+      "default": "Final measurements are being confirmed with our manufacturer from production samples. We'd rather show nothing than numbers we haven't checked."
+    },
+    { "type": "richtext", "id": "advice", "label": "Fit advice" },
+    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 64 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Row",
+      "settings": [
+        { "type": "text", "id": "size", "label": "Size", "default": "M" },
+        { "type": "text", "id": "v1", "label": "Column 1" },
+        { "type": "text", "id": "v2", "label": "Column 2" },
+        { "type": "text", "id": "v3", "label": "Column 3" },
+        { "type": "text", "id": "v4", "label": "Column 4" },
+        { "type": "text", "id": "v5", "label": "Column 5" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "A3GK size chart" }]
+}
+{% endschema %}

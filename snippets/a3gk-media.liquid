@@ -1,0 +1,42 @@
+{%- comment -%}
+  Renders an image, or an honest placeholder describing the exact shot needed.
+
+  Accepts:
+  - image: image object (optional)
+  - shot: string describing the photo that belongs here (used when image is blank)
+  - sizes: sizes attribute (optional)
+  - loading: 'lazy' (default) or 'eager'
+  - alt: alt text override (optional)
+
+  Usage:
+  {% render 'a3gk-media', image: block.settings.image, shot: 'Close-up: wet latex palm, grip spray mist' %}
+{%- endcomment -%}
+{%- liquid
+  assign loading = loading | default: 'lazy'
+  assign sizes = sizes | default: '(min-width: 990px) 50vw, 100vw'
+-%}
+{%- if image != blank -%}
+  {%- liquid
+    assign alt_text = alt | default: image.alt | default: shot
+    if loading == 'eager'
+      assign fetch = 'high'
+    else
+      assign fetch = 'auto'
+    endif
+  -%}
+  {{
+    image
+    | image_url: width: 2400
+    | image_tag:
+      loading: loading,
+      fetchpriority: fetch,
+      sizes: sizes,
+      widths: '375, 550, 750, 1100, 1500, 1800, 2400',
+      alt: alt_text
+  }}
+{%- else -%}
+  <div class="a3-shot" role="img" aria-label="{{ shot | default: 'Photo coming soon' | escape }}">
+    <span class="a3-shot__tag">Photo to come</span>
+    <span>{{ shot | default: 'Real photography goes here.' | escape }}</span>
+  </div>
+{%- endif -%}

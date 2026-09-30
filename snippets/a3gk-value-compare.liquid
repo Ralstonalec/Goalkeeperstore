@@ -1,0 +1,48 @@
+{%- comment -%}
+  Honest price comparison against a named big-brand equivalent.
+  Reads product metafields, with optional overrides.
+
+  Accepts:
+  - product: product object (required)
+  - name: benchmark product name override (e.g. "GloveGlu grip spray")
+  - price: benchmark price override, as a decimal string in store currency (e.g. "21.00")
+  - checked: when the benchmark price was checked (e.g. "Sept 2026")
+
+  Metafields (namespace a3gk): benchmark_name, benchmark_price (decimal), benchmark_checked
+  Renders nothing unless both a name and a price exist — no made-up comparisons.
+{%- endcomment -%}
+{%- liquid
+  assign b_name = name | default: product.metafields.a3gk.benchmark_name.value
+  assign b_price_raw = price | default: product.metafields.a3gk.benchmark_price.value
+  assign b_checked = checked | default: product.metafields.a3gk.benchmark_checked.value
+-%}
+{%- if product != blank and b_name != blank and b_price_raw != blank -%}
+  {%- liquid
+    assign b_cents = b_price_raw | times: 100 | round
+    assign ours = product.price
+    assign diff = b_cents | minus: ours
+  -%}
+  <div class="a3-compare">
+    <div class="a3-compare__row">
+      <span class="a3-compare__label">Ours</span>
+      <span class="a3-compare__price a3-accent">{{ ours | money }}</span>
+    </div>
+    <div class="a3-compare__row">
+      <span class="a3-compare__label">{{ b_name | escape }}</span>
+      <span class="a3-compare__price">{{ b_cents | money }}</span>
+    </div>
+    <p class="a3-small a3-compare__note">
+      {%- if diff > 0 -%}
+        {{ diff | money }} less.
+      {%- elsif diff == 0 -%}
+        Same price.
+      {%- else -%}
+        {{ diff | abs | money }} more.
+      {%- endif -%}
+      {%- if b_checked != blank %}
+        Their price checked {{ b_checked | escape }} at full retail.
+      {%- endif %}
+      Not a "was/now" discount — just what each costs.
+    </p>
+  </div>
+{%- endif -%}

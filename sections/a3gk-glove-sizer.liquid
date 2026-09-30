@@ -1,0 +1,174 @@
+{%- comment -%}
+  Glove size helper. Uses the common rule of thumb (glove size ≈ hand
+  circumference in inches around the knuckles, thumb excluded) and says
+  plainly that brands vary. Saves the measurement in the browser so it can
+  pre-fill next time; logged-in customers can also store it as a fit
+  preference via the accounts app.
+{%- endcomment -%}
+<section
+  class="a3-section{% if section.settings.surface %} a3-section--surface{% endif %}"
+  style="--a3-pad-top: {{ section.settings.padding_top }}px; --a3-pad-bottom: {{ section.settings.padding_bottom }}px;"
+>
+  <div class="a3-wrap a3-sizer">
+    <div class="a3-sizer__how">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="a3-eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      {%- endif -%}
+      <h2>{{ section.settings.heading | escape }}</h2>
+      <div class="a3-lede">{{ section.settings.text }}</div>
+      <div class="a3-sizer__diagram a3-media">
+        {%- render 'a3gk-media', image: section.settings.image, shot: section.settings.shot -%}
+      </div>
+    </div>
+
+    <a3-glove-sizer class="a3-card a3-sizer__tool">
+      <h3 class="h4">Find your size</h3>
+      <form class="a3-sizer__form" novalidate>
+        <div class="a3-field">
+          <label for="a3-sizer-m-{{ section.id }}">Hand circumference at the knuckles (no thumb)</label>
+          <div class="a3-sizer__row">
+            <input
+              id="a3-sizer-m-{{ section.id }}"
+              class="a3-input"
+              type="number"
+              inputmode="decimal"
+              min="10"
+              max="35"
+              step="0.1"
+              name="measure"
+              placeholder="e.g. 21.5"
+              required
+            >
+            <select class="a3-select" name="unit" aria-label="Unit">
+              <option value="cm" selected>cm</option>
+              <option value="in">inches</option>
+            </select>
+          </div>
+        </div>
+        <fieldset class="a3-sizer__pref">
+          <legend class="a3-small">How do you like them?</legend>
+          <label><input type="radio" name="pref" value="snug" checked> Snug (negative cut feel)</label>
+          <label><input type="radio" name="pref" value="room"> A little room (flat/roll cut feel)</label>
+        </fieldset>
+        <button type="submit" class="a3-btn">Show my size</button>
+      </form>
+      <div class="a3-sizer__result" role="status" aria-live="polite" hidden>
+        <p class="a3-small">Your starting size</p>
+        <p class="a3-sizer__size"><span data-size></span></p>
+        <p data-note class="a3-muted"></p>
+      </div>
+      <p class="a3-small">{{ section.settings.disclaimer | escape }}</p>
+    </a3-glove-sizer>
+  </div>
+</section>
+
+<script>
+  if (!customElements.get('a3-glove-sizer')) {
+    customElements.define(
+      'a3-glove-sizer',
+      class extends HTMLElement {
+        connectedCallback() {
+          this.form = this.querySelector('form');
+          this.result = this.querySelector('.a3-sizer__result');
+          this.form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            this.calculate();
+          });
+          try {
+            const saved = JSON.parse(localStorage.getItem('a3gk:fit') || 'null');
+            if (saved && saved.hand) {
+              this.form.measure.value = saved.hand.value;
+              this.form.unit.value = saved.hand.unit;
+            }
+          } catch (e) {}
+        }
+
+        calculate() {
+          const raw = parseFloat(this.form.measure.value);
+          const unit = this.form.unit.value;
+          const pref = this.form.pref.value;
+          if (!raw || raw <= 0) {
+            this.form.measure.focus();
+            return;
+          }
+          const inches = unit === 'cm' ? raw / 2.54 : raw;
+          if (inches < 4 || inches > 13) {
+            this.show('—', 'That measurement looks off. Wrap the tape around the widest part of your palm, just below the knuckles, thumb tucked out of the way.');
+            return;
+          }
+          // Round to nearest half size, then nudge for preference.
+          let size = Math.round(inches * 2) / 2;
+          const between = Math.abs(inches * 2 - Math.round(inches * 2)) > 0.35;
+          if (pref === 'room' && between) size += 0.5;
+          size = Math.min(12, Math.max(4, size));
+          const label = Number.isInteger(size) ? String(size) : size.toFixed(1);
+          const note =
+            pref === 'snug'
+              ? 'Snug-fitting cuts (negative) can feel tight in a new glove — latex loosens a little with use. If you are between sizes and prefer comfort, go up half a size.'
+              : 'For a bit of room, especially in flat or roll cuts, this is your size. If fingertips touch the end, go up half a size.';
+          this.show(label, note);
+          try {
+            const saved = JSON.parse(localStorage.getItem('a3gk:fit') || '{}');
+            saved.hand = { value: raw, unit, size: label, pref };
+            localStorage.setItem('a3gk:fit', JSON.stringify(saved));
+          } catch (e) {}
+        }
+
+        show(size, note) {
+          this.result.hidden = false;
+          this.result.querySelector('[data-size]').textContent = size;
+          this.result.querySelector('[data-note]').textContent = note;
+        }
+      }
+    );
+  }
+</script>
+
+{% stylesheet %}
+  .a3-sizer { display: grid; gap: 4rem; align-items: start; }
+  .a3-sizer h2 { margin: 0 0 1.6rem; font-size: clamp(3.4rem, 2.2rem + 3vw, 5.6rem); }
+  .a3-sizer__diagram { aspect-ratio: 4 / 3; margin-top: 2.4rem; }
+  .a3-sizer__form { display: grid; gap: 2rem; }
+  .a3-sizer__row { display: grid; grid-template-columns: 1fr 12rem; gap: 1rem; }
+  .a3-sizer__pref { border: 0; padding: 0; margin: 0; display: grid; gap: 0.8rem; }
+  .a3-sizer__pref legend { margin-bottom: 0.8rem; }
+  .a3-sizer__pref label { display: flex; gap: 1rem; align-items: center; cursor: pointer; }
+  .a3-sizer__pref input { accent-color: var(--a3-accent); width: 1.8rem; height: 1.8rem; }
+  .a3-sizer__result { border-top: 1px solid var(--a3-line); padding-top: 1.6rem; }
+  .a3-sizer__result p { margin: 0 0 0.6rem; }
+  .a3-sizer__size { font-family: var(--a3-display); font-weight: 800; font-size: 7.2rem; line-height: 1; color: var(--a3-accent); }
+
+  @media screen and (min-width: 990px) {
+    .a3-sizer { grid-template-columns: 1.1fr 1fr; gap: 6rem; }
+    .a3-sizer__tool { position: sticky; top: 10rem; }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "A3GK glove sizer",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Glove sizing" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Measure once. Buy right." },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "How to measure",
+      "default": "<p>Wrap a soft tape around your <strong>writing hand</strong>, across the widest part of the palm just below the knuckles. Leave the thumb out. Keep the hand flat and relaxed — don't make a fist.</p><p>As a rule of thumb, your glove size is close to that number in inches. It's a starting point, not a guarantee: every brand cuts differently, so always check the brand's own chart too.</p>"
+    },
+    { "type": "image_picker", "id": "image", "label": "Measuring diagram / photo" },
+    { "type": "text", "id": "shot", "label": "Placeholder shot description", "default": "Overhead: flat hand on dark surface, soft tape wrapped below the knuckles, thumb out." },
+    {
+      "type": "text",
+      "id": "disclaimer",
+      "label": "Disclaimer",
+      "default": "General guide only. Brands vary by up to half a size — check the brand chart before you buy."
+    },
+    { "type": "checkbox", "id": "surface", "label": "Raised background", "default": false },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 160, "step": 8, "unit": "px", "default": 80 }
+  ],
+  "presets": [{ "name": "A3GK glove sizer" }]
+}
+{% endschema %}
