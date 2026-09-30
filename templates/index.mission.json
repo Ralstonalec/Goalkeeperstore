@@ -176,6 +176,18 @@
         "padding_bottom": 112,
         "all_link": "/pages/you-told-us"
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit",
+        "kicker": "Start here",
+        "heading": "Your kit. Your colours."
+      }
     }
   },
   "order": [
@@ -183,6 +195,7 @@
     "manifesto",
     "principles",
     "roadmap",
-    "feedback"
+    "feedback",
+    "cta"
   ]
 }

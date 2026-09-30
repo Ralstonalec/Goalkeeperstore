@@ -163,6 +163,19 @@
         "padding_bottom": 80,
         "tone": "raised"
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Ask a question",
+        "button_2_link": "/pages/contact",
+        "render": "kit",
+        "kicker": "Design once",
+        "heading": "One design. Every keeper.",
+        "text": "<p>Set up the kit in the designer, share the link with your coaches, then send us the squad list.</p>"
+      }
     }
   },
   "order": [
@@ -170,6 +183,7 @@
     "how",
     "tiers",
     "form",
-    "faq"
+    "faq",
+    "cta"
   ]
 }

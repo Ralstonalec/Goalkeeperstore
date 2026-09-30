@@ -1,0 +1,62 @@
+{%- comment -%}
+  Illustration: how to measure a hand for glove size. A flat hand, palm
+  down, with a soft tape wrapped just below the knuckles (thumb out).
+  Used by the glove sizer until a real photo is added.
+  Accepts: uid
+{%- endcomment -%}
+{%- assign p = uid | default: 'hand' | prepend: 'a3h-' | handleize -%}
+<svg class="a3-illus" viewBox="0 0 640 480" role="img" aria-label="Measuring a hand: wrap a soft tape around the palm just below the knuckles, thumb out" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="{{ p }}-bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#20241f"/>
+      <stop offset="1" stop-color="#0c0d0b"/>
+    </radialGradient>
+    <linearGradient id="{{ p }}-skin" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d8c3ad"/>
+      <stop offset="1" stop-color="#b39a82"/>
+    </linearGradient>
+    <linearGradient id="{{ p }}-tape" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4ff08f"/>
+      <stop offset="1" stop-color="#27b865"/>
+    </linearGradient>
+    <filter id="{{ p }}-sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000" flood-opacity=".55"/>
+    </filter>
+  </defs>
+  <rect width="640" height="480" fill="url(#{{ p }}-bg)"/>
+  <g stroke="#eeebe3" stroke-opacity=".06">
+    <path d="M0 120H640M0 240H640M0 360H640M160 0V480M320 0V480M480 0V480"/>
+  </g>
+  <g filter="url(#{{ p }}-sh)">
+    <!-- fingers -->
+    <rect x="228" y="70" width="44" height="170" rx="22" fill="url(#{{ p }}-skin)"/>
+    <rect x="278" y="48" width="46" height="190" rx="23" fill="url(#{{ p }}-skin)"/>
+    <rect x="330" y="58" width="45" height="182" rx="22.5" fill="url(#{{ p }}-skin)"/>
+    <rect x="380" y="92" width="40" height="150" rx="20" fill="url(#{{ p }}-skin)"/>
+    <!-- palm -->
+    <path d="M226 208 C222 290 236 360 262 400 L384 400 C408 360 424 300 420 214 Z" fill="url(#{{ p }}-skin)"/>
+    <!-- thumb, held out -->
+    <path d="M236 300 C200 290 168 262 150 232 C140 214 160 200 176 212 C198 230 222 246 250 256 Z" fill="url(#{{ p }}-skin)"/>
+    <!-- knuckle creases -->
+    <g stroke="#8f7865" stroke-opacity=".5" stroke-width="2" fill="none" stroke-linecap="round">
+      <path d="M238 196q12 6 24 0M290 186q12 6 24 0M341 190q12 6 24 0M389 202q10 5 20 0"/>
+    </g>
+    <!-- tape wrapped below the knuckles -->
+    <path d="M214 246 C270 262 370 262 432 244 L436 280 C372 300 268 300 210 282 Z" fill="url(#{{ p }}-tape)"/>
+    <g stroke="#0e0f0d" stroke-opacity=".55" stroke-width="2">
+      <path d="M238 258v12M262 262v18M286 264v12M310 265v18M334 265v12M358 264v18M382 262v12M406 258v18"/>
+    </g>
+    <!-- tape tail -->
+    <path d="M432 244 C470 236 500 250 520 274 L508 290 C490 270 468 262 436 280 Z" fill="url(#{{ p }}-tape)"/>
+  </g>
+  <!-- callouts -->
+  <g font-family="'A3GK Sans', system-ui, sans-serif" fill="#eeebe3">
+    <path d="M520 282 L560 330" stroke="#3be37f" stroke-width="1.5"/>
+    <circle cx="520" cy="282" r="4" fill="#3be37f"/>
+    <text x="566" y="344" font-size="15" font-weight="600" text-anchor="middle">Widest point</text>
+    <text x="566" y="364" font-size="13" fill-opacity=".6" text-anchor="middle">below knuckles</text>
+    <path d="M160 222 L100 160" stroke="#eeebe3" stroke-opacity=".5" stroke-width="1.5"/>
+    <text x="96" y="150" font-size="15" font-weight="600" text-anchor="middle">Thumb out</text>
+    <text x="320" y="446" font-size="13" fill-opacity=".6" text-anchor="middle">Writing hand · flat and relaxed · no fist</text>
+  </g>
+</svg>

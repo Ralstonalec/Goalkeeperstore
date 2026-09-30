@@ -164,6 +164,18 @@
         "padding_bottom": 80,
         "tone": "ink"
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Talk to a keeper",
+        "button_link": "/pages/contact",
+        "button_2_label": "Design your kit",
+        "button_2_link": "/pages/builder",
+        "render": "kit",
+        "heading": "Still got questions?",
+        "text": "<p>Talk to someone who knows the kit, or start designing and ask as you go.</p>"
+      }
     }
   },
   "order": [
@@ -172,6 +184,7 @@
     "care",
     "shipping",
     "builder",
-    "returns"
+    "returns",
+    "cta"
   ]
 }

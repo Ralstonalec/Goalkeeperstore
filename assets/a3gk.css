@@ -823,3 +823,194 @@ a:hover .a3-render svg,
 .select:after { box-shadow: 0 0 0 1px var(--a3-line-strong); }
 .field__input:focus,
 .select__select:focus { box-shadow: 0 0 0 2px var(--a3-accent); }
+
+/* ======================================================================
+   Design layer 2: every section below the hero gets the same finish.
+   Chapter numbers, lit panels, card steps, a richer FAQ, glowing forms.
+   ====================================================================== */
+
+/* Chapter numbers: 01, 02 … above each section heading, automatically. */
+main { counter-reset: a3-chapter; }
+.a3-section .a3-statement__title,
+.a3-section .a3-head h2,
+.a3-section .a3-faq > div:first-child > h2,
+.a3-section .a3-form__intro > h2,
+.a3-section .a3-chart__title,
+.a3-section .a3-bundle h2,
+.a3-section .a3-sizer h2 {
+  counter-increment: a3-chapter;
+  font-stretch: 112%;
+  letter-spacing: -0.035em;
+}
+.a3-section .a3-statement__title::before,
+.a3-section .a3-head h2::before,
+.a3-section .a3-faq > div:first-child > h2::before,
+.a3-section .a3-form__intro > h2::before,
+.a3-section .a3-chart__title::before,
+.a3-section .a3-bundle h2::before,
+.a3-section .a3-sizer h2::before {
+  content: counter(a3-chapter, decimal-leading-zero);
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  margin-bottom: 1.6rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-stretch: 112%;
+  letter-spacing: 0.18em;
+  color: var(--a3-accent-text);
+}
+
+/* Lit panels: a soft floodlight glow on every dark section, a hairline on top. */
+.a3-tone--ink.a3-section,
+.a3-tone--raised.a3-section {
+  background-image:
+    radial-gradient(60% 50% at 10% 0%, rgba(59, 227, 127, 0.07), rgba(59, 227, 127, 0) 70%),
+    radial-gradient(40% 40% at 100% 100%, rgba(238, 235, 227, 0.03), rgba(238, 235, 227, 0) 70%);
+  border-top: 1px solid rgba(238, 235, 227, 0.06);
+}
+
+/* Steps, phases and price tiers as cards with big numbers. */
+.a3-steps { gap: 1.2rem !important; }
+.a3-steps__item.a3-item {
+  position: relative;
+  padding: 2.8rem 2.4rem 3.2rem;
+  border: 1px solid var(--a3-line);
+  border-top: 1px solid var(--a3-line);
+  border-radius: calc(var(--a3-radius, 4px) * 2);
+  background: linear-gradient(180deg, rgba(238, 235, 227, 0.04), rgba(238, 235, 227, 0) 60%);
+  transition: border-color 0.3s, transform 0.4s var(--a3-ease), box-shadow 0.4s var(--a3-ease);
+}
+.a3-steps__item.a3-item:hover { border-color: var(--a3-line-strong); transform: translateY(-3px); box-shadow: 0 30px 50px -30px rgba(0, 0, 0, 0.9); }
+.a3-steps__item.is-current { border-color: rgba(59, 227, 127, 0.45); box-shadow: inset 0 1px 0 rgba(59, 227, 127, 0.5); }
+.a3-steps__item .a3-steps__n {
+  display: block;
+  margin-bottom: 2.4rem;
+  font-size: 4.8rem;
+  font-weight: 800;
+  font-stretch: 125%;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(238, 235, 227, 0.35);
+}
+.a3-tone--paper .a3-steps__item .a3-steps__n { -webkit-text-stroke-color: rgba(18, 19, 16, 0.35); }
+.a3-steps__item h3 { font-size: 2rem; font-stretch: 108%; letter-spacing: -0.02em; }
+.a3-steps__value { font-size: 3.2rem !important; font-weight: 800; font-stretch: 118%; letter-spacing: -0.03em; color: var(--a3-accent-text); }
+
+/* FAQ: bigger rows, numbered, lit when open. */
+.a3-acc { counter-reset: a3-q; }
+.a3-acc details { counter-increment: a3-q; border-bottom: 1px solid var(--a3-line); transition: background 0.3s; }
+.a3-acc details:first-child { border-top: 1px solid var(--a3-line); }
+.a3-acc summary {
+  display: grid !important;
+  grid-template-columns: 4rem 1fr auto;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 2.4rem 0.8rem 2.4rem 0 !important;
+  font-size: clamp(1.6rem, 1.4rem + 0.4vw, 2rem) !important;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  cursor: pointer;
+  list-style: none;
+}
+.a3-acc summary::-webkit-details-marker { display: none; }
+.a3-acc summary::before {
+  content: counter(a3-q, decimal-leading-zero);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--a3-muted);
+}
+.a3-acc summary:hover { color: var(--a3-accent-text); }
+.a3-acc details[open] { background: linear-gradient(90deg, rgba(59, 227, 127, 0.05), rgba(59, 227, 127, 0) 60%); }
+.a3-acc details[open] summary::before { color: var(--a3-accent-text); }
+.a3-acc__body { padding: 0 4rem 2.8rem 5.2rem !important; font-size: 1.6rem; line-height: 1.7; }
+
+/* Forms: a lit card. */
+.a3-form__card.a3-card {
+  position: relative;
+  border: 1px solid var(--a3-line);
+  border-radius: calc(var(--a3-radius, 4px) * 2);
+  background: linear-gradient(180deg, #181a17, #121411);
+  box-shadow: 0 40px 80px -40px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(238, 235, 227, 0.06);
+}
+.a3-form__card.a3-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background: linear-gradient(140deg, rgba(59, 227, 127, 0.45), rgba(59, 227, 127, 0) 40%);
+  filter: blur(18px);
+  opacity: 0.45;
+}
+.a3-form__points { list-style: none; margin: 3.2rem 0 0; padding: 0; display: grid; gap: 0; }
+.a3-form__points li { display: grid; grid-template-columns: 4rem 1fr; gap: 1.2rem; padding: 2rem 0; border-top: 1px solid var(--a3-line); }
+.a3-form__points span { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.16em; color: var(--a3-accent-text); padding-top: 0.4rem; }
+.a3-form__points strong { font-size: 1.7rem; letter-spacing: -0.015em; }
+.a3-form__points p { margin: 0.4rem 0 0; }
+
+/* Cards everywhere get the same edge and depth. */
+.a3-card {
+  border-radius: calc(var(--a3-radius, 4px) * 2);
+  box-shadow: inset 0 1px 0 rgba(238, 235, 227, 0.05);
+}
+.a3-tone--ink .a3-card,
+.a3-tone--raised .a3-card { border: 1px solid var(--a3-line); }
+
+/* Bundles: each bundle is a showcase panel. */
+.a3-bundle__media { border-radius: calc(var(--a3-radius, 4px) * 2); overflow: hidden; }
+.a3-bundle h2 { font-size: clamp(3.6rem, 2.2rem + 3vw, 6.4rem) !important; }
+.a3-bundle__who strong { color: var(--a3-accent-text); }
+
+/* Feedback log: timeline. */
+.a3-log__item { border-left: 1px solid var(--a3-line); padding-left: 2.4rem; position: relative; }
+.a3-log__item::before { content: ''; position: absolute; left: -0.5rem; top: 0.6rem; width: 0.9rem; height: 0.9rem; border-radius: 50%; background: var(--a3-accent, #3be37f); box-shadow: 0 0 12px rgba(59, 227, 127, 0.6); }
+.a3-log__empty { padding: 3.2rem; border: 1px dashed var(--a3-line-strong); border-radius: calc(var(--a3-radius, 4px) * 2); background: rgba(238, 235, 227, 0.02); }
+
+/* Statement points read as a numbered list. */
+.a3-statement__body { counter-reset: a3-point; }
+.a3-statement__point { counter-increment: a3-point; position: relative; padding-left: 5.2rem; }
+.a3-statement__point::before {
+  content: counter(a3-point, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  color: var(--a3-accent-text);
+}
+.a3-statement__point h3 { font-size: clamp(1.9rem, 1.6rem + 0.5vw, 2.4rem) !important; font-stretch: 108%; }
+
+/* Long-form guides: editorial typography. */
+.a3-prose-wrap .a3-prose { counter-reset: a3-h2; font-size: 1.85rem; color: rgba(238, 235, 227, 0.88); }
+.a3-prose-wrap .a3-prose > p:first-child { font-size: clamp(2.1rem, 1.8rem + 0.6vw, 2.6rem); line-height: 1.5; letter-spacing: -0.01em; color: var(--a3-text); }
+.a3-prose-wrap .a3-prose h2 {
+  counter-increment: a3-h2;
+  padding-top: 3.2rem;
+  border-top: 1px solid var(--a3-line);
+  font-stretch: 112%;
+  letter-spacing: -0.03em;
+  color: var(--a3-text);
+}
+.a3-prose-wrap .a3-prose h2::before {
+  content: counter(a3-h2, decimal-leading-zero);
+  display: block;
+  margin-bottom: 1.2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  color: var(--a3-accent-text);
+}
+.a3-prose-wrap .a3-prose ul { list-style: none; padding-left: 0; }
+.a3-prose-wrap .a3-prose ul > li { position: relative; padding-left: 2.4rem; }
+.a3-prose-wrap .a3-prose ul > li::before { content: ''; position: absolute; left: 0.2rem; top: 1.1rem; width: 0.8rem; height: 0.8rem; border-radius: 50%; background: var(--a3-accent, #3be37f); }
+.a3-prose-wrap .a3-prose ol { padding-left: 0; list-style: none; counter-reset: a3-ol; }
+.a3-prose-wrap .a3-prose ol > li { counter-increment: a3-ol; position: relative; padding: 1.6rem 0 1.6rem 5.2rem; border-bottom: 1px solid var(--a3-line); margin: 0; }
+.a3-prose-wrap .a3-prose ol > li::before { content: counter(a3-ol, decimal-leading-zero); position: absolute; left: 0; top: 1.6rem; font-size: 1.3rem; font-weight: 700; letter-spacing: 0.1em; color: var(--a3-accent-text); }
+.a3-prose-wrap .a3-prose blockquote { padding: 2.4rem 2.8rem; border: 1px solid var(--a3-line); border-left: 3px solid var(--a3-accent, #3be37f); border-radius: 0 calc(var(--a3-radius, 4px) * 2) calc(var(--a3-radius, 4px) * 2) 0; background: rgba(59, 227, 127, 0.04); font-size: 2rem; color: var(--a3-text); }
+.a3-prose .a3-grid .a3-item { padding: 2.8rem; border: 1px solid var(--a3-line); border-radius: calc(var(--a3-radius, 4px) * 2); background: linear-gradient(180deg, rgba(238, 235, 227, 0.04), rgba(238, 235, 227, 0)); transition: border-color 0.3s, transform 0.4s var(--a3-ease); }
+.a3-prose .a3-grid .a3-item:hover { border-color: var(--a3-line-strong); transform: translateY(-3px); }
+.a3-prose .a3-grid .a3-item h3 { font-size: 2.2rem; font-stretch: 108%; letter-spacing: -0.02em; }

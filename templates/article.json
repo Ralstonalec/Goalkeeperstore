@@ -32,10 +32,22 @@
         "share",
         "content"
       ]
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit",
+        "heading": "Put it into practice."
+      }
     }
   },
   "order": [
     "hero",
-    "main"
+    "main",
+    "cta"
   ]
 }

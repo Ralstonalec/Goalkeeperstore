@@ -95,7 +95,8 @@
         "col_4": "Height (cm)",
         "advice": "<p>Go by height and chest, not age. Kids grow fast, but padding that's too big slides off the hip — don't size up more than one.</p>",
         "padding_top": 48,
-        "padding_bottom": 48
+        "padding_bottom": 48,
+        "show_diagram": false
       }
     },
     "socks": {
@@ -108,7 +109,8 @@
         "col_2": "EU shoe",
         "col_3": "US shoe",
         "padding_top": 48,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "show_diagram": false
       }
     },
     "faq": {
@@ -157,6 +159,18 @@
         "padding_bottom": 80,
         "tone": "ink"
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit",
+        "kicker": "Sized up?",
+        "heading": "Now design the kit."
+      }
     }
   },
   "order": [
@@ -166,6 +180,7 @@
     "apparel",
     "youth",
     "socks",
-    "faq"
+    "faq",
+    "cta"
   ]
 }

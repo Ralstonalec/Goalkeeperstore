@@ -4,15 +4,18 @@
   socks) from simple parametric geometry and wraps it in the textures painted
   by a3gk-kit-paint.js. Drag to rotate, scroll/pinch to zoom.
 
-  Usage (ES module, THREE passed in so the theme controls the three.js file):
-    const { createKitScene } = await import(kitUrl);
+  Usage (classic script; exposes window.A3GKKit3D):
+    const { createKitScene } = window.A3GKKit3D;
     const scene = createKitScene(THREE, container, { garment, onRender });
   garment is the a3gk-kit-garment.js module (passed in so asset URLs stay
   versioned by the theme).
     scene.update({ parts, sleeve, collar, finish, textures, knit });
     scene.setView('back');
 */
-export function createKitScene(THREE, container, options = {}) {
+(function () {
+'use strict';
+
+function createKitScene(THREE, container, options = {}) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
@@ -451,3 +454,6 @@ export function createKitScene(THREE, container, options = {}) {
 
   return { update, setView, snapshot, dispose, requestRender };
 }
+
+window.A3GKKit3D = { createKitScene };
+})();

@@ -4,15 +4,31 @@
  */
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Guide",
+        "heading": "How to look after goalkeeper gloves",
+        "text": "<p>Washing, drying and storing goalkeeper gloves so the latex lasts. What to do after every session, what never to do, and when a glove is finished.</p>",
+        "art": "lines",
+        "render": "kit",
+        "size": "medium",
+        "article_meta": false,
+        "button_label": "",
+        "button_link": "",
+        "button_2_label": "",
+        "button_2_link": ""
+      }
+    },
     "main": {
       "type": "a3gk-prose",
       "settings": {
-        "heading": "How to look after goalkeeper gloves",
+        "heading": "",
         "intro": "",
         "html": "<p>Most gloves don&#39;t wear out. They get cooked, dried out or left in a bag. Latex is a natural material, and it hates heat, dirt and being left damp and screwed up. Here&#39;s what actually works.</p>\n<h2>After every session (2 minutes)</h2>\n<ol>\n<li><strong>Rinse the palms in cool or lukewarm water.</strong> Not hot. Hot water breaks latex down.</li>\n<li><strong>Wash if they&#39;re dirty or sweaty.</strong> Put a little glove wash on the palms, rub them gently against each other, then rinse until the water runs clear. Regular washing-up liquid or detergent can strip the latex, so if you use something else, make sure it&#39;s mild.</li>\n<li><strong>Squeeze, don&#39;t wring.</strong> Press the water out between your palms. Twisting stretches the latex and the seams.</li>\n<li><strong>Air-dry naturally.</strong> Leave them open in a ventilated room, away from radiators, heaters, tumble dryers and direct sun. Heat is the fastest way to crack a palm.</li>\n<li><strong>Store them dry and apart.</strong> Don&#39;t leave them balled up in your kit bag. Palms stuck together can tear when you pull them apart.</li>\n</ol>\n<h2>Before you play</h2>\n<ul>\n<li><strong>Dampen the palms.</strong> Most keeper latex grips best slightly damp. A splash of water, rubbed in, is usually enough.</li>\n<li><strong>Grip spray</strong> helps when the latex has lost some tack. It won&#39;t bring a worn-through palm back from the dead, and nothing will.</li>\n</ul>\n<h2>Never</h2>\n<ul>\n<li>Put them in the washing machine or dryer</li>\n<li>Dry them on a radiator</li>\n<li>Use your match gloves for training on artificial grass (the rubber crumb chews through soft latex)</li>\n<li>Leave them wet in your bag between sessions</li>\n</ul>\n<h2>Training gloves vs match gloves</h2>\n<p>The softest, grippiest latex wears fastest. That&#39;s the trade-off, and no brand has escaped it. If you can, keep one pair for matches and a cheaper, tougher pair for training and turf. Your match pair will last far longer.</p>\n<h2>When is a glove finished?</h2>\n<p>When the latex is worn through to the backing fabric on the areas that take the ball (usually the palm centre and fingertips), or the seams have split. Up to then, clean latex outgrips dirty latex every time.</p>\n<hr>\n<p><em>Our own glove wash, grip spray and deodorizer are made for exactly this routine. <a href=\"/collections/glove-care\">See the care range →</a></em></p>",
         "narrow": true,
         "tone": "ink",
-        "padding_top": 96,
+        "padding_top": 80,
         "padding_bottom": 96
       }
     },
@@ -27,10 +43,25 @@
         "padding_top": 80,
         "padding_bottom": 96
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "kicker": "",
+        "heading": "Put it into practice.",
+        "text": "<p>Design padded keeper kit in 3D: colours, pattern, number, crest and padding. See the price and lead time before you pay.</p>",
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit"
+      }
     }
   },
   "order": [
+    "hero",
     "main",
-    "more"
+    "more",
+    "cta"
   ]
 }

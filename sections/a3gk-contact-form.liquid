@@ -30,6 +30,21 @@
       {%- if section.settings.email != blank -%}
         <p>Or email <a class="a3-link" href="mailto:{{ section.settings.email }}">{{ section.settings.email | escape }}</a></p>
       {%- endif -%}
+      <ul class="a3-form__points" role="list">
+        {%- case purpose -%}
+          {%- when 'team' -%}
+            <li><span>01</span><div><strong>A proof for every player</strong><p class="a3-muted">Every name, number and size listed before anything is made.</p></div></li>
+            <li><span>02</span><div><strong>Lead time in writing</strong><p class="a3-muted">You get the delivery date before you pay.</p></div></li>
+            <li><span>03</span><div><strong>One point of contact</strong><p class="a3-muted">The same person from quote to delivery.</p></div></li>
+          {%- when 'feedback' -%}
+            <li><span>01</span><div><strong>We read all of it</strong><p class="a3-muted">Good, bad, or "you should stock this".</p></div></li>
+            <li><span>02</span><div><strong>Changes get logged</strong><p class="a3-muted">When feedback changes something, it goes on <a class="a3-link" href="{{ routes.root_url }}pages/you-told-us">the changes log</a> with a date.</p></div></li>
+          {%- else -%}
+            <li><span>01</span><div><strong>Sizing</strong><p class="a3-muted">Start with the <a class="a3-link" href="{{ routes.root_url }}pages/size-guide">size guide</a>, then ask us anything it doesn't answer.</p></div></li>
+            <li><span>02</span><div><strong>Custom kit</strong><p class="a3-muted">Design it in the <a class="a3-link" href="{{ routes.root_url }}pages/builder">kit designer</a> and share the link with your question.</p></div></li>
+            <li><span>03</span><div><strong>Clubs and squads</strong><p class="a3-muted">Use <a class="a3-link" href="{{ routes.root_url }}pages/team-orders">team orders</a> for volume pricing.</p></div></li>
+        {%- endcase -%}
+      </ul>
     </div>
 
     {%- form 'contact', id: fid, class: 'a3-card a3-form__card' -%}

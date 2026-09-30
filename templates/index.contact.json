@@ -19,8 +19,8 @@
       "settings": {
         "purpose": "contact",
         "anchor": "",
-        "heading": "Talk to a keeper",
-        "text": "<p>Questions about sizing, care, an order or the builder — you'll get a reply from someone who knows the kit.</p>",
+        "heading": "Send us a message",
+        "text": "<p>Tell us what you need and include an order number if you have one.</p>",
         "button_label": "Send",
         "message_label": "Message",
         "response_time": "",
@@ -75,11 +75,23 @@
         "padding_bottom": 80,
         "tone": "raised"
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Read the FAQ",
+        "button_2_link": "/pages/faq",
+        "render": "kit",
+        "heading": "Or just start designing."
+      }
     }
   },
   "order": [
     "hero",
     "form",
-    "faq"
+    "faq",
+    "cta"
   ]
 }

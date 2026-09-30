@@ -89,12 +89,25 @@
         "padding_top": 64,
         "padding_bottom": 112
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit",
+        "kicker": "Next",
+        "heading": "Make it yours."
+      }
     }
   },
   "order": [
     "hero",
     "standards",
     "gloves",
-    "feedback"
+    "feedback",
+    "cta"
   ]
 }

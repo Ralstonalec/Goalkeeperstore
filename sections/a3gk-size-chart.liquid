@@ -60,7 +60,12 @@
         </table>
       </div>
     {%- else -%}
-      <p class="a3-notice a3-notice--warn">{{ section.settings.empty_text | escape }}</p>
+      <div class="a3-chart__empty">
+        {%- if section.settings.show_diagram -%}
+          <div class="a3-chart__diagram">{%- render 'a3gk-measure', uid: section.id -%}</div>
+        {%- endif -%}
+        <p class="a3-notice a3-notice--warn">{{ section.settings.empty_text | escape }}</p>
+      </div>
     {%- endif -%}
 
     {%- if section.settings.advice != blank -%}
@@ -74,6 +79,14 @@
   .a3-chart__intro { margin-bottom: 2.4rem; }
   .a3-chart th[scope='row'] { color: var(--a3-text); font-weight: 700; width: auto; }
   .a3-chart__advice { margin-top: 2.4rem; line-height: 1.65; }
+  .a3-chart__empty { display: grid; gap: 1.6rem; }
+  .a3-chart__diagram {
+    border: 1px solid var(--a3-line);
+    border-radius: calc(var(--a3-radius, 4px) * 2);
+    background: radial-gradient(70% 70% at 50% 35%, #1e221d, #0c0d0b);
+    overflow: hidden;
+  }
+  .a3-chart__diagram svg { display: block; width: 100%; height: auto; }
 {% endstylesheet %}
 
 {% schema %}
@@ -81,6 +94,7 @@
   "name": "A3GK size chart",
   "tag": "div",
   "settings": [
+    { "type": "checkbox", "id": "show_diagram", "label": "Show where-to-measure diagram (jerseys, shorts, pants)", "default": true },
     { "type": "text", "id": "anchor", "label": "Anchor", "info": "e.g. apparel — lets you link to /pages/size-guide#apparel" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Apparel & protection" },
     { "type": "richtext", "id": "intro", "label": "Intro" },

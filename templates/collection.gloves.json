@@ -40,10 +40,22 @@
         "padding_bottom": 80,
         "tone": "raised"
       }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit",
+        "heading": "Gloves sorted? Now the kit."
+      }
     }
   },
   "order": [
     "honest",
-    "sizer"
+    "sizer",
+    "cta"
   ]
 }

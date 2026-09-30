@@ -4,9 +4,46 @@
  */
 {
   "sections": {
+    "hero": {
+      "type": "a3gk-page-hero",
+      "settings": {
+        "kicker": "Bundles",
+        "heading": "Bundles",
+        "text": "<p>Every bundle shows the price of each item on its own next to the bundle price.</p>",
+        "art": "render",
+        "render": "bundle",
+        "size": "tall",
+        "article_meta": false,
+        "button_label": "",
+        "button_link": "",
+        "button_2_label": "",
+        "button_2_link": ""
+      }
+    },
     "main": {
       "type": "a3gk-statement",
       "blocks": {
+        "p0": {
+          "type": "point",
+          "settings": {
+            "title": "Tested before it is sold",
+            "text": "<p>Sampled and used on real gloves and real pitches first.</p>"
+          }
+        },
+        "p1": {
+          "type": "point",
+          "settings": {
+            "title": "Priced to buy again",
+            "text": "<p>Fair, stable prices. No fake “was” discounts.</p>"
+          }
+        },
+        "p2": {
+          "type": "point",
+          "settings": {
+            "title": "Honest pages",
+            "text": "<p>What it does, how to use it, and who it isn’t for.</p>"
+          }
+        },
         "l0": {
           "type": "link",
           "settings": {
@@ -16,20 +53,38 @@
         }
       },
       "block_order": [
+        "p0",
+        "p1",
+        "p2",
         "l0"
       ],
       "settings": {
         "eyebrow": "",
-        "heading": "Bundles",
-        "text": "<p>Every bundle shows the price of each item on its own next to the bundle price.</p>",
+        "heading": "Before it goes on sale",
+        "text": "<p>Nothing here goes on sale until it has been used and passed. When it does, the page says who it is for and who it isn’t.</p>",
         "layout": "split",
         "tone": "ink",
-        "padding_top": 120,
-        "padding_bottom": 120
+        "padding_top": 112,
+        "padding_bottom": 112
+      }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "kicker": "",
+        "heading": "Your kit. Your colours.",
+        "text": "<p>Design padded keeper kit in 3D: colours, pattern, number, crest and padding. See the price and lead time before you pay.</p>",
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Team orders",
+        "button_2_link": "/pages/team-orders",
+        "render": "kit"
       }
     }
   },
   "order": [
-    "main"
+    "hero",
+    "main",
+    "cta"
   ]
 }
