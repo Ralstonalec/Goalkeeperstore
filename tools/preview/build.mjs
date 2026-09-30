@@ -238,10 +238,17 @@ ${css}
 </html>`;
 }
 
+// Write each route twice — /pages/builder.html and /pages/builder/index.html —
+// so it resolves on any static host, with or without clean URLs.
 function write(route, html) {
+  if (route === '/') {
+    fs.writeFileSync(path.join(OUT, 'index.html'), html);
+    return;
+  }
   const dir = path.join(OUT, route);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'index.html'), html);
+  fs.writeFileSync(`${dir}.html`, html);
 }
 
 const readTemplate = (name) => JSON.parse(fs.readFileSync(path.join(ROOT, 'templates', `${name}.json`), 'utf8'));

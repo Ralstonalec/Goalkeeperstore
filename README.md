@@ -52,7 +52,8 @@ tools/       validate_templates.py: checks templates against section schemas
 ## Deploy
 
 1. Shopify admin → Online Store → Themes → **Add theme → Connect from GitHub** → this repo.
-2. Follow **[docs/SETUP.md](docs/SETUP.md)**: metafields, products, pages, menus, apps, policies.
+2. Create the pages, collections, blog and menus with `npm run setup:store`. It needs an Admin API token; see [docs/SETUP.md](docs/SETUP.md) §1b. Without this step, only the homepage exists.
+3. Follow the rest of **[docs/SETUP.md](docs/SETUP.md)**: products, apps, policies.
 
 With the Shopify CLI instead: `shopify theme dev` / `shopify theme push`. The `.shopifyignore` file keeps `docs/`, `content/` and `tools/` out of the upload.
 
