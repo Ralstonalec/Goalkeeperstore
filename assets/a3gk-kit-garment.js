@@ -47,26 +47,30 @@ function keyed(keys, t) {
 
 /* ---------------- shared shape parameters ---------------- */
 
-// Torso half-width (x) and half-depth (z) by height. Hem at y=0, neck ~2.42.
-const TORSO_RX = [[-0.4, 0.97], [0, 0.97], [0.55, 0.92], [1.3, 0.97], [1.8, 0.99], [2.05, 0.97], [2.3, 0.9]];
-const TORSO_RZ = [[-0.4, 0.6], [0, 0.6], [0.7, 0.55], [1.35, 0.6], [1.8, 0.58], [2.1, 0.5], [2.35, 0.4]];
+// Real proportions. 1 unit = 26 cm (half an adult chest). A keeper jersey is
+// about 52 cm across the chest, 72 cm long, sleeves 62 cm from the shoulder.
+// Torso half-width (x) and half-depth (z) by height. Hem at y=0, neck at 2.78.
+const TORSO_RX = [[-0.4, 0.95], [0, 0.95], [0.75, 0.9], [1.6, 0.97], [2.1, 1.0], [2.4, 0.98], [2.7, 0.9]];
+const TORSO_RZ = [[-0.4, 0.5], [0, 0.5], [0.8, 0.46], [1.65, 0.52], [2.15, 0.5], [2.5, 0.42], [2.75, 0.34]];
 const torsoRx = (y) => keyed(TORSO_RX, y);
 const torsoRz = (y) => keyed(TORSO_RZ, y);
 
-const NECK_Y = 2.42;
-const NECK_R = 0.31;
+const NECK_Y = 2.78;
+const NECK_R = 0.33;
 
-// Sleeve: shoulder joint, direction down the arm (same frame as the old
-// cylinder: origin (±0.8, 2.06), rotated ±0.6 rad about z).
-const SLEEVE = { x: 0.8, y: 2.06, rot: 0.6, zScale: 0.8 };
-const sleeveLen = (long) => (long ? 1.6 : 0.62);
+// Sleeve: shoulder joint and the angle the arm hangs at (ghost-mannequin pose).
+const SLEEVE = { x: 0.84, y: 2.42, rot: 0.36, zScale: 0.82 };
+const sleeveLen = (long) => (long ? 2.35 : 0.78);
 
-// Legs: origin (±0.44, -0.45), rotated ±0.04 (old frame) — slightly narrower
-// and splayed so the legs separate below the crotch.
-const LEG = { x: 0.44, y: -0.45, rot: 0.04, zScale: 0.78 };
-const legLen = (pants) => (pants ? 2.05 : 0.72);
-const HIP_TOP = 0.15;
+// Shorts/pants: waist sits under the jersey hem. Shorts ~45 cm outseam,
+// pants ~100 cm. Legs splay slightly so they separate below the crotch.
+const LEG = { x: 0.46, y: -0.35, zScale: 0.8 };
+const legRot = (pants) => (pants ? 0.035 : 0.07);
+const legLen = (pants) => (pants ? 3.05 : 0.95);
+const HIP_TOP = 0.45;
 const HIP_BOTTOM = -0.55;
+const hipRx = (y) => keyed([[-0.6, 0.97], [-0.25, 0.96], [0.05, 0.88], [0.45, 0.84]], y);
+const hipRz = (y) => keyed([[-0.6, 0.56], [-0.25, 0.55], [0.05, 0.46], [0.45, 0.44]], y);
 
 /* ---------------- distance helpers ---------------- */
 
@@ -100,8 +104,8 @@ function toLocal(px, py, pz, ox, oy, rot) {
 function jerseyField(opts) {
   const long = opts.sleeve !== 'short';
   const len = sleeveLen(long);
-  const r0 = 0.3;
-  const r1 = long ? 0.19 : 0.25;
+  const r0 = 0.34;
+  const r1 = long ? 0.19 : 0.29;
 
   function parts(x, y, z) {
     const rx = torsoRx(y);
@@ -110,7 +114,7 @@ function jerseyField(opts) {
     // Shoulder line: slopes from the neck down to the shoulder point,
     // and rolls off towards front and back.
     const ax = Math.abs(x);
-    const roof = NECK_Y + 0.03 - 0.36 * Math.max(0, ax - 0.25) - 0.22 * (z / 0.5) * (z / 0.5);
+    const roof = NECK_Y + 0.02 - 0.3 * Math.max(0, ax - 0.3) - 0.2 * (z / 0.45) * (z / 0.45);
     torso = smax(torso, y - roof, 0.16);
     torso = Math.max(torso, -y - 0.35); // closed below the hem (clipped away)
 
@@ -130,22 +134,26 @@ function jerseyField(opts) {
     // a soft wave at the hem, and shallow pulls across the waist.
     const phi = Math.atan2(x / rx, z / rz); // 0 front, ±π/2 sides
     const side = Math.pow(Math.abs(Math.sin(phi)), 3);
-    torso += 0.016 * Math.sin(phi * 11 + y * 1.3) * side * smoothstep(0.1, 0.5, y) * (1 - smoothstep(1.55, 1.9, y));
+    torso += 0.016 * Math.sin(phi * 11 + y * 1.3) * side * smoothstep(0.1, 0.5, y) * (1 - smoothstep(1.8, 2.2, y));
     torso += 0.012 * Math.sin(phi * 7 + 0.6) * (1 - smoothstep(0.0, 0.35, y));
-    torso += 0.006 * Math.sin(y * 13 + x * 2.2) * smoothstep(0.15, 0.35, y) * (1 - smoothstep(0.7, 1.0, y));
-    torso += 0.008 * Math.sin(x * 9 - y * 6) * smoothstep(1.2, 1.6, y) * (1 - smoothstep(1.85, 2.1, y)) * (1 - side);
+    torso += 0.006 * Math.sin(y * 13 + x * 2.2) * smoothstep(0.15, 0.35, y) * (1 - smoothstep(0.8, 1.15, y));
+    torso += 0.008 * Math.sin(x * 9 - y * 6) * smoothstep(1.45, 1.85, y) * (1 - smoothstep(2.15, 2.4, y)) * (1 - side);
     return { torso, sleeveR: sl[0], sleeveL: sl[1] };
   }
 
+  // Shoulder line continues out over the sleeve heads, so sleeves hang from
+  // a natural sloped shoulder instead of bulging above it.
+  const shoulderCap = (x, y, z) => y - (NECK_Y + 0.02 - 0.3 * Math.max(0, Math.abs(x) - 0.3) - 0.2 * (z / 0.45) * (z / 0.45));
+
   function sdf(x, y, z) {
     const p = parts(x, y, z);
-    return smin(smin(p.torso, p.sleeveR, 0.14), p.sleeveL, 0.14);
+    return smax(smin(smin(p.torso, p.sleeveR, 0.14), p.sleeveL, 0.14), shoulderCap(x, y, z), 0.12);
   }
 
   return {
     sdf,
     parts,
-    bounds: { min: [-2.1, -0.5, -0.78], max: [2.1, 2.62, 0.78] },
+    bounds: { min: [-2.3, -0.5, -0.72], max: [2.3, 3.0, 0.72] },
     cutters: [
       // Open hem
       planeCutter([0, -1, 0], 0),
@@ -159,7 +167,12 @@ function jerseyField(opts) {
         // plane: point at shoulder + dir*len, normal along the arm
         const px = SLEEVE.x * dir + nx * len;
         const py = SLEEVE.y + ny * len;
-        return planeCutter([nx, ny, 0], px * nx + py * ny);
+        // Only this sleeve: the plane must not slice through the body.
+        return planeCutter([nx, ny, 0], px * nx + py * ny, (p) => {
+          if (p[0] * dir <= 0) return false;
+          const q = parts(p[0], p[1], p[2]);
+          return (dir > 0 ? q.sleeveR : q.sleeveL) < q.torso + 0.05;
+        });
       }),
     ],
     label(x, y, z) {
@@ -179,18 +192,19 @@ function jerseyField(opts) {
 function bottomsField(opts) {
   const pants = opts.bottom === 'pants';
   const len = legLen(pants);
-  const r0 = 0.44;
-  const r1 = pants ? 0.28 : 0.47;
+  const r0 = 0.47;
+  const r1 = pants ? 0.22 : 0.44;
+  const rot = legRot(pants);
 
   function parts(x, y, z) {
-    const rx = keyed([[-0.6, 0.93], [0, 0.9], [0.2, 0.9]], y);
-    const rz = rx * 0.58;
+    const rx = hipRx(y);
+    const rz = hipRz(y);
     let hip = ellipseDist(x, z, rx, rz);
-    hip = Math.max(hip, y - (HIP_TOP + 0.25));
+    hip = Math.max(hip, y - (HIP_TOP + 0.2));
     hip = smax(hip, -(y - HIP_BOTTOM) - 0.02, 0.12);
     const lg = [];
     for (const dir of [1, -1]) {
-      const [lx, ly, lz] = toLocal(x, y, z, LEG.x * dir, LEG.y, LEG.rot * dir * 1.8);
+      const [lx, ly, lz] = toLocal(x, y, z, LEG.x * dir, LEG.y, rot * dir);
       let d = limbDist(lx, ly, lz, len, r0, r1, LEG.zScale, 0.2);
       const t = -ly / len;
       // Crotch pulls, a soft wave at the hem, knee crease on pants.
@@ -210,16 +224,16 @@ function bottomsField(opts) {
   return {
     sdf,
     parts,
-    bounds: { min: [-1.35, -len - 0.8, -0.72], max: [1.35, HIP_TOP + 0.45, 0.72] },
+    bounds: { min: [-1.45, LEG.y - len - 0.3, -0.72], max: [1.45, HIP_TOP + 0.3, 0.72] },
     cutters: [
       planeCutter([0, 1, 0], HIP_TOP),
       ...[1, -1].map((dir) => {
-        const a = LEG.rot * dir * 1.8;
+        const a = rot * dir;
         const nx = Math.sin(a);
         const ny = -Math.cos(a);
         const px = LEG.x * dir + nx * len;
         const py = LEG.y + ny * len;
-        return planeCutter([nx, ny, 0], px * nx + py * ny);
+        return planeCutter([nx, ny, 0], px * nx + py * ny, (p) => p[0] * dir > 0);
       }),
     ],
     label(x, y, z) {
@@ -232,12 +246,57 @@ function bottomsField(opts) {
     },
     uvOf(group, x, y, z) {
       if (group === 0) {
-        const rx = keyed([[-0.6, 0.93], [0, 0.9], [0.2, 0.9]], y);
-        return wrapUv(x, z, rx, rx * 0.58, clamp((y - HIP_BOTTOM) / (HIP_TOP - HIP_BOTTOM), 0, 1));
+        return wrapUv(x, z, hipRx(y), hipRz(y), clamp((y - HIP_BOTTOM) / (HIP_TOP - HIP_BOTTOM), 0, 1));
       }
       const dir = group === 1 ? 1 : -1;
-      const [lx, ly, lz] = toLocal(x, y, z, LEG.x * dir, LEG.y, LEG.rot * dir * 1.8);
+      const [lx, ly, lz] = toLocal(x, y, z, LEG.x * dir, LEG.y, rot * dir);
       return limbUv(lx, ly, lz / LEG.zScale, len);
+    },
+  };
+}
+
+
+/* Socks: calf-shaped tube with a foot, one per leg. */
+function sockLayout(pants) {
+  return pants ? { x: 0.57, top: -3.2, ankle: -3.55 } : { x: 0.5, top: -1.55, ankle: -3.25 };
+}
+
+function socksField(opts) {
+  const L = sockLayout(opts.bottom === 'pants');
+  const len = L.ankle - L.top; // negative
+  const prof = (t) => keyed([[0, 0.215], [0.08, 0.225], [0.3, 0.245], [0.62, 0.19], [0.92, 0.15], [1.2, 0.15]], t);
+  function one(x, y, z, dir) {
+    const lx = x - L.x * dir;
+    const t = (y - L.top) / len; // 0 top, 1 ankle
+    let d = Math.hypot(lx, z / 0.92) - prof(t);
+    d = Math.max(d, y - (L.top + 0.2), -(y - (L.ankle - 0.2)));
+    // Foot: heel to toe, pointing forward.
+    const hy = L.ankle - 0.16;
+    const ax = 0, ay = hy, az = -0.06;
+    const bx = 0, by = hy - 0.08, bz = 0.62;
+    const px = lx - ax, py = y - ay, pz = z - az;
+    const vx = bx - ax, vy = by - ay, vz = bz - az;
+    const h = clamp((px * vx + py * vy + pz * vz) / (vx * vx + vy * vy + vz * vz), 0, 1);
+    const foot = Math.hypot(px - vx * h, (py - vy * h) * 1.25, (pz - vz * h) * 0.95) - (0.14 - 0.02 * h);
+    d = smin(d, foot, 0.12);
+    // Soft ribbing folds near the top.
+    d += 0.005 * Math.sin(y * 60) * (1 - smoothstep(0.02, 0.12, t));
+    return d;
+  }
+  function sdf(x, y, z) {
+    return Math.min(one(x, y, z, 1), one(x, y, z, -1));
+  }
+  return {
+    sdf,
+    parts: () => ({}),
+    bounds: { min: [-1.05, L.ankle - 0.55, -0.45], max: [1.05, L.top + 0.3, 1.0] },
+    cutters: [planeCutter([0, 1, 0], L.top)],
+    label: () => ({ f: 1, g: 0 }),
+    uvOf(group, x, y, z) {
+      const lx = x - (x > 0 ? L.x : -L.x);
+      let u = Math.atan2(lx, z) / (Math.PI * 2);
+      u -= Math.floor(u);
+      return [u, clamp(1 - (y - L.top) / (len * 1.15), 0, 1)];
     },
   };
 }
@@ -262,9 +321,9 @@ function limbUv(lx, ly, lz, len) {
 /* ---------------- cutters ---------------- */
 
 // Removes geometry where dot(n, p) > d; boundary snaps onto the plane.
-function planeCutter(n, d) {
+function planeCutter(n, d, where) {
   return {
-    inside: (p) => n[0] * p[0] + n[1] * p[1] + n[2] * p[2] > d,
+    inside: (p) => n[0] * p[0] + n[1] * p[1] + n[2] * p[2] > d && (!where || where(p)),
     snap(p) {
       const k = n[0] * p[0] + n[1] * p[1] + n[2] * p[2] - d;
       return [p[0] - n[0] * k, p[1] - n[1] * k, p[2] - n[2] * k];
@@ -273,7 +332,7 @@ function planeCutter(n, d) {
 }
 
 function neckCutter() {
-  const zs = 1.25;
+  const zs = 1.35;
   return {
     inside: (p) => p[1] > NECK_Y - 0.28 && Math.hypot(p[0], p[2] * zs) < NECK_R,
     snap(p) {
@@ -312,7 +371,7 @@ function mesh(field, h) {
   for (let k = 0; k < cz; k++)
     for (let j = 0; j < cy; j++)
       for (let i = 0; i < cx; i++) C[i + cx * (j + cy * k)] = field.sdf(min[0] + i * S * h, min[1] + j * S * h, min[2] + k * S * h);
-  const band = S * h * 1.1;
+  const band = S * h * 2.6; // generous: the fields are not exact distances
   for (let k = 0; k < nz; k++) {
     const z = min[2] + k * h;
     const ck = Math.round(k / S);
@@ -390,8 +449,8 @@ function gradient(sdf, p, e = 0.004) {
 
 /* ---------------- build ---------------- */
 
-function buildGarment(kind, opts = {}, h = 0.03) {
-  const field = kind === 'jersey' ? jerseyField(opts) : bottomsField(opts);
+function buildGarment(kind, opts = {}, h = 0.032) {
+  const field = kind === 'jersey' ? jerseyField(opts) : kind === 'socks' ? socksField(opts) : bottomsField(opts);
   const { sdf } = field;
   const { verts, quads } = mesh(field, h);
 
@@ -437,8 +496,8 @@ function buildGarment(kind, opts = {}, h = 0.03) {
     const nn = normals[i];
     let occ = 0;
     let w = 1;
-    for (let s = 1; s <= 5; s++) {
-      const dist = 0.045 * s;
+    for (let s = 1; s <= 4; s++) {
+      const dist = 0.055 * s;
       const d = sdf(p[0] + nn[0] * dist, p[1] + nn[1] * dist, p[2] + nn[2] * dist);
       occ += (dist - d) * w;
       w *= 0.55;
@@ -449,6 +508,7 @@ function buildGarment(kind, opts = {}, h = 0.03) {
   // Triangles, each assigned to one texture group, with per-corner UVs so
   // seams (sides, shoulders) stay crisp like real panel seams.
   const out = { position: [], normal: [], uv: [], color: [], groups: [[], [], []] };
+  const labels = new Array(verts.length);
   const tri = (a, b, c) => {
     if (state[a] === 2 || state[b] === 2 || state[c] === 2) return;
     // Wind every triangle to face outward (along the field gradient).
@@ -466,7 +526,7 @@ function buildGarment(kind, opts = {}, h = 0.03) {
     }
     // Split the triangle cleanly along the panel seam (body vs sleeve/leg).
     const V = [a, b, c].map((v) => {
-      const L = field.label(verts[v][0], verts[v][1], verts[v][2]);
+      const L = labels[v] || (labels[v] = field.label(verts[v][0], verts[v][1], verts[v][2]));
       return { p: verts[v], n: normals[v], ao: ao[v], f: L.f, g: L.g };
     });
     const neg = V.filter((v) => v.f < 0);
@@ -555,7 +615,7 @@ function neckCurve(opts = {}, steps = 96) {
   for (let i = 0; i < steps; i++) {
     const t = (i / steps) * Math.PI * 2;
     const x = Math.sin(t) * NECK_R;
-    const z = (Math.cos(t) * NECK_R) / 1.25;
+    const z = (Math.cos(t) * NECK_R) / 1.35;
     // Walk down from above until we hit the surface.
     let lo = NECK_Y - 0.4;
     let hi = NECK_Y + 0.3;

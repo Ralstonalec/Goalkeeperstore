@@ -593,10 +593,13 @@
         const garment = window.A3GKGarment;
         if (!THREE || !mod || !garment) throw new Error('3D scripts did not initialise');
         this.THREE = THREE;
-        this.kit3d = mod.createKitScene(THREE, this.stage3d, { garment });
+        this.kit3d = mod.createKitScene(THREE, this.stage3d, { garment, garmentUrl: this.cfg.garmentUrl });
         // Let the "building" label paint before the garment mesh is generated.
         await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
         this.setMode('3d', true);
+        this.root.dataset.building = '1';
+        await this.kit3d.ready;
+        delete this.root.dataset.building;
         this.stage3d.classList.add('is-ready');
       } catch (e) {
         console.warn('A3GK: 3D unavailable, using flat view', e);

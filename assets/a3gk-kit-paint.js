@@ -573,8 +573,10 @@
   }
 
   function paintSleeve(canvas, s, side, opts = {}) {
+    // Height follows the sleeve's real length/circumference so numbers and
+    // patterns aren't stretched on the 3D garment.
     const W = 1024;
-    const H = 512;
+    const H = s.sleeve === 'short' ? 512 : 1536;
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -603,7 +605,7 @@
       drawText(ctx, s.number.value, outer, 120, 96, { font: s.number.font, color: c.number, outline: c.outline, bridge: c.secondary });
     }
     if (opts.padding && opts.zones && opts.zones.includes('elbows') && s.sleeve !== 'short') {
-      padZone(ctx, outer - 110, 250, 220, 150);
+      padZone(ctx, outer - 110, Math.round(H * 0.46), 220, 170);
     }
     return canvas;
   }
@@ -643,7 +645,7 @@
 
   function paintLeg(canvas, s, side, kind, opts = {}) {
     const W = 512;
-    const H = 512;
+    const H = kind === 'pants' ? 832 : 192;
     canvas.width = W;
     canvas.height = H;
     const ctx = canvas.getContext('2d');
@@ -656,7 +658,7 @@
     ctx.fillStyle = c.trim;
     ctx.fillRect(0, H - 30, W, 30);
     if (s.number && s.number.shorts && s.number.value && side === 'r') {
-      drawText(ctx, s.number.value, 92, kind === 'pants' ? 110 : 250, kind === 'pants' ? 70 : 120, {
+      drawText(ctx, s.number.value, 92, kind === 'pants' ? 150 : 92, kind === 'pants' ? 80 : 84, {
         font: s.number.font,
         color: c.number,
         outline: c.outline,
@@ -666,14 +668,15 @@
     if (opts.padding && opts.zones) {
       const z = opts.zones;
       if (kind === 'pants') {
-        if (z.includes('thigh')) padZone(ctx, outer - 70, 40, 140, 120);
+        if (z.includes('thigh')) padZone(ctx, outer - 70, 40, 140, 200);
         if (z.includes('knee')) {
           // The front of the leg sits on the texture seam (x=0 / x=512).
-          padZone(ctx, -80, 190, 160, 110);
-          padZone(ctx, W - 80, 190, 160, 110);
+          const ky = Math.round(H * 0.4);
+          padZone(ctx, -80, ky, 160, 130);
+          padZone(ctx, W - 80, ky, 160, 130);
         }
       } else if (z.includes('thigh')) {
-        padZone(ctx, outer - 80, 150, 160, 220);
+        padZone(ctx, outer - 80, 24, 160, H - 64);
       }
     }
     return canvas;
@@ -781,8 +784,8 @@
       drawRegion(ctx, path, tex.hip, hipSrcX, 0, 512, 256, 60, 30, 280, 110);
       const legL = back ? tex.legR : tex.legL;
       const legR = back ? tex.legL : tex.legR;
-      drawRegion(ctx, path, legL, back ? 256 : 0, 0, 256, 512, 60, 130, 140, legH);
-      drawRegion(ctx, path, legR, back ? 256 : 0, 0, 256, 512, 200, 130, 140, legH);
+      drawRegion(ctx, path, legL, back ? 256 : 0, 0, 256, legL.height, 60, 130, 140, legH);
+      drawRegion(ctx, path, legR, back ? 256 : 0, 0, 256, legR.height, 200, 130, 140, legH);
       ctx.fillStyle = s.colors.trim;
       ctx.fill(new Path2D(bottom === 'pants' ? 'M110 30H290L292 52H108Z' : 'M90 30H310L312 52H88Z'));
       shade(ctx, path, bottom === 'pants' ? 100 : 64, bottom === 'pants' ? 300 : 336);
@@ -794,8 +797,8 @@
       const sr = long ? SIL.sleeveRLong : SIL.sleeveRShort;
       const sl = long ? SIL.sleeveLLong : SIL.sleeveLShort;
       // From the front the viewer's right is the wearer's left sleeve.
-      drawRegion(ctx, sr, back ? tex.sleeveR : tex.sleeveL, 0, 0, 1024, 512, 290, 70, 100, 270);
-      drawRegion(ctx, sl, back ? tex.sleeveL : tex.sleeveR, 0, 0, 1024, 512, 10, 70, 100, 270);
+      drawRegion(ctx, sr, back ? tex.sleeveR : tex.sleeveL, 0, 0, 1024, (back ? tex.sleeveR : tex.sleeveL).height, 290, 70, 100, 270);
+      drawRegion(ctx, sl, back ? tex.sleeveL : tex.sleeveR, 0, 0, 1024, (back ? tex.sleeveL : tex.sleeveR).height, 10, 70, 100, 270);
       const torso = back ? SIL.torsoBack : SIL.torsoFront;
       const srcX = back ? 1024 + 110 : 110;
       drawRegion(ctx, torso, tex.torso, srcX, 0, 804, 1024, 96, 50, 208, 402);
