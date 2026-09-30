@@ -6,7 +6,8 @@
   "scripts": {
     "build:preview": "node tools/preview/build.mjs",
     "validate": "python3 tools/validate_templates.py",
-    "setup:store": "node tools/shopify/setup-store.mjs"
+    "setup:store": "node tools/shopify/setup-store.mjs",
+    "gen:fallbacks": "node tools/gen-fallback-templates.mjs"
   },
   "devDependencies": {
     "liquidjs": "^10.29.0",

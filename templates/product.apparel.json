@@ -112,7 +112,7 @@
           "settings": {
             "title": "Specs",
             "size_label": "Size guide",
-            "size_link": "shopify://pages/size-guide"
+            "size_link": "/pages/size-guide"
           }
         },
         "value": {
@@ -158,7 +158,7 @@
           "type": "link",
           "settings": {
             "label": "Apparel & protection size guide",
-            "url": "shopify://pages/size-guide"
+            "url": "/pages/size-guide"
           }
         }
       },
@@ -167,7 +167,7 @@
       ],
       "settings": {
         "heading": "Padding only works if it sits where you land.",
-        "text": "<p>Too big and the pads slide off your hips when you dive. Check the size guide \u2014 and if you're between sizes, tell us your height and waist and we'll tell you which to pick.</p>",
+        "text": "<p>Too big and the pads slide off your hips when you dive. Check the size guide — and if you're between sizes, tell us your height and waist and we'll tell you which to pick.</p>",
         "layout": "split",
         "padding_top": 64,
         "padding_bottom": 64,

@@ -1,0 +1,54 @@
+{%- comment -%}
+  A3GK default navigation, used while the store's menus are still Shopify's
+  defaults (Home / Catalog). Once menus are set up in admin (or by
+  npm run setup:store), the real menus take over.
+
+  Accepts:
+  - set: 'main' | 'shop' | 'help' | 'learn'
+  - variant: 'inline' (desktop header) | 'drawer' (mobile menu) | 'footer'
+{%- endcomment -%}
+{%- liquid
+  case set
+    when 'shop'
+      assign items = 'Glove care|/collections/glove-care,Tape & socks|/collections/tape-socks,Protection|/collections/protection,Bundles|/pages/bundles,Kit builder|/pages/builder,Gloves|/collections/gloves'
+    when 'help'
+      assign items = 'Size guide|/pages/size-guide,Shipping|/policies/shipping-policy,Returns|/policies/refund-policy,FAQ|/pages/faq,Contact|/pages/contact,Team orders|/pages/team-orders'
+    when 'learn'
+      assign items = 'About|/pages/about,Guides|/blogs/guides,You told us|/pages/you-told-us,Feedback|/pages/feedback'
+    else
+      assign items = 'Glove care|/collections/glove-care,Kit builder|/pages/builder,Tape & socks|/collections/tape-socks,Protection|/collections/protection,Bundles|/pages/bundles,Guides|/blogs/guides,Team orders|/pages/team-orders'
+  endcase
+  assign items = items | split: ','
+-%}
+{%- for item in items -%}
+  {%- liquid
+    assign title = item | split: '|' | first
+    assign path = item | split: '|' | last
+    capture href
+      render 'a3gk-href', url: path
+    endcapture
+    assign view = href | split: 'view=' | last
+    assign current = false
+    if request.path == path
+      assign current = true
+    elsif template.name == 'index' and template.suffix != blank and href contains 'view=' and template.suffix == view
+      assign current = true
+    endif
+  -%}
+  <li>
+    {%- case variant -%}
+      {%- when 'drawer' -%}
+        <a href="{{ href }}" class="menu-drawer__menu-item list-menu__item link link--text focus-inset{% if current %} menu-drawer__menu-item--active{% endif %}"{% if current %} aria-current="page"{% endif %}>
+          {{- title | escape -}}
+        </a>
+      {%- when 'footer' -%}
+        <a href="{{ href }}" class="link link--text list-menu__item list-menu__item--link{% if current %} list-menu__item--active{% endif %}">
+          {{- title | escape -}}
+        </a>
+      {%- else -%}
+        <a href="{{ href }}" class="header__menu-item list-menu__item link link--text focus-inset"{% if current %} aria-current="page"{% endif %}>
+          <span{% if current %} class="header__active-menu-item"{% endif %}>{{ title | escape }}</span>
+        </a>
+    {%- endcase -%}
+  </li>
+{%- endfor -%}

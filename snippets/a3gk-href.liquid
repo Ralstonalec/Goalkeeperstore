@@ -1,0 +1,44 @@
+{%- comment -%}
+  Resolves an internal link to something that works on this store *today*.
+
+  Pages, collections and the guides blog only exist once they're created in
+  Shopify admin (npm run setup:store does it in one go). Until then, links to
+  them fall back to built-in versions of the same content served from the
+  homepage (templates/index.<view>.json, e.g. /?view=builder). As soon as the
+  real page exists, links point to it instead — no theme change needed.
+
+  Accepts: url (e.g. '/pages/size-guide#apparel'). Outputs the resolved URL.
+{%- endcomment -%}
+{%- liquid
+  assign u = url | default: ''
+  assign out = u
+  assign base = u | split: '#' | first | split: '?' | first
+  assign frag = ''
+  if u contains '#'
+    assign frag = u | split: '#' | last | prepend: '#'
+  endif
+  assign parts = base | split: '/'
+  assign kind = parts[1]
+  assign h = parts[2]
+
+  case kind
+    when 'pages'
+      if parts.size == 3 and pages[h].id == blank
+        assign out = '/?view=' | append: h | append: frag
+      endif
+    when 'collections'
+      if parts.size == 3 and h != 'all' and collections[h].id == blank
+        assign out = '/?view=c-' | append: h | append: frag
+      endif
+    when 'blogs'
+      if parts.size == 3 and blogs[h].id == blank
+        assign out = '/?view=' | append: h | append: frag
+      elsif parts.size == 4
+        assign key = h | append: '/' | append: parts[3]
+        if articles[key].id == blank
+          assign out = '/?view=guide-' | append: parts[3] | append: frag
+        endif
+      endif
+  endcase
+-%}
+{{- out -}}

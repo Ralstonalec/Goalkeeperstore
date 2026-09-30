@@ -1,0 +1,27 @@
+{%- comment -%}
+  Runs every internal href in a chunk of HTML through a3gk-href, so links to
+  pages/collections/guides that don't exist yet still land somewhere real.
+  Used in layout/theme.liquid around the header, main content and footer.
+
+  Accepts: html
+{%- endcomment -%}
+{%- liquid
+  assign chunks = html | split: 'href="/'
+  echo chunks.first
+  for c in chunks offset: 1
+    assign p = c | split: '"' | first
+    assign head = p | slice: 0, 6
+    if p == blank or c == blank
+      echo 'href="/' | append: c
+    elsif head == 'pages/' or head == 'collec' or head == 'blogs/'
+      assign path = '/' | append: p
+      capture resolved
+        render 'a3gk-href', url: path
+      endcapture
+      assign rest = c | remove_first: p
+      echo 'href="' | append: resolved | append: rest
+    else
+      echo 'href="/' | append: c
+    endif
+  endfor
+-%}
