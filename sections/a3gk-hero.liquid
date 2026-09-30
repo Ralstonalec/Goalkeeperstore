@@ -50,7 +50,7 @@
         -%}
       </picture>
     {%- else -%}
-      {%- render 'a3gk-media', shot: section.settings.shot -%}
+      {%- render 'a3gk-scene', uid: section.id -%}
     {%- endif -%}
   </div>
 
@@ -58,7 +58,7 @@
 
   <div class="a3-hero__content a3-wrap">
     {%- if section.settings.eyebrow != blank -%}
-      <p class="a3-hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <p class="a3-kicker a3-hero__eyebrow">{{ section.settings.eyebrow | escape }}</p>
     {%- endif -%}
     <h1 id="a3-hero-title-{{ section.id }}" class="a3-hero__title a3-display" style="--a3-i: 1">
       {{- section.settings.heading -}}
@@ -78,6 +78,16 @@
         </a>
       {%- endif -%}
     </div>
+    {%- if section.blocks.size > 0 -%}
+      <ul class="a3-hero__proof" role="list">
+        {%- for block in section.blocks -%}
+          <li {{ block.shopify_attributes }}>
+            <span class="a3-hero__proof-n">{{ forloop.index | prepend: '0' }}</span>
+            <span>{{ block.settings.text | escape }}</span>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
   </div>
 </section>
 
@@ -124,8 +134,9 @@
     inset: 0;
     z-index: -1;
     background:
-      linear-gradient(180deg, rgba(14, 15, 13, 0.25) 0%, rgba(14, 15, 13, 0) 40%, rgba(14, 15, 13, 0.9) 100%),
-      rgba(14, 15, 13, var(--a3-overlay, 0.3));
+      linear-gradient(90deg, rgba(8, 9, 8, 0.75) 0%, rgba(8, 9, 8, 0.25) 55%, rgba(8, 9, 8, 0) 100%),
+      linear-gradient(180deg, rgba(8, 9, 8, 0.2) 0%, rgba(8, 9, 8, 0) 45%, rgba(14, 15, 13, 0.95) 100%),
+      rgba(8, 9, 8, var(--a3-overlay, 0.1));
   }
 
   .a3-hero__content {
@@ -134,17 +145,34 @@
   }
 
   .a3-hero__title {
-    margin: 0 0 2.4rem;
-    font-size: clamp(5.6rem, 2.8rem + 7.4vw, 14rem);
-    max-width: 14ch;
+    margin: 0 0 3.2rem;
+    font-size: clamp(4.8rem, 2rem + 6.2vw, 12rem);
+    font-stretch: 125%;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+    max-width: 11ch;
+    text-shadow: 0 10px 60px rgba(0, 0, 0, 0.45);
   }
 
-  .a3-hero__eyebrow {
-    margin: 0 0 2rem;
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--a3-text);
-    opacity: 0.8;
+  .a3-hero__eyebrow { color: #eeebe3; opacity: 0.85; }
+
+  .a3-hero__proof {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.4rem;
+    margin: 6.4rem 0 0;
+    padding: 2.4rem 0 0;
+    border-top: 1px solid rgba(238, 235, 227, 0.16);
+    max-width: 96rem;
+  }
+
+  .a3-hero__proof li { display: grid; gap: 0.6rem; font-size: 1.5rem; color: rgba(238, 235, 227, 0.78); line-height: 1.4; }
+  .a3-hero__proof-n { font-size: 1.1rem; font-weight: 600; font-stretch: 112%; letter-spacing: 0.16em; color: #3be37f; }
+
+  @media screen and (max-width: 749px) {
+    .a3-hero__proof { grid-template-columns: 1fr; gap: 1.4rem; margin-top: 4rem; }
+    .a3-hero__proof li { grid-template-columns: 3.2rem 1fr; }
   }
 
   .a3-hero__ctas {
@@ -155,6 +183,10 @@
   }
 
   @media screen and (max-width: 749px) {
+    .a3-hero__media .a3-scene { height: 58%; }
+    .a3-hero__shade {
+      background: linear-gradient(180deg, rgba(8, 9, 8, 0) 0%, rgba(8, 9, 8, 0.35) 30%, rgba(14, 15, 13, 0.92) 55%, #0e0f0d 70%);
+    }
     .a3-hero__content { padding-block: 10rem 4.8rem; }
     .a3-hero__ctas .a3-btn { flex: 1 1 100%; }
   }
@@ -259,6 +291,14 @@
       "id": "parallax",
       "label": "Subtle parallax on scroll",
       "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "proof",
+      "name": "Proof point",
+      "limit": 3,
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Goalkeepers only" }]
     }
   ],
   "presets": [

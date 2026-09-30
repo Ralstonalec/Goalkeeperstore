@@ -205,7 +205,7 @@
             }}
           </div>
         {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
+          {%- render 'a3gk-logo', label: shop.name -%}
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}
@@ -248,7 +248,7 @@
             }}
           </div>
         {%- else -%}
-          <span class="h2">{{ shop.name }}</span>
+          {%- render 'a3gk-logo', label: shop.name -%}
         {%- endif -%}
       </a>
       {%- if request.page_type == 'index' -%}

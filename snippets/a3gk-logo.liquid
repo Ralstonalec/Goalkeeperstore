@@ -1,0 +1,16 @@
+{%- comment -%}
+  A3GK logo: goal-frame emblem + wide wordmark. Inherits currentColor.
+  Accepts: size ('header' | 'footer'), label (aria label, defaults to shop name)
+{%- endcomment -%}
+{%- if size == 'footer' -%}
+  <svg class="a3-wordmark" viewBox="0 0 1000 214" role="img" aria-label="{{ label | default: shop.name | default: 'A3GK' | escape }}" xmlns="http://www.w3.org/2000/svg">
+    <text x="0" y="190" textLength="1000" lengthAdjust="spacingAndGlyphs" font-family="'A3GK Sans', sans-serif" font-weight="800" font-stretch="125%" font-size="252" letter-spacing="-6" fill="currentColor">A3GK</text>
+  </svg>
+{%- else -%}
+  <svg class="a3-logo" viewBox="0 0 148 30" role="img" aria-label="{{ label | default: shop.name | default: 'A3GK' | escape }}" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3 28V3h26v25" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linejoin="miter"/>
+    <path d="M9 28V14.5M16 28V14.5M23 28V14.5M9 21h14" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".45"/>
+    <circle cx="23.5" cy="8.8" r="3.2" fill="var(--a3-green, #3be37f)"/>
+    <text x="40" y="26" font-family="'A3GK Sans', sans-serif" font-weight="800" font-stretch="125%" font-size="27" letter-spacing="-0.5" fill="currentColor">A3GK</text>
+  </svg>
+{%- endif -%}

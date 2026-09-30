@@ -7,6 +7,9 @@
   - sizes: sizes attribute (optional)
   - loading: 'lazy' (default) or 'eager'
   - alt: alt text override (optional)
+  - render: concept render to show when there's no image (spray, wash, deo,
+    tape, socks, kit, shorts, bag, bundle, scene). Falls back to the frame.
+  - uid: unique id for the render's gradients; tone: 'ink' | 'paper'
 
   Usage:
   {% render 'a3gk-media', image: block.settings.image, shot: 'Close-up: wet latex palm, grip spray mist' %}
@@ -34,6 +37,12 @@
       widths: '375, 550, 750, 1100, 1500, 1800, 2400',
       alt: alt_text
   }}
+{%- elsif render != blank and render != 'none' -%}
+  {%- if render == 'scene' -%}
+    {%- render 'a3gk-scene', uid: uid -%}
+  {%- else -%}
+    {%- render 'a3gk-render', kind: render, uid: uid, tone: tone -%}
+  {%- endif -%}
 {%- else -%}
   <div class="a3-shot" role="img" aria-label="{{ shot | default: 'Photo coming soon' | escape }}">
     <span class="a3-shot__tag">Photo</span>

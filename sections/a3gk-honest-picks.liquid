@@ -19,7 +19,7 @@
     {%- if linked == 0 -%}
       <div class="a3-notyet">
         <div class="a3-notyet__media a3-media a3-reveal">
-          {%- render 'a3gk-media', image: section.settings.empty_image, shot: section.settings.empty_shot -%}
+          {%- render 'a3gk-media', image: section.settings.empty_image, shot: section.settings.empty_shot, render: 'scene', uid: section.id -%}
         </div>
         <div class="a3-notyet__body">
           {%- if section.settings.eyebrow != blank -%}

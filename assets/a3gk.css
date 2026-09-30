@@ -539,3 +539,157 @@ body { background: var(--a3-ink); }
   .a3-head { margin-bottom: 3.6rem; }
   .a3-card { padding: 2.4rem; }
 }
+
+/* ======================================================================
+   Premium layer: renders, grain, display type, marquee, wordmark
+   ====================================================================== */
+
+/* Film grain over everything — very low, keeps flat colour from feeling digital. */
+body::after {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: 2147483000;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body::after { animation: a3-grain 1.2s steps(6) infinite; }
+}
+
+@keyframes a3-grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 2%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* Wide display voice for the big moments. */
+.a3-wide {
+  font-family: var(--a3-sans);
+  font-weight: 800;
+  font-stretch: 125%;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.92;
+}
+
+.a3-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-stretch: 112%;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--a3-muted);
+}
+
+.a3-kicker::before {
+  content: '';
+  width: 2.4rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Section headings get more presence. */
+.a3-head h2,
+.a3-statement__title,
+.a3-notyet h2,
+.a3-teaser h2 {
+  font-stretch: 108%;
+  letter-spacing: -0.035em;
+}
+
+/* Concept renders */
+.a3-render {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: radial-gradient(60% 60% at 50% 32%, #2d322c 0%, #171a16 55%, #0b0c0a 100%);
+}
+
+.a3-render--paper {
+  background: radial-gradient(60% 60% at 50% 32%, #ffffff 0%, #ebe7de 55%, #d9d4c8 100%);
+}
+
+.a3-render svg { overflow: visible; }
+
+.a3-render svg,
+.a3-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.a3-render svg { transition: transform 1.2s var(--a3-ease); }
+
+a:hover .a3-render svg,
+.a3-care__item:hover .a3-render svg { transform: scale(1.035); }
+
+.a3-render__cap {
+  position: absolute;
+  left: 1.4rem;
+  bottom: 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #eeebe3;
+  opacity: 0.45;
+}
+
+.a3-render--paper .a3-render__cap { color: #121310; }
+
+/* Glow edge on dark media — floodlit rim */
+.a3-tone--ink .a3-media,
+.a3-tone--raised .a3-media {
+  box-shadow: 0 0 0 1px rgba(238, 235, 227, 0.06), 0 40px 80px -40px rgba(0, 0, 0, 0.8);
+}
+
+/* Logo */
+.a3-logo { display: block; height: 2.6rem; width: auto; color: var(--a3-text, #eeebe3); }
+.header__heading-link .a3-logo { height: 2.8rem; }
+.a3-wordmark { display: block; width: 100%; height: auto; }
+
+/* Links: animated underline */
+.a3-link {
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 0.3rem;
+  transition: background-size 0.4s var(--a3-ease);
+}
+
+.a3-link:hover { background-size: 0 1px; background-position: 100% 100%; }
+
+/* Buttons: a touch of depth */
+.a3-btn:not(.a3-btn--ghost) {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset, 0 12px 30px -12px rgba(59, 227, 127, 0.55);
+}
+
+.a3-tone--paper .a3-btn:not(.a3-btn--ghost) {
+  box-shadow: 0 12px 30px -14px rgba(18, 19, 16, 0.6);
+}
+
+/* Paper sections get a soft top light */
+.a3-tone--paper {
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(255, 255, 255, 0.7), transparent 60%),
+    var(--a3-bg);
+}
+
+/* Ink sections: faint floodlight wash from the top edge */
+.a3-tone--ink.a3-section {
+  background:
+    radial-gradient(90% 50% at 80% 0%, rgba(59, 227, 127, 0.05), transparent 60%),
+    var(--a3-bg);
+}

@@ -43,6 +43,10 @@
               <span class="a3-index__img a3-media" aria-hidden="true">
                 {{ img | image_url: width: 800 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 28vw, 30vw', alt: '' }}
               </span>
+            {%- elsif block.settings.render != 'none' -%}
+              <span class="a3-index__img a3-media" aria-hidden="true">
+                {%- render 'a3gk-media', render: block.settings.render, uid: block.id -%}
+              </span>
             {%- endif -%}
           </a>
         </li>
@@ -94,8 +98,9 @@
     right: 18%;
     top: 50%;
     width: min(28vw, 36rem);
-    aspect-ratio: 4 / 3;
-    transform: translateY(-50%);
+    aspect-ratio: 4 / 5;
+    width: min(22vw, 30rem);
+    transform: translateY(-50%) rotate(-2deg);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.35s var(--a3-ease);
@@ -152,6 +157,7 @@
         { "type": "url", "id": "link", "label": "Link override" },
         { "type": "image_picker", "id": "image", "label": "Image", "info": "Shown on hover. Falls back to the collection image." },
         { "type": "text", "id": "shot", "label": "Photo brief (for the photographer)" },
+        { "type": "select", "id": "render", "label": "Concept render (until a photo is added)", "options": [{ "value": "none", "label": "None (photo frame)" }, { "value": "spray", "label": "Grip spray" }, { "value": "wash", "label": "Glove wash" }, { "value": "deo", "label": "Deodorizer" }, { "value": "bundle", "label": "Care bundle" }, { "value": "tape", "label": "Tape" }, { "value": "socks", "label": "Grip sock" }, { "value": "kit", "label": "Custom jersey" }, { "value": "shorts", "label": "Padded shorts" }, { "value": "bag", "label": "Kit bag" }, { "value": "scene", "label": "Floodlit goal" }], "default": "none" },
         {
           "type": "select",
           "id": "status",

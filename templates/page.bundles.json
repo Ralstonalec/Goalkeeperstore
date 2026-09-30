@@ -6,7 +6,7 @@
       "block_order": [],
       "settings": {
         "heading": "Buy together, pay less. The maths is right there.",
-        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices — just today's prices, added up.</p>",
+        "text": "<p>Every bundle shows the price of each item on its own, the bundle price, and the difference. No inflated \"was\" prices \u2014 just today's prices, added up.</p>",
         "layout": "stack",
         "padding_top": 96,
         "padding_bottom": 24,
@@ -22,7 +22,8 @@
         "why": "<p>Everything to keep new gloves grippy and fresh from day one: wash, spray, tape and a travel deodorizer.</p>",
         "shot": "Wash, spray, tape and mini deodorizer laid out on a dark bench, top-down.",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "render": "bundle"
       }
     },
     "matchday": {
@@ -34,7 +35,8 @@
         "why": "<p>Spray for grip before kick-off, deodorizer for after, tape for fingers, and grip socks so your feet don't slide in your boots.</p>",
         "shot": "Match-day bundle in an open kit bag, pre-match dressing room light.",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "render": "socks"
       }
     },
     "refill": {
@@ -43,10 +45,11 @@
         "anchor": "refill",
         "heading": "Refill",
         "who": "Anyone already using our care line.",
-        "why": "<p>Just the two you go through fastest — wash and spray. Built for one-click reorder and refill reminders.</p>",
+        "why": "<p>Just the two you go through fastest \u2014 wash and spray. Built for one-click reorder and refill reminders.</p>",
         "shot": "Wash and spray bottles side by side, clean studio shot.",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "render": "spray"
       }
     },
     "turf": {
@@ -58,7 +61,8 @@
         "why": "<p>Turf burns and hard landings are the issue. Padded shorts for hips and thighs, grip socks, and tape.</p>",
         "shot": "Keeper diving on 3G turf, rubber crumb kicking up.",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "render": "shorts"
       }
     },
     "cold": {
@@ -70,7 +74,8 @@
         "why": "<p>Long-sleeve padded top and padded pants for full coverage on hard ground, plus socks.</p>",
         "shot": "Keeper in long sleeves and pants, breath visible, frosty pitch.",
         "padding_top": 80,
-        "padding_bottom": 80
+        "padding_bottom": 80,
+        "render": "kit"
       }
     },
     "custom": {
@@ -89,7 +94,7 @@
       ],
       "settings": {
         "heading": "Want it in your colours?",
-        "text": "<p>Custom kit isn't a fixed bundle — build jersey and shorts or pants together in the kit builder and the full price shows before you pay.</p>",
+        "text": "<p>Custom kit isn't a fixed bundle \u2014 build jersey and shorts or pants together in the kit builder and the full price shows before you pay.</p>",
         "layout": "split",
         "padding_top": 80,
         "padding_bottom": 80,

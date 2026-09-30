@@ -161,6 +161,15 @@ async function renderSections(template) {
   return html;
 }
 
+const LOGO = await engine.parseAndRender(`{% render 'a3gk-logo', label: 'A3GK' %}`);
+const WORDMARK_SRC = fs.readFileSync(path.join(ROOT, 'sections', 'a3gk-wordmark.liquid'), 'utf8');
+
+const WORDMARK = await (async () => {
+  const html = await engine.parseAndRender(WORDMARK_SRC, { section: { settings: { line: 'Built by keepers, for the one who wears different colours.', tone: 'ink' } } });
+  return html;
+})();
+const WORDMARK_CSS = styles.splice(0).join('');
+
 const NAV = [
   ['Glove care', '/collections/glove-care'],
   ['Kit builder', '/pages/builder'],
@@ -194,7 +203,7 @@ function page(title, body, description = '') {
   .pv-announce{background:#000;text-align:center;font-size:1.3rem;padding:.8rem 1.6rem;color:#97948b}
   .pv-header{position:sticky;top:0;z-index:20;background:rgba(14,15,13,.92);backdrop-filter:blur(10px);border-bottom:1px solid rgba(237,239,236,.12)}
   .pv-header__in{display:flex;align-items:center;justify-content:space-between;gap:2rem;max-width:136rem;margin:0 auto;padding:1.8rem clamp(1.6rem,4vw,5.6rem)}
-  .pv-logo{font-weight:800;font-stretch:72%;font-size:3rem;letter-spacing:-.01em;text-decoration:none}
+  .pv-logo{display:block;color:#eeebe3;text-decoration:none}.pv-logo .a3-logo{height:2.8rem}
   .pv-nav{display:flex;gap:2.8rem;font-size:1.5rem}
   .pv-nav a{text-decoration:none;opacity:.8}.pv-nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:.35em}
   .pv-menu{display:none}
@@ -216,13 +225,14 @@ function page(title, body, description = '') {
   .pv-prose blockquote{margin:0;padding:.4rem 0 .4rem 2rem;border-left:2px solid #3be37f;color:#c9c6be}
 </style>
 <link rel="stylesheet" href="/assets/a3gk.css">
+<style>${WORDMARK_CSS}</style>
 ${css}
 </head>
 <body>
 <div class="pv-bar">Design preview. The live store, cart and checkout run on Shopify.</div>
 <div class="pv-announce">Goalkeepers only. Launching soon.</div>
 <header class="pv-header"><div class="pv-header__in">
-  <a class="pv-logo" href="/">A3GK</a>
+  <a class="pv-logo" href="/" aria-label="A3GK home">${LOGO}</a>
   <nav class="pv-nav" aria-label="Main">${NAV.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}</nav>
   <details class="pv-menu"><summary>Menu</summary><nav aria-label="Main">${NAV.map(([l, h]) => `<a href="${h}">${l}</a>`).join('')}</nav></details>
 </div></header>
@@ -233,6 +243,7 @@ ${css}
   <div><h4>Help</h4><ul><li><a href="/pages/size-guide">Size guide</a></li><li><a href="/policies/shipping-policy">Shipping</a></li><li><a href="/policies/refund-policy">Returns</a></li><li><a href="/pages/faq">FAQ</a></li><li><a href="/pages/contact">Contact</a></li><li><a href="/pages/team-orders">Team orders</a></li></ul></div>
   <div><h4>Learn</h4><ul><li><a href="/pages/about">About</a></li><li><a href="/blogs/guides">Guides</a></li><li><a href="/pages/you-told-us">You told us</a></li><li><a href="/pages/feedback">Feedback</a></li></ul></div>
 </div></footer>
+${WORDMARK}
 <script src="/assets/a3gk.js" defer></script>
 </body>
 </html>`;
