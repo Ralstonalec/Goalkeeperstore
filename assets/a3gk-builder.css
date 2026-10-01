@@ -506,3 +506,7 @@
 .a3b__no3d-why { display: block; margin-top: 0.4rem; font-size: 1.1rem; opacity: 0.7; }
 
 .a3b[data-building] .a3b__loading { display: grid; }
+
+/* Dawn colours headings from the page scheme; the designer sets its own. */
+.a3-builder-section :is(h1, h2, h3, h4, h5, h6) { color: var(--a3-text); }
+.a3b__hud-title strong { color: var(--a3-text); }

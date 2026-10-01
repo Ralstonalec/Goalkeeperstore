@@ -23,6 +23,9 @@ function createKitScene(THREE, container, options = {}) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.05;
+  // Soft shadows: sleeves shade the body, folds shade themselves, the kit sits on the floor.
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.className = 'a3k-canvas';
   renderer.domElement.setAttribute('aria-hidden', 'true');
   container.appendChild(renderer.domElement);
@@ -60,7 +63,14 @@ function createKitScene(THREE, container, options = {}) {
   scene.add(new THREE.HemisphereLight(0xe9f2ec, 0x0b0c0a, 0.25));
   const key = new THREE.DirectionalLight(0xffffff, 2.6);
   key.position.set(-5, 5, 6);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.bias = -0.0004;
+  key.shadow.normalBias = 0.02;
+  key.shadow.radius = 4;
+  Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -5, near: 1, far: 30 });
   scene.add(key);
+  scene.add(key.target);
   const fill = new THREE.DirectionalLight(0xdfe8ff, 0.25);
   fill.position.set(6, 2, 4);
   scene.add(fill);
@@ -89,6 +99,10 @@ function createKitScene(THREE, container, options = {}) {
   );
   floor.rotation.x = -Math.PI / 2;
   scene.add(floor);
+  const shadowCatcher = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.28 }));
+  shadowCatcher.rotation.x = -Math.PI / 2;
+  shadowCatcher.receiveShadow = true;
+  scene.add(shadowCatcher);
 
   const kit = new THREE.Group();
   scene.add(kit);
@@ -128,7 +142,7 @@ function createKitScene(THREE, container, options = {}) {
       map,
       vertexColors: true, // baked ambient occlusion
       bumpMap: bump,
-      bumpScale: finish === 'mesh' ? 2.4 : 1,
+      bumpScale: finish === 'mesh' ? 2.2 : 1.4,
       roughness: finish === 'sheen' ? 0.55 : finish === 'mesh' ? 0.85 : 0.8,
       metalness: 0,
       // Fabric sheen: the soft grazing highlight that makes cloth (and
@@ -269,6 +283,13 @@ onmessage = function (e) {
     );
   }
 
+  // Per-part surface detail painted in garment UV space (knit, seams, hems, rib);
+  // falls back to the tiled knit.
+  function detailBump(k) {
+    const t = textures[`${k}Bump`];
+    return t ? wrapRepeat(t) : bumpTex;
+  }
+
   function wrapRepeat(t) {
     if (t && t.wrapS !== THREE.RepeatWrapping) {
       t.wrapS = THREE.RepeatWrapping;
@@ -324,7 +345,10 @@ onmessage = function (e) {
 
   function withInner(geo, mats) {
     const g = new THREE.Group();
-    g.add(new THREE.Mesh(geo, mats));
+    const outer = new THREE.Mesh(geo, mats);
+    outer.castShadow = true;
+    outer.receiveShadow = true;
+    g.add(outer);
     g.add(new THREE.Mesh(geo, inner));
     return g;
   }
@@ -365,7 +389,7 @@ onmessage = function (e) {
     disposeKit();
 
     if (jGeo) {
-      const mats = [textures.torso, textures.sleeveR, textures.sleeveL].map((t) => fabric(wrapRepeat(t), bumpTex, finish));
+      const mats = ['torso', 'sleeveR', 'sleeveL'].map((k) => fabric(wrapRepeat(textures[k]), detailBump(k), finish));
       const jersey = withInner(jGeo, mats);
       jersey.children.forEach((c) => (c.userData.cached = true));
       kit.add(jersey);
@@ -390,8 +414,24 @@ onmessage = function (e) {
     }
 
     if (bGeo) {
-      const mats = [textures.hip, textures.legR, textures.legL].map((t) => fabric(wrapRepeat(t), bumpTex, finish));
+      const mats = ['hip', 'legR', 'legL'].map((k) => fabric(wrapRepeat(textures[k]), detailBump(k), finish));
       const bottoms = withInner(bGeo, mats);
+      // Under a jersey, the waistband is tucked in: shrink it slightly toward
+      // the body so it never pokes through the jersey's folds.
+      if (jGeo && !bGeo.userData.tucked) {
+        const p = bGeo.attributes.position;
+        const hemY = jGeo.boundingBox.min.y + 0.2;
+        for (let i = 0; i < p.count; i++) {
+          const y = p.getY(i);
+          if (y <= hemY) continue;
+          const k = Math.min(1, (y - hemY) / 0.2) * 0.13;
+          p.setX(i, p.getX(i) * (1 - k));
+          p.setZ(i, p.getZ(i) * (1 - k));
+        }
+        p.needsUpdate = true;
+        bGeo.computeVertexNormals();
+        bGeo.userData.tucked = true;
+      }
       bottoms.children.forEach((c) => (c.userData.cached = true));
       kit.add(bottoms);
     }
@@ -412,6 +452,9 @@ onmessage = function (e) {
     const fit = Math.max(h, w / Math.max(0.6, camera.aspect));
     camDist = fit / (2 * Math.tan((camera.fov * Math.PI) / 360)) * 1.18 + 1;
     floor.position.y = low - 0.02;
+    shadowCatcher.position.y = low - 0.03;
+    key.target.position.copy(target);
+    key.position.set(target.x - 5, target.y + 5, target.z + 6);
     floor.scale.set(Math.max(1, w / 3.2), 1, 1);
     frame();
     requestRender();

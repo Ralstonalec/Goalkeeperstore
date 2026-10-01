@@ -534,6 +534,20 @@
       paint.paintSock(this.tex.sock, s);
 
       if (this.kit3d && this.mode === '3d') {
+        // Surface detail (knit, seams, hems, rib) only changes with construction choices.
+        const dKey = [s.finish, s.sleeve, s.sidePanels, s.cuffs, bottom].join('|');
+        if (dKey !== this._detailKey) {
+          this._detailKey = dKey;
+          const D = (this.detail = this.detail || {});
+          ['torso', 'sleeveR', 'sleeveL', 'hip', 'legR', 'legL'].forEach((k) => (D[k] = D[k] || document.createElement('canvas')));
+          paint.paintDetail(D.torso, 'torso', s, this.tex.torso.width, this.tex.torso.height);
+          paint.paintDetail(D.sleeveR, 'sleeveR', s, this.tex.sleeveR.width, this.tex.sleeveR.height);
+          paint.paintDetail(D.sleeveL, 'sleeveL', s, this.tex.sleeveL.width, this.tex.sleeveL.height);
+          paint.paintDetail(D.hip, 'hip', s, this.tex.hip.width, this.tex.hip.height);
+          paint.paintDetail(D.legR, 'legR', s, this.tex.legR.width, this.tex.legR.height);
+          paint.paintDetail(D.legL, 'legL', s, this.tex.legL.width, this.tex.legL.height);
+          this._detailDirty = true;
+        }
         const finishChanged = this._finish !== s.finish;
         this._finish = s.finish;
         if (finishChanged || !this._knit) this._knit = paint.knitCanvas(s.finish);
@@ -556,16 +570,28 @@
 
     textures3d() {
       // CanvasTexture objects are created once and flagged for update each paint.
+      const THREE = this.THREE;
+      const make = (c) => {
+        const t = new THREE.CanvasTexture(c);
+        t.colorSpace = THREE.SRGBColorSpace;
+        return t;
+      };
       if (!this._t3) {
-        const THREE = this.THREE;
         this._t3 = {};
-        Object.entries(this.tex).forEach(([k, c]) => {
-          const t = new THREE.CanvasTexture(c);
-          t.colorSpace = THREE.SRGBColorSpace;
-          this._t3[k] = t;
-        });
+        Object.entries(this.tex).forEach(([k, c]) => (this._t3[k] = make(c)));
       }
-      Object.values(this._t3).forEach((t) => (t.needsUpdate = true));
+      Object.entries(this.tex).forEach(([k]) => (this._t3[k].needsUpdate = true));
+      if (this.detail) {
+        Object.entries(this.detail).forEach(([k, c]) => {
+          const key = `${k}Bump`;
+          if (!this._t3[key]) {
+            this._t3[key] = new THREE.CanvasTexture(c);
+            this._t3[key].colorSpace = THREE.NoColorSpace;
+          }
+          if (this._detailDirty) this._t3[key].needsUpdate = true;
+        });
+        this._detailDirty = false;
+      }
       return this._t3;
     }
 

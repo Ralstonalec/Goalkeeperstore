@@ -43,7 +43,7 @@ const BODY = {
   torsoRx: [[-2, 16.5], [8, 18], [28, 15], [45, 17.5], [52, 18], [56, 17], [60, 14], [63, 10], [66, 6.5], [70, 6]],
   torsoRz: [[-2, 11], [8, 12], [28, 11], [45, 12.5], [52, 12], [56, 10.5], [60, 8.5], [63, 7], [66, 6], [70, 6]],
   shoulder: { x: 17.8, y: 56.5, r: 5.4 },
-  arm: { x: 19, y: 57, angle: 22 * deg, len: 62, r: [[0, 5.3], [25, 4.4], [30, 4.1], [55, 3.2], [62, 3.2]] },
+  arm: { x: 19, y: 57, angle: 27 * deg, len: 62, r: [[0, 5.3], [25, 4.4], [30, 4.1], [55, 3.2], [62, 3.2]] },
   leg: { x: 9.6, y: 3, angle: 3 * deg, len: 88, r: [[0, 9.6], [30, 7], [42, 6], [58, 6.4], [80, 3.8], [88, 3.8]] },
 };
 
@@ -136,8 +136,8 @@ class Cloth {
         link(a, at(iu, iv + 1), 1);
         link(a, at(iu + 1, iv + 1), 0.6);
         link(a, at(iu + 1, iv - 1), 0.6);
-        link(a, at(iu + 2, iv), 0.12);
-        link(a, at(iu, iv + 2), 0.12);
+        link(a, at(iu + 2, iv), 0.35);
+        link(a, at(iu, iv + 2), 0.35);
         // Triangles (with per-corner uv wrap handled at export).
         const b = at(iu + 1, iv);
         const c = at(iu + 1, iv + 1);
@@ -217,6 +217,47 @@ class Cloth {
         }
       }
     };
+    const G = this.group;
+    const neighbours = new Set();
+    for (const [a, b] of E.map((e) => [e[0], e[1]])) neighbours.add(a * 100000 + b).add(b * 100000 + a);
+    for (const [a, b] of S) neighbours.add(a * 100000 + b).add(b * 100000 + a);
+    const repel = (minD) => {
+      const cell = minD;
+      const hash = new Map();
+      for (let i = 0; i < n; i++) {
+        const k = `${Math.floor(P[i * 3] / cell)},${Math.floor(P[i * 3 + 1] / cell)},${Math.floor(P[i * 3 + 2] / cell)}`;
+        let l = hash.get(k);
+        if (!l) hash.set(k, (l = []));
+        l.push(i);
+      }
+      for (let i = 0; i < n; i++) {
+        const cx = Math.floor(P[i * 3] / cell);
+        const cy = Math.floor(P[i * 3 + 1] / cell);
+        const cz = Math.floor(P[i * 3 + 2] / cell);
+        for (let dx = -1; dx <= 1; dx++)
+          for (let dy = -1; dy <= 1; dy++)
+            for (let dz = -1; dz <= 1; dz++) {
+              const l = hash.get(`${cx + dx},${cy + dy},${cz + dz}`);
+              if (!l) continue;
+              for (const j of l) {
+                if (j <= i || (G[i] === G[j] && Math.abs(i - j) < 400)) continue;
+                if (neighbours.has(i * 100000 + j)) continue;
+                const ex = P[j * 3] - P[i * 3];
+                const ey = P[j * 3 + 1] - P[i * 3 + 1];
+                const ez = P[j * 3 + 2] - P[i * 3 + 2];
+                const d = Math.sqrt(ex * ex + ey * ey + ez * ez);
+                if (d >= minD || d < 1e-6) continue;
+                const c = (0.5 * (minD - d)) / d;
+                P[i * 3] -= ex * c;
+                P[i * 3 + 1] -= ey * c;
+                P[i * 3 + 2] -= ez * c;
+                P[j * 3] += ex * c;
+                P[j * 3 + 1] += ey * c;
+                P[j * 3 + 2] += ez * c;
+              }
+            }
+      }
+    };
     for (let step = 0; step < steps; step++) {
       const phase = step / steps;
       const g = gravity * clamp((phase - 0.18) / 0.12, 0, 1); // seams close first, then gravity
@@ -242,7 +283,7 @@ class Cloth {
           const d = Math.sqrt(dx * dx + dy * dy + dz * dz) || 1e-9;
           // Cloth barely stretches but compresses freely (it buckles into folds).
           let diff = (d - rest) / d;
-          if (diff < 0) diff *= 0.35;
+          if (diff < 0) diff *= 0.75; // pressed sample garment: resists crumpling
           const c = 0.5 * k * diff;
           P[ax] += dx * c;
           P[ax + 1] += dy * c;
@@ -261,6 +302,11 @@ class Cloth {
           }
         }
         collide(0.6);
+      }
+      // Panels can't pass through each other (sleeve vs body at the armpit, legs).
+      if (phase > 0.15) {
+        repel(1.3);
+        repel(1.3);
       }
       // Strain limiting: woven/knit kit fabric barely stretches (~3%).
       for (let pass = 0; pass < 3; pass++) {
@@ -345,8 +391,8 @@ function buildJersey({ long }) {
   const nv = Math.round((TOP - HEM) / ds) + 1;
   const ell = ellipseTable(19.8, 13.6);
   const NECK_W = 7.8;
-  const ARM_X = 14.6;
-  const ARMPIT = 46.5;
+  const ARM_X = 15.6;
+  const ARMPIT = 48.5;
   const topAt = (x, z) => {
     const ax = Math.abs(x);
     if (ax <= NECK_W) {
@@ -354,6 +400,14 @@ function buildJersey({ long }) {
       return z > 0 ? 66.5 - 8.5 * k : 66.5 - 2.2 * k;
     }
     return 66.5 - 0.36 * (ax - NECK_W);
+  };
+  // Rounded armhole (a real armscye is a smooth curve, not a box).
+  const armholeCut = (x, y) => {
+    const ax = Math.abs(x);
+    if (y <= ARMPIT) return false;
+    const t = clamp((y - ARMPIT) / 9, 0, 1);
+    const edge = ARM_X - 4 + 4 * Math.sqrt(1 - (1 - t) * (1 - t));
+    return ax > edge;
   };
   const torso = cloth.tube({
     nu,
@@ -363,10 +417,7 @@ function buildJersey({ long }) {
       const [x, z] = ell(fu);
       return [x, HEM + fv * (TOP - HEM), z];
     },
-    keep: ([x, y, z]) => {
-      if (Math.abs(x) > ARM_X) return y <= ARMPIT + 0.01;
-      return y <= topAt(x, z) + 0.01;
-    },
+    keep: ([x, y, z]) => !armholeCut(x, y) && y <= topAt(x, z) + 0.01,
     uvOf: (fu, fv) => [fu, fv],
   });
 
@@ -396,38 +447,41 @@ function buildJersey({ long }) {
   // Sleeves.
   const lenS = long ? 61 : 23;
   for (const s of [1, -1]) {
-    // Armhole loop: front edge column (top → armpit), round the side, back edge column (armpit → top).
-    const cols = [];
-    for (let iu = 0; iu < nu; iu++) if (Math.abs(colX(iu)) > ARM_X && Math.sign(colX(iu)) === s) cols.push(iu);
-    // order the side columns from front to back
-    cols.sort((a, b) => colZ(b) - colZ(a));
-    const frontEdge = cols[0] + (colZ(cols[0] + 1) > colZ(cols[0]) ? 1 : -1);
-    const fe = ((frontEdge % nu) + nu) % nu;
-    const backEdge = ((cols[cols.length - 1] + (colZ(cols[cols.length - 1] + 1) < colZ(cols[cols.length - 1]) ? 1 : -1)) % nu + nu) % nu;
-    const colPts = (iu, fromTop) => {
-      const out = [];
-      for (let iv = torso.nv - 1; iv >= 0; iv--) {
-        const p = torso.idx[iv][iu];
-        if (p >= 0 && cloth.pos[p][1] >= ARMPIT - 0.01) out.push(p);
-      }
-      return fromTop ? out : out.reverse();
+    // Armhole loop: every kept particle bordering the armhole cut-out on this
+    // side, ordered from the front shoulder, down round the armpit, up to the back.
+    const placeAt = (iu, iv) => {
+      const [x, z] = ell((((iu % nu) + nu) % nu) / nu);
+      return [x, HEM + (iv / (nv - 1)) * (TOP - HEM), z];
     };
-    const armpitRow = Math.round((ARMPIT - HEM) / ds);
-    const rowY = (iv) => HEM + (iv / (nv - 1)) * (TOP - HEM);
-    let ivA = 0;
-    for (let iv = 0; iv < nv; iv++) if (rowY(iv) <= ARMPIT + 0.01) ivA = iv;
-    void armpitRow;
-    const loop = [...colPts(fe, true), ...cols.map((iu) => torso.idx[ivA][iu]).filter((p) => p >= 0), ...colPts(backEdge, false)];
+    const inArmhole = ([x, y]) => armholeCut(x, y);
+    const boundary = [];
+    for (let iv = 0; iv < nv; iv++)
+      for (let iu = 0; iu < nu; iu++) {
+        const p = torso.idx[iv][iu];
+        if (p < 0 || Math.sign(colX(iu)) !== s) continue;
+        const nb = [[iu + 1, iv], [iu - 1, iv], [iu, iv + 1], [iu, iv - 1]];
+        if (nb.some(([u2, v2]) => v2 >= 0 && v2 < nv && torso.at(u2, v2) < 0 && inArmhole(placeAt(u2, v2)))) boundary.push(p);
+      }
+    const cy = ARMPIT + 10;
+    const angleOf = (p) => Math.atan2(cloth.pos[p][2], cy - cloth.pos[p][1]);
+    const loop = boundary.sort((p, q) => angleOf(q) - angleOf(p));
 
     const a = BODY.arm;
     const ang = a.angle;
     const d = [s * Math.sin(ang), -Math.cos(ang), 0];
     const X = [Math.cos(ang), s * Math.sin(ang), 0]; // +x-ish, perpendicular to the arm
     const J = [s * (a.x + 0.5), a.y + 1.5, 0];
-    const capC = 50;
+    // Sleeve cap is cut to the armhole's length so the seam sits flat (no gathering).
+    let loopLen = 0;
+    for (let k = 0; k < loop.length; k++) {
+      const a = cloth.pos[loop[k]];
+      const b = cloth.pos[loop[(k + 1) % loop.length]];
+      loopLen += Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    }
+    const capC = clamp(loopLen * 0.98, 44, 56);
     const circAt = long
-      ? (t) => keyed([[0, capC], [9, 41], [30, 36], [48, 28], [lenS, 24]], t)
-      : (t) => keyed([[0, capC], [9, 41], [lenS, 38]], t);
+      ? (t) => keyed([[0, capC], [10, 40], [30, 35], [48, 28], [lenS, 24]], t)
+      : (t) => keyed([[0, capC], [10, 40], [lenS, 38]], t);
     const snu = Math.round(capC / ds / 2) * 2;
     const snv = Math.round(lenS / ds) + 1;
     const uTop = s > 0 ? 0.25 : 0.75;
@@ -468,7 +522,8 @@ function buildBottoms({ pants }) {
   const CROTCH = -1;
   const legLen = pants ? 79 : 17;
   // Hip/waist tube with an elastic waist.
-  const hipCirc = (y) => keyed([[CROTCH, 110], [12, 110], [22, 100], [TOP, 86]], y);
+  // Fitted under the jersey: the part hidden by the jersey hugs the body.
+  const hipCirc = (y) => keyed([[CROTCH, 108], [-4, 104], [4, 98], [12, 94], [22, 88], [TOP, 84]], y);
   const nu = Math.round(110 / ds / 2) * 2;
   const nv = Math.round((TOP - CROTCH) / ds) + 1;
   const hip = cloth.tube({
@@ -655,7 +710,51 @@ function computeAO(pos, index, { rays = 24, reach = 0.5 } = {}) {
 const UNIT = 26; // scene unit in cm
 const Y0 = -6; // jersey hem at scene y = 0
 
+// Taubin smoothing (shrink-free): irons out simulation noise, keeps the drape.
+function smoothCloth(cloth, iterations = 6) {
+  const P = cloth.out;
+  const n = cloth.pos.length;
+  const nb = Array.from({ length: n }, () => []);
+  for (const [a, b, , k] of cloth.edges) {
+    if (k < 1) continue;
+    nb[a].push(b);
+    nb[b].push(a);
+  }
+  const step = (f) => {
+    const Q = Float64Array.from(P);
+    for (let i = 0; i < n; i++) {
+      const l = nb[i];
+      if (l.length < 3) continue; // keep borders (hems, cuffs, neck) crisp
+      let x = 0;
+      let y = 0;
+      let z = 0;
+      for (const j of l) {
+        x += Q[j * 3];
+        y += Q[j * 3 + 1];
+        z += Q[j * 3 + 2];
+      }
+      x /= l.length;
+      y /= l.length;
+      z /= l.length;
+      P[i * 3] += (x - Q[i * 3]) * f;
+      P[i * 3 + 1] += (y - Q[i * 3 + 1]) * f;
+      P[i * 3 + 2] += (z - Q[i * 3 + 2]) * f;
+    }
+    for (const [a, b] of cloth.sews)
+      for (let k = 0; k < 3; k++) {
+        const m = (P[a * 3 + k] + P[b * 3 + k]) / 2;
+        P[a * 3 + k] = m;
+        P[b * 3 + k] = m;
+      }
+  };
+  for (let it = 0; it < iterations; it++) {
+    step(0.5);
+    step(-0.53);
+  }
+}
+
 function exportCloth(cloth) {
+  smoothCloth(cloth);
   const P = cloth.out;
   const n = cloth.pos.length;
   // Vertices are split per triangle corner only where the u wrap needs it.

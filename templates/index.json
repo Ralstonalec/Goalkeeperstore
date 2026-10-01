@@ -253,13 +253,13 @@
         "s4"
       ],
       "settings": {
-        "heading": "Design your own padded kit.",
-        "button_label": "Open the builder",
+        "heading": "Design your kit in 3D.",
+        "button_label": "Open the kit designer",
         "link": "/pages/builder",
         "padding_top": 96,
         "padding_bottom": 96,
         "tone": "raised",
-        "text": "<p>Jersey, shorts or pants in your colours, with your name, number and crest, and padding where you land. You see the full price and delivery time before you pay.</p>"
+        "text": "<p>Twelve ready-made looks to start from, then every colour, pattern, number, name and crest is yours. Turn it in 3D, see the price and delivery time, then order.</p>"
       }
     },
     "feedback": {
@@ -296,17 +296,66 @@
         "outline": true,
         "tone": "ink"
       }
+    },
+    "manifesto": {
+      "type": "a3gk-manifesto",
+      "blocks": {
+        "l0": {
+          "type": "line",
+          "settings": {
+            "text": "Curate hard."
+          }
+        },
+        "l1": {
+          "type": "line",
+          "settings": {
+            "text": "Show the maths."
+          }
+        },
+        "l2": {
+          "type": "line",
+          "settings": {
+            "text": "Listen. Then change things."
+          }
+        }
+      },
+      "block_order": [
+        "l0",
+        "l1",
+        "l2"
+      ],
+      "settings": {
+        "label": "What we do",
+        "footnote": "Read the full mission",
+        "tone": "ink",
+        "footnote_link": "/pages/mission"
+      }
+    },
+    "cta": {
+      "type": "a3gk-cta",
+      "settings": {
+        "kicker": "Start here",
+        "heading": "Your kit. Your colours.",
+        "text": "<p>Design padded keeper kit in 3D: colours, pattern, number, crest and padding. See the price and lead time before you pay.</p>",
+        "button_label": "Design your kit",
+        "button_link": "/pages/builder",
+        "button_2_label": "Read the mission",
+        "button_2_link": "/pages/mission",
+        "render": "kit"
+      }
     }
   },
   "order": [
     "hero",
     "marquee",
     "why",
+    "builder",
     "categories",
     "care",
+    "manifesto",
     "gloves",
-    "builder",
     "feedback",
-    "guides"
+    "guides",
+    "cta"
   ]
 }

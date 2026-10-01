@@ -1014,3 +1014,18 @@ main { counter-reset: a3-chapter; }
 .a3-prose .a3-grid .a3-item { padding: 2.8rem; border: 1px solid var(--a3-line); border-radius: calc(var(--a3-radius, 4px) * 2); background: linear-gradient(180deg, rgba(238, 235, 227, 0.04), rgba(238, 235, 227, 0)); transition: border-color 0.3s, transform 0.4s var(--a3-ease); }
 .a3-prose .a3-grid .a3-item:hover { border-color: var(--a3-line-strong); transform: translateY(-3px); }
 .a3-prose .a3-grid .a3-item h3 { font-size: 2.2rem; font-stretch: 108%; letter-spacing: -0.02em; }
+
+/* ======================================================================
+   Contrast guard: Dawn colours every heading from the page colour scheme
+   (light text). Inside A3GK sections the section's own tone decides.
+   ====================================================================== */
+:is(.a3-section, .a3-phero, .a3-cta, .a3-hero, .a3-manifesto, .a3-marquee, .a3-tone--paper, .a3-tone--ink, .a3-tone--raised)
+  :is(h1, h2, h3, h4, h5, h6, .h0, .h1, .h2, .h3, .h4, .h5, summary, label, legend, dt, th, strong, b) {
+  color: inherit;
+}
+:is(.a3-section, .a3-phero, .a3-cta, .a3-hero, .a3-manifesto) :is(p, li, td, dd, blockquote, figcaption) { color: inherit; }
+:is(.a3-section, .a3-phero, .a3-cta, .a3-hero, .a3-manifesto) a:not(.a3-btn):not(.button) { color: inherit; }
+.a3-tone--paper { color: var(--a3-text); }
+.a3-tone--paper .a3-muted,
+.a3-tone--paper .a3-small { color: var(--a3-muted); }
+.a3-tone--paper :is(.field__input, .a3-input, .a3-select, .a3-textarea) { color: var(--a3-text); }

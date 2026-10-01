@@ -20,7 +20,7 @@ const OUT = path.join(ROOT, 'dist');
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(path.join(OUT, 'assets'), { recursive: true });
 for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) {
-  if (f.startsWith('a3gk')) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
+  if (f.startsWith('a3gk') || f === 'base.css') fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
 }
 
 /* ---------------- Liquid engine with Shopify stubs ---------------- */
@@ -233,11 +233,16 @@ function page(title, body, description = '') {
   .pv-prose a{color:inherit;text-underline-offset:.3em}
   .pv-prose blockquote{margin:0;padding:.4rem 0 .4rem 2rem;border-left:2px solid #3be37f;color:#c9c6be}
 </style>
+<style>
+  /* Dawn's colour variables (scheme-1), so the preview renders like the store. */
+  :root{--color-background:14,15,13;--color-foreground:238,235,227;--color-background-contrast:60,64,57;--color-shadow:0,0,0;--color-button:59,227,127;--color-button-text:7,19,11;--color-secondary-button:14,15,13;--color-secondary-button-text:238,235,227;--color-link:238,235,227;--font-body-family:'A3GK Sans',system-ui,sans-serif;--font-heading-family:'A3GK Sans',system-ui,sans-serif;--font-body-scale:1;--font-heading-scale:1;--page-width:136rem;--buttons-radius:4px}
+</style>
+<link rel="stylesheet" href="/assets/base.css">
 <link rel="stylesheet" href="/assets/a3gk.css">
 <style>${WORDMARK_CSS}</style>
 ${css}
 </head>
-<body>
+<body class="gradient color-scheme-1">
 <div class="pv-bar">Design preview. The live store, cart and checkout run on Shopify.</div>
 <div class="pv-announce">Goalkeepers only. Launching soon.</div>
 <header class="pv-header"><div class="pv-header__in">
