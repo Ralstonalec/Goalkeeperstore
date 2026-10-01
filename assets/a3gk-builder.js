@@ -587,7 +587,9 @@
       try {
         // Plain <script> tags, not import(): classic scripts load from any CDN
         // without CORS, which module imports need.
-        await Promise.all([this.cfg.threeUrl, this.cfg.garmentUrl, this.cfg.kit3dUrl, this.cfg.meshesUrl].filter(Boolean).map(loadScript));
+        // Baked draped garments are optional: without them the viewer builds garments itself.
+        const meshes = this.cfg.meshesUrl ? loadScript(this.cfg.meshesUrl).catch(() => null) : null;
+        await Promise.all([this.cfg.threeUrl, this.cfg.garmentUrl, this.cfg.kit3dUrl].map(loadScript).concat(meshes || []));
         const THREE = window.THREE;
         const mod = window.A3GKKit3D;
         const garment = window.A3GKGarment;

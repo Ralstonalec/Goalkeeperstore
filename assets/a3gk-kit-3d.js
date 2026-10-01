@@ -371,7 +371,8 @@ onmessage = function (e) {
       kit.add(jersey);
 
       // Ribbed collar band that follows the real neck opening.
-      const pts = options.garment.neckCurve({ sleeve });
+      const bakedJ = window.A3GKMeshes && window.A3GKMeshes[bakedName('jersey', { sleeve })];
+      const pts = bakedJ && bakedJ.neck && bakedJ.neck.length > 8 ? bakedJ.neck : options.garment.neckCurve({ sleeve });
       const height = { crew: 0.07, v: 0.05, polo: 0.16, wrap: 0.1 }[collar] || 0.07;
       const band = collarBand(pts, height, collar === 'polo' ? 0.05 : 0.012);
       const bandMat = new THREE.MeshPhysicalMaterial({

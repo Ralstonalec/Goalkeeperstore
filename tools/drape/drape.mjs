@@ -387,6 +387,12 @@ function buildJersey({ long }) {
     shoulderCols[Math.sign(x)].push(iu);
   }
 
+  // Neck opening ring (for the collar band), ordered around the neck.
+  const neckCols = [];
+  for (let iu = 0; iu < nu; iu++) if (Math.abs(colX(iu)) <= NECK_W + ds) neckCols.push(iu);
+  neckCols.sort((a, b) => Math.atan2(colX(a), colZ(a)) - Math.atan2(colX(b), colZ(b)));
+  cloth.neckRing = neckCols.map(topOf).filter((p) => p >= 0);
+
   // Sleeves.
   const lenS = long ? 61 : 23;
   for (const s of [1, -1]) {
@@ -665,8 +671,18 @@ function exportCloth(cloth) {
     return verts.length - 1;
   };
   const groups = [[], [], []];
-  for (const [a, b, c, edge] of cloth.tris) {
+  for (let [a, b, c, edge] of cloth.tris) {
     const g = cloth.group[a];
+    // Face away from the body so the fabric side is outside.
+    const pa = [P[a * 3], P[a * 3 + 1], P[a * 3 + 2]];
+    const pb = [P[b * 3], P[b * 3 + 1], P[b * 3 + 2]];
+    const pc = [P[c * 3], P[c * 3 + 1], P[c * 3 + 2]];
+    const u = [pb[0] - pa[0], pb[1] - pa[1], pb[2] - pa[2]];
+    const w = [pc[0] - pa[0], pc[1] - pa[1], pc[2] - pa[2]];
+    const fn = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
+    const cen = [(pa[0] + pb[0] + pc[0]) / 3, (pa[1] + pb[1] + pc[1]) / 3, (pa[2] + pb[2] + pc[2]) / 3];
+    const out = bodyGrad(cen[0], cen[1], cen[2]);
+    if (fn[0] * out[0] + fn[1] * out[1] + fn[2] * out[2] < 0) [b, c] = [c, b];
     const us = [a, b, c].map((i) => cloth.uv[i][0]);
     const wrap = edge && Math.max(...us) - Math.min(...us) > 0.5;
     groups[g].push([vid(a, wrap && us[0] < 0.5), vid(b, wrap && us[1] < 0.5), vid(c, wrap && us[2] < 0.5)]);
@@ -689,7 +705,8 @@ function exportCloth(cloth) {
     ranges.push([start, index.length - start, gi]);
   });
   const idx32 = Uint32Array.from(index);
-  return { pos, uv, index: idx32, groups: ranges, ao: computeAO(pos, idx32) };
+  const neck = (cloth.neckRing || []).map((i) => [P[i * 3] / UNIT, (P[i * 3 + 1] - Y0) / UNIT, P[i * 3 + 2] / UNIT].map((v) => +v.toFixed(4)));
+  return { pos, uv, index: idx32, groups: ranges, ao: computeAO(pos, idx32), neck };
 }
 
 function quantize(mesh) {
@@ -716,6 +733,7 @@ function quantize(mesh) {
     index: b64(idx),
     index32: idx instanceof Uint32Array,
     ao: b64(mesh.ao),
+    neck: mesh.neck,
     groups: mesh.groups,
   };
 }
@@ -729,7 +747,7 @@ const jobs = {
   shorts: () => buildBottoms({ pants: false }),
   pants: () => buildBottoms({ pants: true }),
 };
-const outFile = path.join(ROOT, 'assets/a3gk-kit-meshes.js');
+const outFile = process.env.DRAPE_OUT || path.join(ROOT, 'assets/a3gk-kit-meshes.js');
 let existing = {};
 if (fs.existsSync(outFile)) {
   const m = fs.readFileSync(outFile, 'utf8').match(/window\.A3GKMeshes = (\{[\s\S]*\});/);
