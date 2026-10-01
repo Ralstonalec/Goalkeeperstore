@@ -15,6 +15,7 @@
       {%- endif -%}
     </div>
 
+    {%- if section.settings.layout == 'list' -%}
     <ol class="a3-index" role="list">
       {%- for block in section.blocks -%}
         {%- liquid
@@ -52,6 +53,55 @@
         </li>
       {%- endfor -%}
     </ol>
+    {%- else -%}
+      <ul class="a3-bento" role="list">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign link = block.settings.link
+            if link == blank and block.settings.collection != blank
+              assign link = block.settings.collection.url
+            endif
+            assign img = block.settings.image
+            if img == blank and block.settings.collection != blank
+              assign img = block.settings.collection.featured_image
+            endif
+            assign feature = false
+            if block.settings.feature
+              assign feature = true
+            endif
+          -%}
+          <li class="a3-bento__item{% if feature %} a3-bento__item--feature{% endif %} a3-reveal" style="--a3-i: {{ forloop.index0 }}" {{ block.shopify_attributes }}>
+            <a class="a3-bento__card" href="{{ link | default: '#' }}">
+              <span class="a3-bento__art" aria-hidden="true">
+                {%- if img != blank -%}
+                  {{ img | image_url: width: 1200 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 40vw, 90vw', alt: '' }}
+                {%- elsif block.settings.render == 'scene' -%}
+                  {%- render 'a3gk-scene', uid: block.id -%}
+                {%- elsif block.settings.render != 'none' -%}
+                  {%- render 'a3gk-render', kind: block.settings.render, uid: block.id, caption: false -%}
+                {%- endif -%}
+              </span>
+              <span class="a3-bento__top">
+                <span class="a3-bento__n">{{ forloop.index | prepend: '0' }}</span>
+                {%- case block.settings.status -%}
+                  {%- when 'live' -%}<span class="a3-badge a3-badge--live">{{ block.settings.status_label | default: 'Available' }}</span>
+                  {%- when 'soon' -%}<span class="a3-badge">{{ block.settings.status_label | default: 'Coming soon' }}</span>
+                  {%- else -%}
+                    {%- if block.settings.status_label != blank -%}<span class="a3-badge">{{ block.settings.status_label }}</span>{%- endif -%}
+                {%- endcase -%}
+              </span>
+              <span class="a3-bento__copy">
+                <span class="a3-bento__name">{{ block.settings.title | escape }}</span>
+                {%- if block.settings.note != blank -%}
+                  <span class="a3-bento__note">{{ block.settings.note | escape }}</span>
+                {%- endif -%}
+                <span class="a3-bento__go">{{ block.settings.cta | default: 'Explore' | escape }} <span aria-hidden="true">→</span></span>
+              </span>
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
   </div>
 </section>
 
@@ -124,6 +174,100 @@
   @media (hover: none), (max-width: 989px) {
     .a3-index__img { display: none; }
   }
+
+  /* ---------- Bento grid ---------- */
+  .a3-bento { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.2rem; grid-template-columns: 1fr; }
+  .a3-bento__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 34rem;
+    height: 100%;
+    padding: 2.4rem;
+    overflow: hidden;
+    isolation: isolate;
+    border: 1px solid rgba(238, 235, 227, 0.08);
+    border-radius: calc(var(--a3-radius, 4px) * 3);
+    background:
+      radial-gradient(70% 60% at 70% 30%, rgba(59, 227, 127, 0.14), rgba(59, 227, 127, 0) 70%),
+      radial-gradient(90% 80% at 50% 100%, #1b1f1a, #0d0e0c 75%);
+    color: #eeebe3;
+    text-decoration: none;
+    transition: border-color 0.35s, transform 0.5s var(--a3-ease), box-shadow 0.5s var(--a3-ease);
+  }
+  .a3-bento__card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgba(13, 14, 12, 0) 45%, rgba(13, 14, 12, 0.92) 78%);
+    pointer-events: none;
+  }
+  .a3-bento__art { position: absolute; inset: 0; z-index: -2; }
+  .a3-bento__art .a3-render { background: none; overflow: visible; }
+  .a3-bento__art .a3-render svg,
+  .a3-bento__art > svg,
+  .a3-bento__art img {
+    position: absolute;
+    right: 0;
+    top: 8%;
+    width: 74%;
+    height: 56%;
+    object-fit: contain;
+    filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.55));
+    transition: transform 0.9s var(--a3-ease);
+  }
+  .a3-bento__art > .a3-scene { position: absolute; inset: 0; width: 100%; height: 100%; right: auto; top: 0; opacity: 0.8; filter: none; }
+  .a3-bento__art img { object-fit: cover; inset: 0; width: 100%; height: 100%; right: auto; top: 0; filter: none; }
+  .a3-bento__top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+  .a3-bento__n { font-size: 1.1rem; font-weight: 600; letter-spacing: 0.18em; color: #3be37f; }
+  .a3-bento__copy { display: grid; gap: 0.8rem; max-width: 30rem; }
+  .a3-bento__name { font-size: clamp(2.4rem, 1.8rem + 0.9vw, 3rem); font-weight: 800; font-stretch: 118%; letter-spacing: -0.035em; line-height: 0.95; text-transform: uppercase; }
+  .a3-bento__note { font-size: 1.45rem; line-height: 1.45; color: rgba(238, 235, 227, 0.72); }
+  .a3-bento__go { margin-top: 0.8rem; font-size: 1.3rem; font-weight: 600; letter-spacing: 0.02em; color: #eeebe3; }
+  .a3-bento__go span { display: inline-block; transition: transform 0.35s var(--a3-ease); }
+  .a3-bento .a3-badge { background: rgba(14, 15, 13, 0.6); backdrop-filter: blur(8px); color: #eeebe3; border-color: rgba(238, 235, 227, 0.2); }
+  .a3-bento .a3-badge--live { background: #3be37f; color: #07130b; border-color: #3be37f; }
+  .a3-bento__card:hover { border-color: rgba(59, 227, 127, 0.45); transform: translateY(-4px); box-shadow: 0 40px 60px -30px rgba(0, 0, 0, 0.9); }
+  .a3-bento__card:hover .a3-bento__art svg,
+  .a3-bento__card:hover .a3-bento__art img { transform: scale(1.05) rotate(-1.5deg); }
+  .a3-bento__card:hover .a3-bento__go span { transform: translateX(4px); }
+  .a3-bento__card:focus-visible { outline: 2px solid #3be37f; outline-offset: 3px; }
+
+  .a3-bento__item--feature .a3-bento__name { font-size: clamp(3.6rem, 2.2rem + 3vw, 6.4rem); }
+  .a3-bento__item--feature .a3-bento__card {
+    background:
+      radial-gradient(60% 70% at 72% 40%, rgba(59, 227, 127, 0.28), rgba(59, 227, 127, 0) 70%),
+      radial-gradient(90% 80% at 50% 100%, #1f241e, #0d0e0c 75%);
+  }
+  .a3-bento__item--feature .a3-bento__art .a3-render svg { width: 58%; height: 78%; right: 2%; top: 6%; }
+  .a3-tone--paper .a3-bento__card { border-color: rgba(18, 19, 16, 0.12); }
+
+  @media screen and (min-width: 750px) {
+    .a3-bento { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .a3-bento__item--feature { grid-column: span 2; }
+    .a3-bento__item--feature .a3-bento__card { min-height: 44rem; }
+  }
+  @media screen and (min-width: 990px) {
+    .a3-bento { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 30rem; }
+    .a3-bento__card { min-height: 0; }
+    .a3-bento__item--feature { grid-column: span 2; grid-row: span 2; }
+    .a3-bento__item--feature .a3-bento__card { min-height: 0; padding: 3.6rem; }
+    .a3-bento__item--wide { grid-column: span 2; }
+    /* A sixth card closes the grid as a full-width banner instead of sitting alone. */
+    .a3-bento__item:nth-child(6):last-child { grid-column: 1 / -1; }
+    .a3-bento__item:nth-child(6):last-child .a3-bento__art svg { width: 44%; height: 100%; top: 0; right: 4%; }
+    .a3-bento__item:nth-child(6):last-child .a3-bento__card::after { background: linear-gradient(90deg, rgba(13, 14, 12, 0.92) 30%, rgba(13, 14, 12, 0) 70%); }
+    .a3-bento__item:nth-child(6):last-child .a3-bento__copy { max-width: 44rem; }
+  }
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .a3-bento__item:nth-child(6):last-child { grid-column: 1 / -1; }
+  }
+  @media screen and (max-width: 749px) {
+    .a3-bento__card { min-height: 38rem; }
+    .a3-bento__art .a3-render svg, .a3-bento__art > svg:not(.a3-scene) { width: 70%; height: 50%; top: 14%; right: 4%; }
+  }
 {% endstylesheet %}
 
 {% schema %}
@@ -132,6 +276,7 @@
   "tag": "div",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": "What we make" },
+    { "type": "select", "id": "layout", "label": "Layout", "options": [{ "value": "bento", "label": "Visual grid" }, { "value": "list", "label": "Numbered list" }], "default": "bento" },
     { "type": "richtext", "id": "text", "label": "Intro", "default": "<p>A short range, on purpose. Everything here is something a keeper goes through week after week.</p>" },
     {
       "type": "select",
@@ -171,7 +316,9 @@
           "info": "Only 'Available' when products are actually in stock."
         },
         { "type": "text", "id": "status_label", "label": "Label text override" },
-        { "type": "text", "id": "note", "label": "One-line description" }
+        { "type": "text", "id": "note", "label": "One-line description" },
+        { "type": "checkbox", "id": "feature", "label": "Feature this card (large, grid layout)", "default": false },
+        { "type": "text", "id": "cta", "label": "Link text", "default": "Explore" }
       ]
     }
   ],
