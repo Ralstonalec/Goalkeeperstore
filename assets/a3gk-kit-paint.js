@@ -569,6 +569,7 @@
       drawText(ctx, num.value, BACK, name ? 560 : 500, 440 * nScale, printOpts);
     }
 
+    construction(ctx, 'torso', W, H, s);
     return canvas;
   }
 
@@ -607,6 +608,7 @@
     if (opts.padding && opts.zones && opts.zones.includes('elbows') && s.sleeve !== 'short') {
       padZone(ctx, outer - 110, Math.round(H * 0.46), 220, 170);
     }
+    construction(ctx, side === 'r' ? 'sleeveR' : 'sleeveL', W, H, s);
     return canvas;
   }
 
@@ -640,6 +642,7 @@
       }
       if (opts.zones.includes('tailbone')) padZone(ctx, 768 - 90, 60, 180, 130);
     }
+    construction(ctx, 'hip', W, H, s);
     return canvas;
   }
 
@@ -679,6 +682,7 @@
         padZone(ctx, outer - 80, 24, 160, H - 64);
       }
     }
+    construction(ctx, side === 'r' ? 'legR' : 'legL', W, H, s);
     return canvas;
   }
 
@@ -693,6 +697,169 @@
     ctx.fillStyle = s.colors.sockTop;
     ctx.fillRect(0, 0, W, 70);
     ctx.fillRect(0, 84, W, 12);
+    return canvas;
+  }
+
+
+  /* ---------- construction details: seams, topstitching, branding ---------- */
+
+  // Where the seams sit in each texture (x positions), matching the garment build.
+  function seamLines(part, W, s) {
+    if (part === 'torso') return s.sidePanels !== false ? [70, W - 70, 1024 - 70, 1024 + 70] : [2, W - 2, 1024];
+    if (part === 'sleeveR') return [W * 0.75];
+    if (part === 'sleeveL') return [W * 0.25];
+    if (part === 'hip') return [2, W - 2, W / 2];
+    if (part === 'legR') return [W * 0.75];
+    if (part === 'legL') return [W * 0.25];
+    return [];
+  }
+
+  function shadeOf(hex, amt) {
+    const m = /^#?([0-9a-f]{6})$/i.exec(hex || '');
+    if (!m) return `rgba(0,0,0,${Math.abs(amt)})`;
+    const n = parseInt(m[1], 16);
+    const f = (v) => Math.max(0, Math.min(255, Math.round(amt < 0 ? v * (1 + amt) : v + (255 - v) * amt)));
+    return `rgb(${f(n >> 16)},${f((n >> 8) & 255)},${f(n & 255)})`;
+  }
+
+  function stitchRow(ctx, x0, y0, x1, y1, color) {
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.6;
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function brandMark(ctx, x, y, size, color) {
+    // A3GK wordmark: goal-frame mark + letters, printed small like a kit logo.
+    ctx.save();
+    ctx.fillStyle = color;
+    ctx.strokeStyle = color;
+    ctx.lineWidth = Math.max(1.5, size * 0.09);
+    const m = size;
+    ctx.strokeRect(x - m * 1.55, y - m * 0.42, m * 0.62, m * 0.72);
+    ctx.font = `800 ${Math.round(m * 0.82)}px 'A3GK Sans', system-ui, sans-serif`;
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'left';
+    ctx.fillText('A3GK', x - m * 0.8, y - m * 0.04);
+    ctx.restore();
+  }
+
+  function construction(ctx, part, W, H, s) {
+    const c = s.colors;
+    const base = part === 'hip' || part === 'legR' || part === 'legL' ? bottomsColour(s) : part === 'torso' ? c.primary : (s.pattern && s.pattern.sleeves) === 'match' ? c.primary : c.secondary;
+    const seam = shadeOf(base, -0.28);
+    const thread = shadeOf(base, 0.22);
+    // Seams: a fine shadow line with topstitching either side.
+    seamLines(part, W, s).forEach((x) => {
+      ctx.fillStyle = seam;
+      ctx.fillRect(x - 1, 0, 2, H);
+      stitchRow(ctx, x - 6, 0, x - 6, H, thread);
+      stitchRow(ctx, x + 6, 0, x + 6, H, thread);
+    });
+    // Hems: twin-needle topstitching.
+    const hemY = part === 'torso' ? H - 38 : part === 'hip' ? 44 : H - 40;
+    stitchRow(ctx, 0, hemY, W, hemY, thread);
+    stitchRow(ctx, 0, hemY + (part === 'hip' ? -8 : 8), W, hemY + (part === 'hip' ? -8 : 8), thread);
+    if (part === 'hip') stitchRow(ctx, 0, 12, W, 12, thread);
+    // Branding.
+    const ink = c.trim && c.trim !== base ? c.trim : shadeOf(base, 0.6);
+    if (part === 'torso') {
+      brandMark(ctx, FRONT, 205, 22, ink); // below the collar, centre front
+      brandMark(ctx, BACK, 40, 16, ink); // back neck
+      // Woven size/care label at the front hem.
+      ctx.fillStyle = shadeOf(base, 0.75);
+      ctx.fillRect(FRONT + 320, H - 74, 34, 22);
+      ctx.fillStyle = shadeOf(base, -0.2);
+      ctx.font = "700 9px 'A3GK Sans', system-ui, sans-serif";
+      ctx.textAlign = 'center';
+      ctx.fillText('A3GK', FRONT + 337, H - 60);
+    }
+    if (part === 'sleeveR' || part === 'sleeveL') {
+      const outer = part === 'sleeveR' ? W * 0.25 : W * 0.75;
+      brandMark(ctx, outer, H - (s.sleeve === 'short' ? 110 : 150), 18, ink);
+    }
+    if (part === 'legL') brandMark(ctx, W * 0.15, H - (H > 400 ? 120 : 70), 14, ink);
+  }
+
+  /* ---------- surface detail (bump) maps ---------- */
+
+  // Height maps: knit texture at real scale, seam grooves, hem folds, rib.
+  function paintDetail(canvas, part, s, W, H) {
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'rgb(128,128,128)';
+    ctx.fillRect(0, 0, W, H);
+    const tile = makeCanvas(48, 48);
+    const t = tile.getContext('2d');
+    t.fillStyle = 'rgb(128,128,128)';
+    t.fillRect(0, 0, 48, 48);
+    if (s.finish === 'mesh') {
+      // Open mesh: rows of small holes.
+      t.fillStyle = 'rgb(40,40,40)';
+      for (let y = 4; y < 48; y += 12)
+        for (let x = (y / 12) % 2 ? 4 : 10; x < 48; x += 12) {
+          t.beginPath();
+          t.arc(x, y, 3.2, 0, Math.PI * 2);
+          t.fill();
+        }
+    } else {
+      // Jersey knit: interlocking V loops in columns.
+      for (let x = 0; x < 48; x += 4)
+        for (let y = 0; y < 48; y += 4) {
+          const g = t.createLinearGradient(x, y, x + 4, y + 4);
+          g.addColorStop(0, 'rgb(150,150,150)');
+          g.addColorStop(1, 'rgb(105,105,105)');
+          t.fillStyle = g;
+          t.beginPath();
+          t.moveTo(x, y);
+          t.lineTo(x + 2, y + 3);
+          t.lineTo(x + 4, y);
+          t.lineTo(x + 4, y + 1.2);
+          t.lineTo(x + 2, y + 4);
+          t.lineTo(x, y + 1.2);
+          t.closePath();
+          t.fill();
+        }
+    }
+    ctx.fillStyle = ctx.createPattern(tile, 'repeat');
+    ctx.fillRect(0, 0, W, H);
+    const groove = (x) => {
+      const g = ctx.createLinearGradient(x - 7, 0, x + 7, 0);
+      g.addColorStop(0, 'rgba(160,160,160,1)');
+      g.addColorStop(0.45, 'rgba(60,60,60,1)');
+      g.addColorStop(0.55, 'rgba(60,60,60,1)');
+      g.addColorStop(1, 'rgba(160,160,160,1)');
+      ctx.fillStyle = g;
+      ctx.fillRect(x - 7, 0, 14, H);
+    };
+    seamLines(part, W, s).forEach(groove);
+    // Hem fold: a raised band with a groove above it.
+    const band = (y0, y1) => {
+      const g = ctx.createLinearGradient(0, y0, 0, y1);
+      g.addColorStop(0, 'rgb(70,70,70)');
+      g.addColorStop(0.3, 'rgb(170,170,170)');
+      g.addColorStop(1, 'rgb(140,140,140)');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, y0, W, y1 - y0);
+    };
+    if (part === 'torso') band(H - 46, H);
+    if (part === 'hip') band(0, 48);
+    if (part.startsWith('leg')) band(H - 44, H);
+    // Ribbed cuffs.
+    if (part.startsWith('sleeve') && s.cuffs !== false) {
+      for (let x = 0; x < W; x += 8) {
+        ctx.fillStyle = 'rgb(175,175,175)';
+        ctx.fillRect(x, H - 44, 4, 44);
+        ctx.fillStyle = 'rgb(90,90,90)';
+        ctx.fillRect(x + 4, H - 44, 4, 44);
+      }
+    }
     return canvas;
   }
 
@@ -842,6 +1009,7 @@
     paintFlat,
     patternThumb,
     knitCanvas,
+    paintDetail,
     drawText,
     drawCrest,
   };
