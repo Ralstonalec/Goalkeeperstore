@@ -19,12 +19,13 @@ function createKitScene(THREE, container, options = {}) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(options.lite ? 1 : Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  // AgX keeps saturated kit colours true (ACES shifts them toward a "game" look).
+  renderer.toneMapping = THREE.AgXToneMapping !== undefined ? THREE.AgXToneMapping : THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = THREE.AgXToneMapping !== undefined ? 1.25 : 1.0;
   // Soft shadows: sleeves shade the body, folds shade themselves, the kit sits on the floor.
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled = !options.lite;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.className = 'a3k-canvas';
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -35,50 +36,50 @@ function createKitScene(THREE, container, options = {}) {
   let camDist = 12.5;
   let target = new THREE.Vector3(0, 0, 0);
 
-  /* ---------- studio: soft environment + floodlight key + green rim ---------- */
+  /* ---------- photo studio: seamless grey backdrop, softboxes, neutral light ---------- */
   const pmrem = new THREE.PMREMGenerator(renderer);
   scene.environment = (() => {
-    // A small softbox room, pre-filtered for image-based lighting.
+    // A white studio cove with large softboxes, pre-filtered for image-based lighting.
     const room = new THREE.Scene();
-    const box = new THREE.Mesh(new THREE.BoxGeometry(12, 8, 12), new THREE.MeshBasicMaterial({ color: 0x15171a, side: THREE.BackSide }));
-    room.add(box);
+    room.add(new THREE.Mesh(new THREE.BoxGeometry(14, 9, 14), new THREE.MeshBasicMaterial({ color: 0x9a9a98, side: THREE.BackSide })));
     const panel = (w, h, color, x, y, z, ry, rx = 0) => {
       const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color, side: THREE.DoubleSide }));
       m.position.set(x, y, z);
       m.rotation.set(rx, ry, 0);
       room.add(m);
     };
-    panel(5, 3, 0xffffff, -3.5, 2.5, 4, Math.PI * 0.8); // key softbox
-    panel(3, 5, 0x9aa2a8, 5.5, 0.5, 1, -Math.PI / 2); // fill strip
-    panel(2, 5, 0x48d98a, 3, 1, -5.5, 0); // green rim strip
-    panel(2, 5, 0xd8dde2, -4, 1, -5, 0.3); // back rim
-    panel(8, 8, 0x5c6066, 0, 3.9, 0, 0, Math.PI / 2); // ceiling bounce
-    const env = pmrem.fromScene(room, 0.04).texture;
+    panel(6, 4, 0xffffff, -4, 2.5, 4.5, Math.PI * 0.78); // key softbox, front left
+    panel(5, 4, 0xe9e9e9, 5, 1.5, 4, -Math.PI * 0.72); // fill softbox, front right
+    panel(10, 10, 0xf4f4f4, 0, 4.4, 0, 0, Math.PI / 2); // overhead scrim
+    panel(3, 6, 0xffffff, -4.5, 1, -5, 0.4); // back strip left
+    panel(3, 6, 0xffffff, 4.5, 1, -5, -0.4); // back strip right
+    panel(14, 4, 0xcfcfcd, 0, -3.5, 0, 0, Math.PI / 2); // floor bounce
+    const env = pmrem.fromScene(room, 0.03).texture;
     room.traverse((o) => {
       if (o.geometry) o.geometry.dispose();
       if (o.material) o.material.dispose();
     });
     return env;
   })();
-  scene.add(new THREE.HemisphereLight(0xe9f2ec, 0x0b0c0a, 0.25));
-  const key = new THREE.DirectionalLight(0xffffff, 2.6);
-  key.position.set(-5, 5, 6);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb9b7b2, 0.55));
+  const key = new THREE.DirectionalLight(0xfffaf3, 1.9);
+  key.position.set(-3, 11, 6);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(1024, 1024); // soft (blurred) shadows don't need more
   key.shadow.bias = -0.0004;
   key.shadow.normalBias = 0.02;
-  key.shadow.radius = 4;
-  Object.assign(key.shadow.camera, { left: -4, right: 4, top: 5, bottom: -5, near: 1, far: 30 });
+  key.shadow.radius = 6;
+  Object.assign(key.shadow.camera, { left: -5, right: 5, top: 5, bottom: -5, near: 1, far: 40 });
   scene.add(key);
   scene.add(key.target);
-  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.25);
-  fill.position.set(6, 2, 4);
+  const fill = new THREE.DirectionalLight(0xf3f6ff, 0.7);
+  fill.position.set(6, 3, 5);
   scene.add(fill);
-  const rim = new THREE.DirectionalLight(0x3be37f, 2.2);
-  rim.position.set(3, 4, -7);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.9);
+  rim.position.set(3, 5, -7);
   scene.add(rim);
-  const rim2 = new THREE.DirectionalLight(0xffffff, 1.4);
-  rim2.position.set(-5, 3, -6);
+  const rim2 = new THREE.DirectionalLight(0xffffff, 0.7);
+  rim2.position.set(-5, 4, -6);
   scene.add(rim2);
 
   /* ---------- floor shadow ---------- */
@@ -87,7 +88,7 @@ function createKitScene(THREE, container, options = {}) {
     c.width = c.height = 256;
     const g = c.getContext('2d');
     const grad = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-    grad.addColorStop(0, 'rgba(0,0,0,.6)');
+    grad.addColorStop(0, 'rgba(0,0,0,.22)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     g.fillStyle = grad;
     g.fillRect(0, 0, 256, 256);
@@ -99,9 +100,12 @@ function createKitScene(THREE, container, options = {}) {
   );
   floor.rotation.x = -Math.PI / 2;
   scene.add(floor);
-  const shadowCatcher = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.28 }));
+  const shadowCatcher = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.16 }));
   shadowCatcher.rotation.x = -Math.PI / 2;
   shadowCatcher.receiveShadow = true;
+  // Invisible-mannequin shots show only a soft contact shadow, not the
+  // projected silhouette of a floating jersey; keep self-shadowing only.
+  shadowCatcher.visible = false;
   scene.add(shadowCatcher);
 
   const kit = new THREE.Group();
@@ -138,25 +142,24 @@ function createKitScene(THREE, container, options = {}) {
 
   const materials = [];
   function fabric(map, bump, finish) {
+    // Polyester sports knit: matte, soft grazing sheen, very little gloss.
     const m = new THREE.MeshPhysicalMaterial({
       map,
       vertexColors: true, // baked ambient occlusion
       bumpMap: bump,
       bumpScale: finish === 'mesh' ? 2.2 : 1.4,
-      roughness: finish === 'sheen' ? 0.55 : finish === 'mesh' ? 0.85 : 0.8,
+      roughness: finish === 'sheen' ? 0.68 : finish === 'mesh' ? 0.92 : 0.9,
       metalness: 0,
-      // Fabric sheen: the soft grazing highlight that makes cloth (and
-      // especially dark cloth) read as cloth.
-      sheen: 1,
-      sheenRoughness: finish === 'sheen' ? 0.3 : finish === 'mesh' ? 0.55 : 0.45,
-      sheenColor: new THREE.Color(finish === 'sheen' ? 0xc8c8c8 : finish === 'mesh' ? 0x8c8c8c : 0xa8a8a8),
-      envMapIntensity: finish === 'sheen' ? 1.1 : 0.85,
+      sheen: 0.8,
+      sheenRoughness: 0.55,
+      sheenColor: new THREE.Color(finish === 'sheen' ? 0x8a8a8a : 0x606060),
+      specularIntensity: finish === 'sheen' ? 0.35 : 0.18,
+      envMapIntensity: finish === 'sheen' ? 0.55 : 0.4,
       side: THREE.FrontSide,
     });
     materials.push(m);
     return m;
   }
-  const inner = new THREE.MeshStandardMaterial({ color: 0x0b0c0a, roughness: 1, side: THREE.BackSide, vertexColors: true });
 
   // Garment meshes are generated in a background worker (they take a moment
   // to build) and cached, so the page never freezes. If workers aren't
@@ -343,13 +346,60 @@ onmessage = function (e) {
     return geo;
   }
 
+  // Flat drawcord tied at the front of the waistband, with tipped ends.
+  function drawcord(geo, color) {
+    const p = geo.attributes.position;
+    const topY = geo.boundingBox.max.y;
+    let fx = 0;
+    let fy = topY;
+    let fz = -Infinity;
+    for (let i = 0; i < p.count; i++) {
+      const y = p.getY(i);
+      if (y < topY - 0.12 || Math.abs(p.getX(i)) > 0.08) continue;
+      if (p.getZ(i) > fz) {
+        fz = p.getZ(i);
+        fx = p.getX(i);
+        fy = y;
+      }
+    }
+    const g = new THREE.Group();
+    const cordMat = new THREE.MeshStandardMaterial({ color, roughness: 0.85 });
+    const tipMat = new THREE.MeshStandardMaterial({ color: 0x1a1a1a, roughness: 0.4, metalness: 0.2 });
+    materials.push(cordMat, tipMat);
+    const y0 = fy - 0.07;
+    [-1, 1].forEach((side) => {
+      const pts = [
+        new THREE.Vector3(fx + side * 0.055, y0, fz + 0.012),
+        new THREE.Vector3(fx + side * 0.07, y0 - 0.12, fz + 0.03),
+        new THREE.Vector3(fx + side * (0.06 + 0.02 * side), y0 - 0.3, fz + 0.035),
+        new THREE.Vector3(fx + side * (0.05 + 0.04 * side), y0 - 0.46, fz + 0.03),
+      ];
+      const curve = new THREE.CatmullRomCurve3(pts);
+      const cord = new THREE.Mesh(new THREE.TubeGeometry(curve, 24, 0.011, 8, false), cordMat);
+      cord.castShadow = true;
+      g.add(cord);
+      const end = pts[pts.length - 1];
+      const tip = new THREE.Mesh(new THREE.CylinderGeometry(0.014, 0.012, 0.06, 10), tipMat);
+      tip.position.copy(end).add(new THREE.Vector3(0, -0.03, 0));
+      g.add(tip);
+    });
+    return g;
+  }
+
   function withInner(geo, mats) {
     const g = new THREE.Group();
     const outer = new THREE.Mesh(geo, mats);
     outer.castShadow = true;
     outer.receiveShadow = true;
     g.add(outer);
-    g.add(new THREE.Mesh(geo, inner));
+    // Inside of the garment: the same printed fabric, in shadow (sublimated
+    // prints show through), rather than a black void.
+    const insides = (Array.isArray(mats) ? mats : [mats]).map((m) => {
+      const im = new THREE.MeshStandardMaterial({ map: m.map, color: 0x5a5a5a, roughness: 1, side: THREE.BackSide, vertexColors: true });
+      materials.push(im);
+      return im;
+    });
+    g.add(new THREE.Mesh(geo, Array.isArray(mats) ? insides : insides[0]));
     return g;
   }
 
@@ -375,6 +425,7 @@ onmessage = function (e) {
     firstFailed = rej;
   });
 
+  let lastBuild = Promise.resolve();
   async function build(spec) {
     const token = ++buildToken;
     const { parts, sleeve, collar, finish } = spec;
@@ -416,24 +467,12 @@ onmessage = function (e) {
     if (bGeo) {
       const mats = ['hip', 'legR', 'legL'].map((k) => fabric(wrapRepeat(textures[k]), detailBump(k), finish));
       const bottoms = withInner(bGeo, mats);
-      // Under a jersey, the waistband is tucked in: shrink it slightly toward
-      // the body so it never pokes through the jersey's folds.
-      if (jGeo && !bGeo.userData.tucked) {
-        const p = bGeo.attributes.position;
-        const hemY = jGeo.boundingBox.min.y + 0.2;
-        for (let i = 0; i < p.count; i++) {
-          const y = p.getY(i);
-          if (y <= hemY) continue;
-          const k = Math.min(1, (y - hemY) / 0.2) * 0.13;
-          p.setX(i, p.getX(i) * (1 - k));
-          p.setZ(i, p.getZ(i) * (1 - k));
-        }
-        p.needsUpdate = true;
-        bGeo.computeVertexNormals();
-        bGeo.userData.tucked = true;
-      }
+      // Product-shot layout: with a jersey, the shorts/pants hang just below
+      // its hem (like a ghost-mannequin kit photo) so the whole garment shows.
+      if (jGeo) bottoms.position.y = jGeo.boundingBox.min.y - 0.22 - bGeo.boundingBox.max.y;
       bottoms.children.forEach((c) => (c.userData.cached = true));
       kit.add(bottoms);
+      bottoms.add(drawcord(bGeo, spec.trim));
     }
     if (sGeo) {
       const socks = withInner(sGeo, [fabric(wrapRepeat(textures.sock), bumpTex, 'matte')]);
@@ -442,8 +481,8 @@ onmessage = function (e) {
     }
 
     // Frame the camera on whatever was built.
-    const box = new THREE.Box3();
-    [jGeo, bGeo, sGeo].forEach((g) => g && box.union(g.boundingBox));
+    kit.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(kit);
     const top = box.max.y + 0.1;
     const low = box.min.y;
     target = new THREE.Vector3(0, (top + low) / 2, 0);
@@ -454,7 +493,7 @@ onmessage = function (e) {
     floor.position.y = low - 0.02;
     shadowCatcher.position.y = low - 0.03;
     key.target.position.copy(target);
-    key.position.set(target.x - 5, target.y + 5, target.z + 6);
+    key.position.set(target.x - 3, target.y + 11, target.z + 6);
     floor.scale.set(Math.max(1, w / 3.2), 1, 1);
     frame();
     requestRender();
@@ -476,7 +515,7 @@ onmessage = function (e) {
     const key = [spec.parts.join(','), spec.sleeve, spec.collar, spec.finish, spec.socks, spec.trim].join('|');
     if (key !== lastKey) {
       lastKey = key;
-      build(spec).catch((e) => {
+      lastBuild = build(spec).catch((e) => {
         console.warn('A3GK: garment build failed', e);
         if (firstFailed) firstFailed(e);
       });
@@ -597,19 +636,25 @@ onmessage = function (e) {
   ro.observe(container);
   resize();
 
-  function setView(view) {
+  function setView(view, instant) {
     const turns = Math.round(yaw / (Math.PI * 2)) * Math.PI * 2;
-    const angle = { front: 0, back: Math.PI, left: Math.PI / 2, right: -Math.PI / 2 }[view] ?? 0;
+    const angle = { front: 0, back: Math.PI, left: Math.PI / 2, right: -Math.PI / 2, three: 0.42 }[view] ?? 0;
     targetYaw = turns + angle;
+    if (instant) yaw = targetYaw;
     velocity = 0;
     idleAt = performance.now();
     requestRender();
   }
 
-  function snapshot() {
+  function snapshot(type = 'image/png', quality) {
+    kit.rotation.y = yaw;
+    kit.rotation.x = pitch;
     renderer.render(scene, camera);
-    return renderer.domElement.toDataURL('image/png');
+    return renderer.domElement.toDataURL(type, quality);
   }
+
+  // Resolves once the latest garment build (if any) has finished.
+  const settled = () => lastBuild;
 
   function dispose() {
     ro.disconnect();
@@ -621,7 +666,7 @@ onmessage = function (e) {
     el.remove();
   }
 
-  return { update, setView, snapshot, dispose, requestRender, ready };
+  return { update, setView, snapshot, dispose, requestRender, ready, settled };
 }
 
 window.A3GKKit3D = { createKitScene };

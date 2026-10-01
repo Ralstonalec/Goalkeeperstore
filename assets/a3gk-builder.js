@@ -65,18 +65,18 @@
   // Starting points, Spized-style: each is a full look the keeper can then
   // change. Colours are palette names, resolved against the store's palette.
   const PRESETS = [
-    { id: 'night-shift', name: 'Night Shift', c: ['navy', 'black', 'volt', 'volt', 'volt', 'navy', 'volt', 'secondary'], pattern: 'lightning', scale: 'm', sleeves: 'solid', collar: 'v', finish: 'sheen', font: 'stencil' },
-    { id: 'pitch-black', name: 'Pitch Black', c: ['black', 'pitch green', 'white', 'pitch green', 'white', 'black', 'pitch green', 'match'], pattern: 'shards', scale: 'm', sleeves: 'solid', collar: 'crew', finish: 'matte', font: 'block' },
-    { id: 'ember', name: 'Ember', c: ['orange', 'black', 'black', 'red', 'black', 'black', 'orange', 'secondary'], pattern: 'fade', scale: 'l', sleeves: 'pattern', collar: 'crew', finish: 'sheen', font: 'wide' },
-    { id: 'ice', name: 'Ice', c: ['white', 'sky', 'navy', 'sky', 'navy', 'white', 'sky', 'secondary'], pattern: 'topo', scale: 's', sleeves: 'match', collar: 'polo', finish: 'mesh', font: 'classic' },
-    { id: 'royal-line', name: 'Royal Line', c: ['royal', 'navy', 'white', 'white', 'white', 'royal', 'white', 'secondary'], pattern: 'pinstripes', scale: 'm', sleeves: 'solid', collar: 'wrap', finish: 'matte', font: 'classic' },
-    { id: 'hooped', name: 'Hooped', c: ['red', 'black', 'white', 'black', 'white', 'black', 'red', 'secondary'], pattern: 'hoops', scale: 'l', sleeves: 'match', collar: 'crew', finish: 'matte', font: 'slab' },
-    { id: 'urban-camo', name: 'Urban Camo', c: ['charcoal', 'black', 'volt', 'grey', 'volt', 'black', 'volt', 'secondary'], pattern: 'camo', scale: 'm', sleeves: 'pattern', collar: 'crew', finish: 'matte', font: 'stencil' },
-    { id: 'sunburst', name: 'Sunburst', c: ['yellow', 'black', 'black', 'orange', 'black', 'black', 'yellow', 'secondary'], pattern: 'halftone', scale: 'l', sleeves: 'solid', collar: 'v', finish: 'sheen', font: 'rounded' },
-    { id: 'deep-water', name: 'Deep Water', c: ['teal', 'navy', 'white', 'sky', 'white', 'navy', 'teal', 'secondary'], pattern: 'waves', scale: 'm', sleeves: 'pattern', collar: 'crew', finish: 'sheen', font: 'wide' },
-    { id: 'retro-90', name: '90s Keeper', c: ['purple', 'pink', 'volt', 'pink', 'white', 'purple', 'pink', 'secondary'], pattern: 'chevron', scale: 'l', sleeves: 'pattern', collar: 'polo', finish: 'matte', font: 'slab' },
-    { id: 'gold-standard', name: 'Gold Standard', c: ['black', 'black', 'gold', 'gold', 'gold', 'black', 'gold', 'match'], pattern: 'sash', scale: 'm', sleeves: 'solid', collar: 'v', finish: 'sheen', font: 'classic' },
-    { id: 'grid-lock', name: 'Grid Lock', c: ['grey', 'charcoal', 'volt', 'volt', 'black', 'charcoal', 'volt', 'secondary'], pattern: 'grid', scale: 's', sleeves: 'solid', collar: 'wrap', finish: 'mesh', font: 'block' },
+    { id: 'obsidian', name: 'Obsidian', c: ['black', 'black', 'volt', 'charcoal', 'volt', 'black', 'volt', 'match'], pattern: 'facets', scale: 'm', strength: 'tonal', sleeves: 'match', collar: 'crew', finish: 'matte', font: 'block' },
+    { id: 'night-shift', name: 'Night Shift', c: ['navy', 'navy', 'sky', 'sky', 'white', 'navy', 'sky', 'match'], pattern: 'contour', scale: 'm', strength: 'tonal', sleeves: 'match', collar: 'v', finish: 'sheen', font: 'wide' },
+    { id: 'ember', name: 'Ember', c: ['orange', 'black', 'black', 'red', 'black', 'black', 'orange', 'secondary'], pattern: 'speed', scale: 'm', strength: 'medium', sleeves: 'solid', collar: 'crew', finish: 'sheen', font: 'wide' },
+    { id: 'ice', name: 'Ice', c: ['white', 'white', 'navy', 'sky', 'navy', 'white', 'navy', 'match'], pattern: 'brushed', scale: 'm', strength: 'tonal', sleeves: 'match', collar: 'polo', finish: 'matte', font: 'classic' },
+    { id: 'royal-line', name: 'Royal Line', c: ['royal', 'royal', 'white', 'navy', 'white', 'royal', 'white', 'match'], pattern: 'pinstripes', scale: 'm', strength: 'tonal', sleeves: 'match', collar: 'wrap', finish: 'matte', font: 'classic' },
+    { id: 'pitch-black', name: 'Pitch Black', c: ['black', 'black', 'pitch green', 'pitch green', 'white', 'black', 'pitch green', 'match'], pattern: 'gradstripes', scale: 'm', strength: 'medium', sleeves: 'solid', collar: 'crew', finish: 'matte', font: 'block' },
+    { id: 'forest', name: 'Forest', c: ['forest', 'forest', 'sand', 'black', 'sand', 'forest', 'sand', 'match'], pattern: 'camo', scale: 'l', strength: 'tonal', sleeves: 'match', collar: 'crew', finish: 'matte', font: 'stencil' },
+    { id: 'sunburst', name: 'Sunburst', c: ['yellow', 'yellow', 'black', 'orange', 'black', 'black', 'yellow', 'secondary'], pattern: 'halftone', scale: 'm', strength: 'medium', sleeves: 'match', collar: 'v', finish: 'sheen', font: 'rounded' },
+    { id: 'deep-water', name: 'Deep Water', c: ['teal', 'navy', 'white', 'navy', 'white', 'navy', 'teal', 'secondary'], pattern: 'waves', scale: 'm', strength: 'tonal', sleeves: 'solid', collar: 'crew', finish: 'sheen', font: 'wide' },
+    { id: 'maroon-club', name: 'Club Maroon', c: ['maroon', 'maroon', 'gold', 'black', 'gold', 'maroon', 'gold', 'match'], pattern: 'stripes', scale: 'l', strength: 'tonal', sleeves: 'match', collar: 'polo', finish: 'matte', font: 'classic' },
+    { id: 'gold-standard', name: 'Gold Standard', c: ['charcoal', 'charcoal', 'gold', 'black', 'gold', 'charcoal', 'gold', 'match'], pattern: 'pixel', scale: 'm', strength: 'tonal', sleeves: 'match', collar: 'v', finish: 'sheen', font: 'classic' },
+    { id: 'retro-90', name: '90s Keeper', c: ['purple', 'pink', 'volt', 'pink', 'white', 'purple', 'pink', 'secondary'], pattern: 'chevron', scale: 'l', strength: 'bold', sleeves: 'pattern', collar: 'polo', finish: 'matte', font: 'slab' },
   ];
 
   /* ---------------- helpers ---------------- */
@@ -362,7 +362,7 @@
           socks: black,
           sockTop: green,
         },
-        pattern: { type: 'shards', scale: 'm', sleeves: 'solid' },
+        pattern: { type: 'facets', scale: 'm', sleeves: 'solid', strength: 'tonal' },
         collar: 'crew',
         sleeve: 'long',
         cuffs: true,
@@ -388,7 +388,7 @@
         base: old.base,
         title: old.title,
         colors: { ...old.colors, pattern: old.colors && old.colors.secondary, number: old.number && old.number.color, outline: (old.number && old.number.outline) || 'none' },
-        pattern: { type: old.pattern || 'none', scale: 'm', sleeves: 'solid' },
+        pattern: { type: old.pattern || 'none', scale: 'm', sleeves: 'solid', strength: 'bold' },
         collar: old.collar,
         sleeve: old.sleeve,
         number: { value: old.number && old.number.value, font: 'block', size: 'm', front: old.number && old.number.front === 'none' ? 'none' : 'chest', shorts: old.number && old.number.shorts },
@@ -426,6 +426,7 @@
       if (!BASES.some((b) => b.id === s.base)) s.base = 'kit-shorts';
       if (!P().PATTERNS.some((p) => p.id === s.pattern.type)) s.pattern.type = 'none';
       if (!['s', 'm', 'l'].includes(s.pattern.scale)) s.pattern.scale = 'm';
+      if (!['tonal', 'medium', 'bold'].includes(s.pattern.strength)) s.pattern.strength = 'medium';
       if (!['match', 'solid', 'pattern'].includes(s.pattern.sleeves)) s.pattern.sleeves = 'solid';
       if (!COLLARS.some((c) => c.id === s.collar)) s.collar = 'crew';
       if (!FINISHES.some((f) => f.id === s.finish)) s.finish = 'matte';
@@ -629,6 +630,10 @@
         await this.kit3d.ready;
         delete this.root.dataset.building;
         this.stage3d.classList.add('is-ready');
+        // Re-render the design gallery as real 3D studio shots, in the background.
+        // Wait for the browser to be idle first so the designer itself stays snappy.
+        const later = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
+        later(() => this.renderPresetThumbs3d(THREE, mod, garment).catch((e) => console.warn('A3GK: 3D thumbnails skipped', e)), { timeout: 4000 });
       } catch (e) {
         console.warn('A3GK: 3D unavailable, using flat view', e);
         this.root.dataset.no3d = 'load';
@@ -811,6 +816,7 @@
           (p) =>
             `<label class="a3b-tile"><input type="radio" name="pattern.type" value="${p.id}" data-bind="pattern.type" ${p.id === s.pattern.type ? 'checked' : ''}><canvas data-thumb="${p.id}" width="144" height="144" aria-hidden="true"></canvas><span>${esc(p.label)}</span></label>`
         ).join('')}</div>
+        ${this.group('Strength', this.choice('pattern.strength', [{ id: 'tonal', label: 'Tonal' }, { id: 'medium', label: 'Medium' }, { id: 'bold', label: 'Bold' }], s.pattern.strength, 'Pattern strength'), 'Tonal is how most pro keeper kits are printed: the graphic shows up close, the kit reads clean from a distance.')}
         ${this.group('Scale', this.choice('pattern.scale', [{ id: 's', label: 'Fine' }, { id: 'm', label: 'Medium' }, { id: 'l', label: 'Bold' }], s.pattern.scale, 'Pattern scale'))}
         ${this.group('Sleeves', this.choice('pattern.sleeves', [{ id: 'solid', label: 'Solid sleeve colour' }, { id: 'pattern', label: 'Pattern on sleeves' }, { id: 'match', label: 'Match the body' }], s.pattern.sleeves, 'Sleeve treatment'))}`;
 
@@ -930,6 +936,7 @@
         },
         pattern: d.pattern,
         patternScale: d.scale,
+        patternStrength: d.strength,
         sleeves: d.sleeves,
         collar: d.collar,
         finish: d.finish,
@@ -950,9 +957,11 @@
       this._presetThumbs = this._presetThumbs || {};
       const cache = (this._presetThumbs[key] = this._presetThumbs[key] || {});
       const todo = [];
+      const shots = (this._presetThumbs3d || {})[key] || {};
       imgs.forEach((img) => {
         const id = img.dataset.presetImg;
-        if (cache[id]) img.src = cache[id];
+        if (shots[id]) img.src = shots[id];
+        else if (cache[id]) img.src = cache[id];
         else todo.push(img);
       });
       const step = () => {
@@ -963,10 +972,58 @@
           const d = PRESETS.find((x) => x.id === id);
           cache[id] = this.flatPreview(this.sanitize(this.merge(this.state, this.kitPatch(this.presetDesign(d)))), 200);
         }
-        if (img.isConnected) img.src = cache[id];
+        if (img.isConnected && !(((this._presetThumbs3d || {})[key] || {})[id])) img.src = cache[id];
         requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
+    }
+
+    async renderPresetThumbs3d(THREE, mod, garment) {
+      const holder = document.createElement('div');
+      holder.style.cssText = 'position:fixed;left:-10000px;top:0;width:300px;height:400px;pointer-events:none;';
+      document.body.appendChild(holder);
+      const scene = mod.createKitScene(THREE, holder, { garment, garmentUrl: this.cfg.garmentUrl, noAutoRotate: true, lite: true });
+      const paint = P();
+      const canv = {};
+      ['torso', 'sleeveL', 'sleeveR', 'hip', 'legL', 'legR', 'sock'].forEach((k) => (canv[k] = document.createElement('canvas')));
+      const det = {};
+      ['torso', 'sleeveR', 'sleeveL', 'hip', 'legR', 'legL'].forEach((k) => (det[k] = document.createElement('canvas')));
+      const tex = {};
+      const bottom = this.bottomPart();
+      this._presetThumbs3d = this._presetThumbs3d || {};
+      const key = this.parts().join(',');
+      const out = (this._presetThumbs3d[key] = this._presetThumbs3d[key] || {});
+      for (const d of PRESETS) {
+        if (out[d.id]) continue;
+        const st = this.sanitize(this.merge(this.state, this.kitPatch(this.presetDesign(d))));
+        paint.paintTorso(canv.torso, st, {});
+        paint.paintSleeve(canv.sleeveL, st, 'l', {});
+        paint.paintSleeve(canv.sleeveR, st, 'r', {});
+        paint.paintHip(canv.hip, st, {});
+        paint.paintLeg(canv.legL, st, 'l', bottom, {});
+        paint.paintLeg(canv.legR, st, 'r', bottom, {});
+        Object.entries(det).forEach(([k, c]) => paint.paintDetail(c, k, st, canv[k].width, canv[k].height));
+        Object.entries(canv).forEach(([k, c]) => {
+          tex[k] = tex[k] || new THREE.CanvasTexture(c);
+          tex[k].colorSpace = THREE.SRGBColorSpace;
+          tex[k].needsUpdate = true;
+        });
+        Object.entries(det).forEach(([k, c]) => {
+          const kk = `${k}Bump`;
+          tex[kk] = tex[kk] || new THREE.CanvasTexture(c);
+          tex[kk].needsUpdate = true;
+        });
+        scene.update({ parts: this.parts(), sleeve: st.sleeve, collar: st.collar, finish: st.finish, socks: false, trim: st.colors.trim, textures: tex, knit: paint.knitCanvas(st.finish), finishChanged: true });
+        await scene.settled();
+        scene.setView('three', true);
+        await new Promise((r) => requestAnimationFrame(r));
+        out[d.id] = scene.snapshot('image/webp', 0.85);
+        const img = this.panes.querySelector(`img[data-preset-img="${d.id}"]`);
+        if (img) img.src = out[d.id];
+        await new Promise((r) => setTimeout(r, 30));
+      }
+      scene.dispose();
+      holder.remove();
     }
 
     flatPreview(state, width) {
@@ -1003,7 +1060,7 @@
     drawThumbs() {
       const paint = P();
       this.panes.querySelectorAll('canvas[data-thumb]').forEach((c) => {
-        const src = paint.patternThumb(c.dataset.thumb, this.state.colors);
+        const src = paint.patternThumb(c.dataset.thumb, this.state.colors, 72, this.state.pattern.strength);
         const ctx = c.getContext('2d');
         ctx.clearRect(0, 0, c.width, c.height);
         ctx.drawImage(src, 0, 0, c.width, c.height);
@@ -1233,7 +1290,7 @@
           sockTop: c.sockTop || c.secondary,
           bottoms: c.bottoms || 'match',
         },
-        pattern: { type: d.pattern, scale: d.patternScale, sleeves: d.sleeves },
+        pattern: { type: d.pattern, scale: d.patternScale, sleeves: d.sleeves, strength: d.patternStrength || 'medium' },
         collar: d.collar,
         finish: d.finish,
         cuffs: d.cuffs !== false,
@@ -1351,7 +1408,7 @@
         'Design ID': s.id,
         Base: (BASES.find((b) => b.id === s.base) || {}).label,
         Colours: `Main ${c(s.colors.primary)} / Sleeves ${c(s.colors.secondary)} / Pattern ${c(s.colors.pattern)} / Trim ${c(s.colors.trim)} / Bottoms ${bottoms}`,
-        Pattern: `${pat.label || 'Plain'} (${{ s: 'fine', m: 'medium', l: 'bold' }[s.pattern.scale]}), sleeves: ${s.pattern.sleeves}`,
+        Pattern: `${pat.label || 'Plain'} (${s.pattern.strength || 'medium'}, ${{ s: 'fine', m: 'medium', l: 'large' }[s.pattern.scale]}), sleeves: ${s.pattern.sleeves}`,
         Jersey: this.parts().includes('jersey') ? `${s.sleeve} sleeve, ${s.collar} collar, ${s.finish}; cuffs ${s.cuffs ? 'on' : 'off'}, hem ${s.hemTrim ? 'on' : 'off'}, side panels ${s.sidePanels ? 'on' : 'off'}` : undefined,
         Number: s.number.value
           ? `${s.number.value} (${P().FONTS[s.number.font].label}, ${c(s.colors.number)}, outline ${c(s.colors.outline)}, size ${s.number.size}; front ${s.number.front}; sleeves ${s.number.sleeve ? 'yes' : 'no'}; bottoms ${s.number.shorts ? 'yes' : 'no'})`

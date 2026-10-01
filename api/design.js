@@ -16,7 +16,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 const MODEL = 'claude-opus-5-5';
-const PATTERNS = ['none', 'stripes', 'pinstripes', 'hoops', 'split', 'sash', 'chevron', 'fade', 'sweep', 'shards', 'halftone', 'camo', 'topo', 'lightning', 'waves', 'grid'];
+const PATTERNS = ['none', 'stripes', 'pinstripes', 'hoops', 'split', 'sash', 'chevron', 'fade', 'sweep', 'shards', 'halftone', 'camo', 'topo', 'lightning', 'waves', 'grid', 'facets', 'speed', 'contour', 'pixel', 'gradstripes', 'brushed'];
 const FONTS = ['block', 'wide', 'classic', 'slab', 'rounded', 'stencil'];
 const COLLARS = ['crew', 'v', 'polo', 'wrap'];
 const FINISHES = ['matte', 'sheen', 'mesh'];
@@ -80,7 +80,7 @@ function kitSchema(hexes) {
         items: {
           type: 'object',
           additionalProperties: false,
-          required: ['name', 'why', 'colors', 'pattern', 'patternScale', 'sleeves', 'collar', 'finish', 'cuffs', 'hemTrim', 'sidePanels', 'font', 'archedName', 'crest'],
+          required: ['name', 'why', 'colors', 'pattern', 'patternScale', 'patternStrength', 'sleeves', 'collar', 'finish', 'cuffs', 'hemTrim', 'sidePanels', 'font', 'archedName', 'crest'],
           properties: {
             name: { type: 'string', description: 'Two or three word name for this kit' },
             why: { type: 'string', description: 'One short sentence on how it matches the vibe' },
@@ -102,6 +102,7 @@ function kitSchema(hexes) {
             },
             pattern: { type: 'string', enum: PATTERNS },
             patternScale: { type: 'string', enum: ['s', 'm', 'l'] },
+            patternStrength: { type: 'string', enum: ['tonal', 'medium', 'bold'] },
             sleeves: { type: 'string', enum: ['solid', 'pattern', 'match'] },
             collar: { type: 'string', enum: COLLARS },
             finish: { type: 'string', enum: FINISHES },
@@ -157,7 +158,8 @@ Constraints:
 - Only use these printable colours (hex values must match exactly): ${paletteText(palette)}.
 - Keep enough contrast between the number colour and the main body colour for the number to be readable at distance.
 - The three designs should differ from each other: vary pattern, colour balance and typeface rather than returning near-copies.
-- Patterns: none, stripes, pinstripes, hoops, split (two-tone halves), sash, chevron, fade (gradient), sweep, shards, halftone, camo, topo (contour lines), lightning, waves, grid.
+- Patterns: none, stripes, pinstripes, hoops, split (two-tone halves), sash, chevron, fade (gradient), sweep, shards, halftone, camo, topo (contour rings), lightning, waves, grid, facets (low-poly), speed (fine diagonal speed lines), contour (flowing fine lines), pixel (pixel fade), gradstripes (stripes fading up), brushed (dry-brush strokes).
+- patternStrength: tonal (subtle, like most pro keeper kits; usually a darker or lighter shade of the main colour), medium, or bold. Prefer tonal or medium unless the vibe is loud or retro.
 - "bottoms" is the shorts/pants colour: "match" (same as body), "secondary", or a hex.
 - Fonts: block, wide, classic, slab, rounded, stencil.
 - Names and "why" lines are for the keeper: plain, confident, no hype words, no emoji.

@@ -44,7 +44,17 @@
     { id: 'lightning', label: 'Lightning' },
     { id: 'waves', label: 'Waves' },
     { id: 'grid', label: 'Grid' },
+    { id: 'facets', label: 'Facets' },
+    { id: 'speed', label: 'Speed lines' },
+    { id: 'contour', label: 'Contour' },
+    { id: 'pixel', label: 'Pixel fade' },
+    { id: 'gradstripes', label: 'Gradient stripes' },
+    { id: 'brushed', label: 'Brushed' },
   ];
+
+  // How strongly a pattern prints over the base colour. Tonal is how most
+  // pro keeper kits are sublimated: the graphic reads up close, not from afar.
+  const STRENGTH = { tonal: 0.24, medium: 0.55, bold: 1 };
 
   const SCALE = { s: 0.6, m: 1, l: 1.6 };
 
@@ -81,6 +91,19 @@
   /* ---------- patterns ---------- */
 
   // Paints `type` in `color` over the rect. Deterministic for a given seed.
+  // Paint a pattern at a given strength (via an offscreen layer, so patterns
+  // that vary their own opacity keep their internal contrast).
+  function paintPatternLayer(ctx, x, y, w, h, type, color, scaleKey, seed, strength) {
+    const a = STRENGTH[strength] ?? 1;
+    if (a >= 1) return paintPattern(ctx, x, y, w, h, type, color, scaleKey, seed);
+    const layer = makeCanvas(Math.ceil(w), Math.ceil(h));
+    paintPattern(layer.getContext('2d'), 0, 0, w, h, type, color, scaleKey, seed);
+    ctx.save();
+    ctx.globalAlpha = a;
+    ctx.drawImage(layer, x, y);
+    ctx.restore();
+  }
+
   function paintPattern(ctx, x, y, w, h, type, color, scaleKey, seed = 7) {
     const k = SCALE[scaleKey] || 1;
     const r = rng(seed);
@@ -156,11 +179,11 @@
         break;
       }
       case 'shards': {
-        const n = Math.round(14 / k);
+        const n = Math.round(26 / k);
         for (let i = 0; i < n; i++) {
           const cx = x + r() * w;
           const cy = y + r() * h;
-          const s = (90 + r() * 160) * k;
+          const s = (50 + r() * 110) * k;
           const a = r() * Math.PI;
           ctx.beginPath();
           ctx.moveTo(cx + Math.cos(a) * s, cy + Math.sin(a) * s);
@@ -208,15 +231,15 @@
         break;
       }
       case 'topo': {
-        ctx.lineWidth = Math.max(2, 3 * k);
+        ctx.lineWidth = Math.max(1.5, 2 * k);
         ctx.globalAlpha = 0.9;
         const centres = [0, 1, 2].map(() => [x + r() * w, y + r() * h]);
         for (const [cx, cy] of centres) {
-          for (let ring = 1; ring < 9; ring++) {
+          for (let ring = 1; ring < 14; ring++) {
             ctx.beginPath();
             for (let a = 0; a <= Math.PI * 2 + 0.05; a += 0.1) {
               const wob = 1 + 0.18 * Math.sin(a * 3 + ring) + 0.08 * Math.sin(a * 7);
-              const rr = ring * 38 * k * wob;
+              const rr = ring * 24 * k * wob;
               const px = cx + Math.cos(a) * rr * 1.3;
               const py = cy + Math.sin(a) * rr;
               a === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
@@ -228,9 +251,9 @@
         break;
       }
       case 'lightning': {
-        ctx.lineWidth = 16 * k;
+        ctx.lineWidth = 6 * k;
         ctx.lineJoin = 'miter';
-        const bolts = Math.round(4 / k) + 1;
+        const bolts = Math.round(6 / k) + 1;
         for (let b = 0; b < bolts; b++) {
           let px = x + ((b + 0.5) / bolts) * w;
           let py = y - 20;
@@ -255,6 +278,103 @@
           }
           ctx.stroke();
         }
+        break;
+      }
+      case 'facets': {
+        // Low-poly facets: a jittered grid split into triangles of varying weight.
+        const cell = 120 * k;
+        const cols = Math.ceil(w / cell) + 2;
+        const rows = Math.ceil(h / cell) + 2;
+        const pt = [];
+        for (let j = 0; j < rows; j++) {
+          pt.push([]);
+          for (let i = 0; i < cols; i++) pt[j].push([x + (i - 0.5 + (r() - 0.5) * 0.7) * cell, y + (j - 0.5 + (r() - 0.5) * 0.7) * cell]);
+        }
+        for (let j = 0; j < rows - 1; j++)
+          for (let i = 0; i < cols - 1; i++) {
+            const a = pt[j][i], b = pt[j][i + 1], c = pt[j + 1][i + 1], d = pt[j + 1][i];
+            for (const tri of [[a, b, c], [a, c, d]]) {
+              ctx.globalAlpha = Math.pow(r(), 1.6);
+              ctx.beginPath();
+              ctx.moveTo(tri[0][0], tri[0][1]);
+              ctx.lineTo(tri[1][0], tri[1][1]);
+              ctx.lineTo(tri[2][0], tri[2][1]);
+              ctx.closePath();
+              ctx.fill();
+            }
+          }
+        ctx.globalAlpha = 1;
+        break;
+      }
+      case 'speed': {
+        // Fine diagonal speed lines, denser toward one side.
+        const n = Math.round(160 / k);
+        for (let i = 0; i < n; i++) {
+          const t = Math.pow(r(), 0.7);
+          const px = x + t * w;
+          const py = y + r() * h;
+          const len = (80 + r() * 260) * k;
+          ctx.lineWidth = (1 + r() * 3) * k;
+          ctx.globalAlpha = 0.35 + r() * 0.65;
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(px + len * 0.45, py - len);
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+        break;
+      }
+      case 'contour': {
+        // Dense fine contour lines flowing across the garment.
+        ctx.lineWidth = Math.max(1.2, 1.6 * k);
+        const lines = Math.round(60 / k);
+        const ph = r() * 10;
+        for (let l = 0; l < lines; l++) {
+          const base = y + (l / lines) * (h + 200) - 100;
+          ctx.beginPath();
+          for (let i = x - 20; i <= x + w + 20; i += 10) {
+            const yy = base + Math.sin(i / (180 * k) + ph + l * 0.05) * 40 * k + Math.sin(i / (70 * k) + l * 0.2) * 10 * k;
+            i === x - 20 ? ctx.moveTo(i, yy) : ctx.lineTo(i, yy);
+          }
+          ctx.stroke();
+        }
+        break;
+      }
+      case 'pixel': {
+        // Pixel blocks dissolving upward from the hem.
+        const px = 28 * k;
+        for (let j = y; j < y + h; j += px)
+          for (let i = x; i < x + w; i += px) {
+            const t = (j - y) / h;
+            if (r() < Math.pow(t, 1.6)) ctx.fillRect(i + 1, j + 1, px - 2, px - 2);
+          }
+        break;
+      }
+      case 'gradstripes': {
+        // Vertical stripes that fade out toward the chest.
+        const band = 46 * k;
+        const g = ctx.createLinearGradient(0, y, 0, y + h);
+        g.addColorStop(0, rgba(color, 0));
+        g.addColorStop(0.35, rgba(color, 0.15));
+        g.addColorStop(1, rgba(color, 1));
+        ctx.fillStyle = g;
+        for (let i = x; i < x + w; i += band * 2) ctx.fillRect(i, y, band, h);
+        break;
+      }
+      case 'brushed': {
+        // Soft dry-brush strokes.
+        const n = Math.round(40 / k);
+        for (let i = 0; i < n; i++) {
+          const py = y + r() * h;
+          const px = x + r() * w * 0.4 - w * 0.1;
+          const len = w * (0.4 + r() * 0.7);
+          const th = (14 + r() * 40) * k;
+          for (let b = 0; b < 10; b++) {
+            ctx.globalAlpha = 0.08 + r() * 0.25;
+            ctx.fillRect(px + r() * 30, py + (r() - 0.5) * th, len * (0.6 + r() * 0.4), Math.max(1.5, r() * 5 * k));
+          }
+        }
+        ctx.globalAlpha = 1;
         break;
       }
       case 'grid': {
@@ -487,8 +607,8 @@
         ctx.fillRect(FRONT, 0, 512, H);
         ctx.fillRect(BACK - 512, 0, 512, H);
       } else {
-        paintPattern(ctx, 0, 0, W / 2, H, pat.type, c.pattern, pat.scale, 11);
-        paintPattern(ctx, W / 2, 0, W / 2, H, pat.type, c.pattern, pat.scale, 23);
+        paintPatternLayer(ctx, 0, 0, W / 2, H, pat.type, c.pattern, pat.scale, 11, pat.strength);
+        paintPatternLayer(ctx, W / 2, 0, W / 2, H, pat.type, c.pattern, pat.scale, 23, pat.strength);
       }
     }
 
@@ -587,12 +707,12 @@
     if (mode === 'match') {
       ctx.fillStyle = c.primary;
       ctx.fillRect(0, 0, W, H);
-      if (s.pattern.type !== 'none' && s.pattern.type !== 'split') paintPattern(ctx, 0, 0, W, H, s.pattern.type, c.pattern, s.pattern.scale, side === 'l' ? 31 : 37);
+      if (s.pattern.type !== 'none' && s.pattern.type !== 'split') paintPatternLayer(ctx, 0, 0, W, H, s.pattern.type, c.pattern, s.pattern.scale, side === 'l' ? 31 : 37, s.pattern.strength);
     } else {
       ctx.fillStyle = c.secondary;
       ctx.fillRect(0, 0, W, H);
       if (mode === 'pattern' && s.pattern.type !== 'none' && s.pattern.type !== 'split') {
-        paintPattern(ctx, 0, 0, W, H, s.pattern.type, c.pattern, s.pattern.scale, side === 'l' ? 41 : 43);
+        paintPatternLayer(ctx, 0, 0, W, H, s.pattern.type, c.pattern, s.pattern.scale, side === 'l' ? 41 : 43, s.pattern.strength);
       }
     }
 
@@ -849,7 +969,25 @@
       ctx.fillRect(0, y0, W, y1 - y0);
     };
     if (part === 'torso') band(H - 46, H);
-    if (part === 'hip') band(0, 48);
+    if (part === 'hip') {
+      // Elastic waistband: gathered fabric ruching under a stitched band.
+      band(0, 48);
+      for (let x = 0; x < W; x += 9) {
+        const g = ctx.createLinearGradient(x, 0, x + 9, 0);
+        g.addColorStop(0, 'rgba(95,95,95,0.85)');
+        g.addColorStop(0.5, 'rgba(178,178,178,0.85)');
+        g.addColorStop(1, 'rgba(95,95,95,0.85)');
+        ctx.fillStyle = g;
+        ctx.fillRect(x, 4, 9, 30);
+      }
+      // Drawcord eyelets at centre front.
+      ctx.fillStyle = 'rgb(40,40,40)';
+      [W * 0.25 - 14, W * 0.25 + 14].forEach((ex) => {
+        ctx.beginPath();
+        ctx.arc(ex, 20, 5, 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
     if (part.startsWith('leg')) band(H - 44, H);
     // Ribbed cuffs.
     if (part.startsWith('sleeve') && s.cuffs !== false) {
@@ -983,7 +1121,7 @@
   }
 
   // Tiny preview of a pattern for option tiles.
-  function patternThumb(type, colors, size = 72) {
+  function patternThumb(type, colors, size = 72, strength = 'bold') {
     const c = makeCanvas(size * 2, size * 2);
     const ctx = c.getContext('2d');
     ctx.fillStyle = colors.primary;
@@ -991,7 +1129,7 @@
     if (type !== 'none') {
       ctx.save();
       ctx.scale(0.28, 0.28);
-      paintPattern(ctx, 0, 0, c.width / 0.28, c.height / 0.28, type, colors.pattern, 'm', 11);
+      paintPatternLayer(ctx, 0, 0, c.width / 0.28, c.height / 0.28, type, colors.pattern, 'm', 11, strength === 'tonal' ? 'medium' : strength);
       ctx.restore();
     }
     return c;
@@ -1000,6 +1138,7 @@
   window.A3GKPaint = {
     FONTS,
     PATTERNS,
+    STRENGTH,
     makeCanvas,
     paintTorso,
     paintSleeve,

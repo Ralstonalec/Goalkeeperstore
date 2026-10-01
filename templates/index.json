@@ -74,18 +74,21 @@
             "status": "soon",
             "note": "Wash, grip spray, deodorizer",
             "shot": "Grip spray misting onto a latex palm, backlit, droplets frozen mid-air.",
-            "render": "bundle"
+            "render": "bundle",
+            "cta": "See the range"
           }
         },
         "builder": {
           "type": "category",
           "settings": {
-            "title": "Kit builder",
+            "title": "Kit designer",
             "link": "/pages/builder",
-            "status": "soon",
-            "note": "Padded jerseys, shorts and pants in your colours",
+            "status": "none",
+            "note": "Padded jerseys, shorts and pants in your colours. Design it in 3D, see the price before you pay.",
             "shot": "Custom padded jersey laid flat, number and crest in focus, side light.",
-            "render": "kit"
+            "render": "kit",
+            "feature": true,
+            "cta": "Design your kit"
           }
         },
         "tape": {
@@ -96,7 +99,8 @@
             "status": "soon",
             "shot": "Finger tape being wrapped, close-up of hands in the dressing room.",
             "note": "Finger tape, plus traditional and split-toe grip socks",
-            "render": "tape"
+            "render": "tape",
+            "cta": "See the range"
           }
         },
         "protection": {
@@ -107,7 +111,8 @@
             "status": "soon",
             "shot": "Padded shorts, hip pad detail, on a keeper getting up from a dive.",
             "note": "Padded shorts and pants",
-            "render": "shorts"
+            "render": "shorts",
+            "cta": "See protection"
           }
         },
         "gloves": {
@@ -119,7 +124,8 @@
             "note": "Why we don't sell our own yet",
             "shot": "Worn glove on a wet pitch, shallow depth of field.",
             "status_label": "Not yet",
-            "render": "scene"
+            "render": "scene",
+            "cta": "Read why"
           }
         },
         "bags": {
@@ -130,13 +136,14 @@
             "status": "soon",
             "note": "Once a sample passes testing",
             "shot": "Kit bag with glove compartment open, gloves hanging to air.",
-            "render": "bag"
+            "render": "bag",
+            "cta": "See bags"
           }
         }
       },
       "block_order": [
-        "care",
         "builder",
+        "care",
         "tape",
         "protection",
         "gloves",
@@ -144,10 +151,11 @@
       ],
       "settings": {
         "heading": "What we make",
-        "text": "<p>A short range, on purpose.</p>",
+        "text": "<p>A short range, on purpose. Everything here is something a keeper goes through week after week.</p>",
         "padding_top": 96,
         "padding_bottom": 96,
-        "tone": "ink"
+        "tone": "ink",
+        "layout": "bento"
       }
     },
     "care": {
