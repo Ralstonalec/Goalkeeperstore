@@ -106,7 +106,8 @@
         "col_3": "US shoe",
         "padding_top": 48,
         "padding_bottom": 80,
-        "show_diagram": false
+        "show_diagram": false,
+        "intro": "<p>Two styles: traditional grip socks, and split-toe grip socks with a separate big toe for more control when you push off. Both use the same shoe-size chart.</p>"
       }
     },
     "faq": {

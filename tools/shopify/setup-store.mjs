@@ -54,7 +54,7 @@ const PAGES = [
 // Automated collections: a product joins by its Product type.
 const COLLECTIONS = [
   { handle: 'glove-care', title: 'Glove care', type: 'Glove care', description: 'Our own glove wash, grip spray and deodorizer.' },
-  { handle: 'tape-socks', title: 'Tape & socks', type: 'Tape & socks', description: 'Finger tape and grip socks.' },
+  { handle: 'tape-socks', title: 'Tape & socks', type: 'Tape & socks', description: 'Finger tape, and grip socks in two styles: traditional and split-toe.' },
   { handle: 'protection', title: 'Protection', type: 'Protection', description: 'Padded shorts and pants.' },
   { handle: 'bundles', title: 'Bundles', type: 'Bundle', description: 'Products that go together, priced together.' },
   { handle: 'bags', title: 'Bags', type: 'Bag', description: '' },
