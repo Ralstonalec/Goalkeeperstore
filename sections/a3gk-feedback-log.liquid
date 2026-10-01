@@ -49,6 +49,11 @@
     {%- else -%}
       <div class="a3-log__empty a3-reveal">
         <div class="a3-lede">{{ section.settings.empty_text }}</div>
+        <ol class="a3-log__how" role="list">
+          <li><span>01</span><strong>You tell us</strong><p>After delivery we ask short questions: did it fit, did it work, what would you change.</p></li>
+          <li><span>02</span><strong>We change it</strong><p>A product, a size, a page, a process. If it's worth fixing, we fix it.</p></li>
+          <li><span>03</span><strong>It's logged here</strong><p>What you said, what we did, and the date. Every time.</p></li>
+        </ol>
       </div>
     {%- endif -%}
 
@@ -77,6 +82,12 @@
   .a3-log__did p { color: var(--a3-text); }
   .a3-log__did h3 { color: var(--a3-accent-text); }
   .a3-log__empty { padding: 3.2rem 0; border-top: 1px solid var(--a3-line); border-bottom: 1px solid var(--a3-line); }
+  .a3-log__how { list-style: none; margin: 3.2rem 0 0; padding: 0; display: grid; gap: 1.2rem; }
+  .a3-log__how li { padding: 2.4rem; border: 1px solid var(--a3-line); border-radius: calc(var(--a3-radius, 4px) * 2); background: color-mix(in srgb, var(--a3-text) 3%, transparent); }
+  .a3-log__how span { display: block; margin-bottom: 1.6rem; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.16em; color: var(--a3-accent-text); }
+  .a3-log__how strong { display: block; font-size: 2rem; letter-spacing: -0.02em; }
+  .a3-log__how p { margin: 0.8rem 0 0; color: var(--a3-muted); }
+  @media screen and (min-width: 750px) { .a3-log__how { grid-template-columns: repeat(3, 1fr); } }
   .a3-log__cta { display: flex; flex-wrap: wrap; gap: 2.4rem; align-items: center; margin-top: 3.2rem; }
 
   @media screen and (min-width: 990px) {

@@ -522,7 +522,8 @@ function buildBottoms({ pants }) {
   const CROTCH = -1;
   const legLen = pants ? 79 : 17;
   // Hip/waist tube with an elastic waist.
-  const hipCirc = (y) => keyed([[CROTCH, 110], [12, 110], [22, 100], [TOP, 86]], y);
+  // Fitted under the jersey: the part hidden by the jersey hugs the body.
+  const hipCirc = (y) => keyed([[CROTCH, 108], [-4, 104], [4, 98], [12, 94], [22, 88], [TOP, 84]], y);
   const nu = Math.round(110 / ds / 2) * 2;
   const nv = Math.round((TOP - CROTCH) / ds) + 1;
   const hip = cloth.tube({

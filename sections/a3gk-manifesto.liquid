@@ -14,7 +14,13 @@
       {%- endfor -%}
     </ol>
     {%- if section.settings.footnote != blank -%}
-      <p class="a3-manifesto__foot">{{ section.settings.footnote | escape }}</p>
+      <p class="a3-manifesto__foot">
+        {%- if section.settings.footnote_link != blank -%}
+          <a class="a3-link" href="{{ section.settings.footnote_link }}">{{ section.settings.footnote | escape }}</a>
+        {%- else -%}
+          {{ section.settings.footnote | escape }}
+        {%- endif -%}
+      </p>
     {%- endif -%}
   </div>
 </section>
@@ -73,6 +79,7 @@
   "settings": [
     { "type": "text", "id": "label", "label": "Accessible label", "default": "What we do" },
     { "type": "text", "id": "footnote", "label": "Footnote" },
+    { "type": "url", "id": "footnote_link", "label": "Footnote link" },
     {
       "type": "select",
       "id": "tone",
