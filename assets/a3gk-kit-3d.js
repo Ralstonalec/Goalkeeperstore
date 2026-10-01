@@ -416,6 +416,22 @@ onmessage = function (e) {
     if (bGeo) {
       const mats = ['hip', 'legR', 'legL'].map((k) => fabric(wrapRepeat(textures[k]), detailBump(k), finish));
       const bottoms = withInner(bGeo, mats);
+      // Under a jersey, the waistband is tucked in: shrink it slightly toward
+      // the body so it never pokes through the jersey's folds.
+      if (jGeo && !bGeo.userData.tucked) {
+        const p = bGeo.attributes.position;
+        const hemY = jGeo.boundingBox.min.y + 0.2;
+        for (let i = 0; i < p.count; i++) {
+          const y = p.getY(i);
+          if (y <= hemY) continue;
+          const k = Math.min(1, (y - hemY) / 0.2) * 0.13;
+          p.setX(i, p.getX(i) * (1 - k));
+          p.setZ(i, p.getZ(i) * (1 - k));
+        }
+        p.needsUpdate = true;
+        bGeo.computeVertexNormals();
+        bGeo.userData.tucked = true;
+      }
       bottoms.children.forEach((c) => (c.userData.cached = true));
       kit.add(bottoms);
     }
