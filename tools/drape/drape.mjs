@@ -105,12 +105,23 @@ class Cloth {
 
   // A tube of cloth: nu columns around (periodic), nv rows along.
   // place(fu, fv) -> [x,y,z] initial (rest) position; keep(p, iu, iv) -> bool
-  tube({ nu, nv, place, keep = () => true, uvOf, group }) {
+  // reuse(iu, iv) -> index of an existing particle to share (welded edge), or -1.
+  tube({ nu, nv, place, keep = () => true, uvOf, group, reuse = () => -1 }) {
     const idx = [];
+    const local = []; // this piece's own pattern positions (rest shape)
+    this.uvG = this.uvG || new Map();
     for (let iv = 0; iv < nv; iv++) {
       idx.push([]);
       for (let iu = 0; iu < nu; iu++) {
-        const p = place(iu / nu, iv / (nv - 1));
+        local[iv] = local[iv] || [];
+        local[iv][iu] = place(iu / nu, iv / (nv - 1));
+        const shared = reuse(iu, iv);
+        if (shared >= 0) {
+          idx[iv].push(shared);
+          this.uvG.set(`${shared}:${group}`, uvOf(iu / nu, iv / (nv - 1)));
+          continue;
+        }
+        const p = local[iv][iu].slice();
         if (!keep(p, iu, iv)) {
           idx[iv].push(-1);
           continue;
@@ -122,22 +133,24 @@ class Cloth {
       }
     }
     const at = (iu, iv) => (iv < 0 || iv >= nv ? -1 : idx[iv][((iu % nu) + nu) % nu]);
-    const link = (a, b, k) => {
-      if (a < 0 || b < 0) return;
-      const pa = this.pos[a];
-      const pb = this.pos[b];
-      this.edges.push([a, b, Math.hypot(pa[0] - pb[0], pa[1] - pb[1], pa[2] - pb[2]), k]);
+    // Rest lengths come from this piece's own pattern, not from wherever a
+    // welded (shared) point happens to sit on another piece.
+    const link = (a, b, k, la, lb) => {
+      if (a < 0 || b < 0 || !la || !lb) return;
+      this.edges.push([a, b, Math.hypot(la[0] - lb[0], la[1] - lb[1], la[2] - lb[2]), k]);
     };
+    const L = (iu, iv) => (iv < 0 || iv >= nv ? null : local[iv][((iu % nu) + nu) % nu]);
     for (let iv = 0; iv < nv; iv++)
       for (let iu = 0; iu < nu; iu++) {
         const a = at(iu, iv);
         if (a < 0) continue;
-        link(a, at(iu + 1, iv), 1);
-        link(a, at(iu, iv + 1), 1);
-        link(a, at(iu + 1, iv + 1), 0.6);
-        link(a, at(iu + 1, iv - 1), 0.6);
-        link(a, at(iu + 2, iv), 0.35);
-        link(a, at(iu, iv + 2), 0.35);
+        const la = L(iu, iv);
+        link(a, at(iu + 1, iv), 1, la, L(iu + 1, iv));
+        link(a, at(iu, iv + 1), 1, la, L(iu, iv + 1));
+        link(a, at(iu + 1, iv + 1), 0.6, la, L(iu + 1, iv + 1));
+        link(a, at(iu + 1, iv - 1), 0.6, la, L(iu + 1, iv - 1));
+        link(a, at(iu + 2, iv), 0.35, la, L(iu + 2, iv));
+        link(a, at(iu, iv + 2), 0.35, la, L(iu, iv + 2));
         // Triangles (with per-corner uv wrap handled at export).
         const b = at(iu + 1, iv);
         const c = at(iu + 1, iv + 1);
@@ -145,11 +158,11 @@ class Cloth {
         const cells = [a, b, c, d];
         const present = cells.filter((v) => v >= 0).length;
         if (present === 4) {
-          this.tris.push([a, b, c, iu === nu - 1]);
-          this.tris.push([a, c, d, iu === nu - 1]);
+          this.tris.push([a, b, c, iu === nu - 1, group]);
+          this.tris.push([a, c, d, iu === nu - 1, group]);
         } else if (present === 3) {
           const t = cells.filter((v) => v >= 0);
-          this.tris.push([t[0], t[1], t[2], iu === nu - 1]);
+          this.tris.push([t[0], t[1], t[2], iu === nu - 1, group]);
         }
       }
     const t = { nu, nv, idx, at };
@@ -180,6 +193,7 @@ class Cloth {
       for (let i = 1; i < fl.length; i++) if (Math.abs(fl[i] - f) < Math.abs(fl[best] - f)) best = i;
       return best;
     };
+    (this.seams || (this.seams = [])).push([A.slice(), B.slice(), fa, fb]);
     A.forEach((a, i) => this.sew(a, B[nearest(fa[i], fb)]));
     B.forEach((b, i) => this.sew(A[nearest(fb[i], fa)], b));
   }
@@ -482,13 +496,20 @@ function buildJersey({ long }) {
     const circAt = long
       ? (t) => keyed([[0, capC], [10, 40], [30, 35], [48, 28], [lenS, 24]], t)
       : (t) => keyed([[0, capC], [10, 40], [lenS, 38]], t);
-    const snu = Math.round(capC / ds / 2) * 2;
+    // The sleeve cap shares the armhole's own points (welded), so the seam
+    // can't open or fray. One sleeve column per armhole point.
+    const snu = loop.length;
     const snv = Math.round(lenS / ds) + 1;
-    const uTop = s > 0 ? 0.25 : 0.75;
-    const sleeve = cloth.tube({
+    const top = Math.round(snu * (s > 0 ? 0.25 : 0.75));
+    const capWeld = (iu) => {
+      const k = s > 0 ? (((top - iu) % snu) + snu) % snu : (((iu - top) % snu) + snu) % snu;
+      return loop[k];
+    };
+    cloth.tube({
       nu: snu,
       nv: snv,
       group: s > 0 ? 1 : 2,
+      reuse: (iu, iv) => (iv === 0 ? capWeld(iu) : -1),
       place: (fu, fv) => {
         const t = fv * lenS;
         const r = circAt(t) / (2 * Math.PI) + 1.2;
@@ -498,17 +519,6 @@ function buildJersey({ long }) {
       },
       uvOf: (fu, fv) => [fu, 1 - fv],
     });
-    // Sew the cap ring into the armhole, starting from the top of the arm.
-    const ring = [];
-    for (let k = 0; k < snu; k++) {
-      const f = k / snu;
-      const u = s > 0 ? uTop - f : uTop + f;
-      const iu = Math.round((((u % 1) + 1) % 1) * snu) % snu;
-      ring.push(sleeve.idx[0][iu]);
-    }
-    ring.push(ring[0]);
-    const closed = [...loop, loop[0]];
-    cloth.sewLines(ring, closed);
   }
   return cloth;
 }
@@ -549,10 +559,25 @@ function buildBottoms({ pants }) {
     const circAt = pants ? (t) => keyed([[0, 66], [30, 50], [45, 44], [legLen, 34]], t) : (t) => keyed([[0, 66], [legLen, 62]], t);
     const lnu = Math.round(66 / ds / 2) * 2;
     const lnv = Math.round(legLen / ds) + 1;
+    // Weld the leg tops to the hip (outer arc) and to the other leg (crotch),
+    // so these pieces share edge points and can't open at the seam.
+    const half = nu / 2;
+    const inner = lnu - half;
+    const hipStart = nu / 4 - 0.5 + (s > 0 ? 0 : half);
+    const legStart = (s > 0 ? lnu / 4 : (3 * lnu) / 4) - half / 2;
+    const weld = new Map();
+    for (let k = 0; k <= half; k++)
+      weld.set((((legStart + k) % lnu) + lnu) % lnu, hip.idx[0][(((hipStart + k) % nu) + nu) % nu]);
+    if (s < 0)
+      for (let k = 1; k < inner; k++) {
+        const rCol = (((lnu / 4 - half / 2 + half + k) % lnu) + lnu) % lnu;
+        weld.set((((legStart - k) % lnu) + lnu) % lnu, legs[1].idx[0][rCol]);
+      }
     legs[s] = cloth.tube({
       nu: lnu,
       nv: lnv,
       group: s > 0 ? 1 : 2,
+      reuse: (iu, iv) => (iv === 0 && weld.has(iu) ? weld.get(iu) : -1),
       place: (fu, fv) => {
         const t = fv * legLen;
         const r = circAt(t) / (2 * Math.PI) + 0.8;
@@ -584,9 +609,10 @@ function buildBottoms({ pants }) {
     }
     return out;
   };
-  cloth.sewLines(hipRow(0.25, 0.75), legRow(1, 0, 0.5)); // front centre → +x side → back centre
-  cloth.sewLines(hipRow(0.75, 1.25), legRow(-1, 0.5, 1)); // back centre → -x side → front centre
-  cloth.sewLines(legRow(1, 0.5, 1), legRow(-1, 0.5, 0)); // inseams meet at the crotch
+  // Real shorts pattern: each leg's top is ~82% outer arc (sewn to that half
+  // of the hip) and ~18% crotch extension (sewn to the other leg's).
+  // Leg u: 0 front, .25 +x, .5 back, .75 -x. Hip u: .25 front, .5 +x, .75 back.
+  // (Leg tops are welded to the hip and to each other above; no sewing needed.)
   return cloth;
 }
 
@@ -760,18 +786,19 @@ function exportCloth(cloth) {
   // Vertices are split per triangle corner only where the u wrap needs it.
   const verts = [];
   const key = new Map();
-  const vid = (i, wrap) => {
-    const k = wrap ? `${i}w` : `${i}`;
+  const uvFor = (i, g) => ((cloth.uvG && cloth.uvG.get(`${i}:${g}`)) || cloth.uv[i]);
+  const vid = (i, wrap, g = cloth.group[i]) => {
+    const k = `${i}:${g}${wrap ? 'w' : ''}`;
     if (key.has(k)) return key.get(k);
-    const uv = cloth.uv[i].slice();
+    const uv = uvFor(i, g).slice();
     if (wrap && uv[0] < 0.5) uv[0] += 1;
-    verts.push({ i, uv, g: cloth.group[i] });
+    verts.push({ i, uv, g });
     key.set(k, verts.length - 1);
     return verts.length - 1;
   };
   const groups = [[], [], []];
-  for (let [a, b, c, edge] of cloth.tris) {
-    const g = cloth.group[a];
+  for (let [a, b, c, edge, tg] of cloth.tris) {
+    const g = tg ?? cloth.group[a];
     // Face away from the body so the fabric side is outside.
     const pa = [P[a * 3], P[a * 3 + 1], P[a * 3 + 2]];
     const pb = [P[b * 3], P[b * 3 + 1], P[b * 3 + 2]];
@@ -782,11 +809,42 @@ function exportCloth(cloth) {
     const cen = [(pa[0] + pb[0] + pc[0]) / 3, (pa[1] + pb[1] + pc[1]) / 3, (pa[2] + pb[2] + pc[2]) / 3];
     const out = bodyGrad(cen[0], cen[1], cen[2]);
     if (fn[0] * out[0] + fn[1] * out[1] + fn[2] * out[2] < 0) [b, c] = [c, b];
-    const us = [a, b, c].map((i) => cloth.uv[i][0]);
-    const wrap = edge && Math.max(...us) - Math.min(...us) > 0.5;
-    groups[g].push([vid(a, wrap && us[0] < 0.5), vid(b, wrap && us[1] < 0.5), vid(c, wrap && us[2] < 0.5)]);
+    const us = [a, b, c].map((i) => uvFor(i, g)[0]);
+    const wrap = Math.max(...us) - Math.min(...us) > 0.5;
+    groups[g].push([vid(a, wrap && us[0] < 0.5, g), vid(b, wrap && us[1] < 0.5, g), vid(c, wrap && us[2] < 0.5, g)]);
   }
   void n;
+  // Seam fill: zip each sewn pair of edges together with thin strips so
+  // pieces with different stitch spacing leave no notches. B-side corners
+  // borrow the UV of their A-side partner (the strips are hairline-thin).
+  const extra = (i, uv, g) => {
+    verts.push({ i, uv, g });
+    return verts.length - 1;
+  };
+  for (const [A, B, fa, fb] of cloth.seams || []) {
+    const g = cloth.group[A[0]];
+    const partner = (fbj) => {
+      let best = 0;
+      for (let k = 1; k < fa.length; k++) if (Math.abs(fa[k] - fbj) < Math.abs(fa[best] - fbj)) best = k;
+      return A[best];
+    };
+    const bv = B.map((b, j) => extra(b, cloth.uv[partner(fb[j])].slice(), g));
+    const av = A.map((a) => extra(a, cloth.uv[a].slice(), g));
+    let i = 0;
+    let j = 0;
+    while (i < A.length - 1 || j < B.length - 1) {
+      const advanceA = j >= B.length - 1 || (i < A.length - 1 && fa[i + 1] <= fb[j + 1]);
+      if (advanceA) {
+        groups[g].push([av[i], av[i + 1], bv[j]]);
+        groups[g].push([av[i], bv[j], av[i + 1]]);
+        i++;
+      } else {
+        groups[g].push([av[i], bv[j + 1], bv[j]]);
+        groups[g].push([av[i], bv[j], bv[j + 1]]);
+        j++;
+      }
+    }
+  }
   const pos = new Float32Array(verts.length * 3);
   const uv = new Float32Array(verts.length * 2);
   verts.forEach((v, k) => {

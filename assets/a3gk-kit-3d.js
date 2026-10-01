@@ -138,25 +138,24 @@ function createKitScene(THREE, container, options = {}) {
 
   const materials = [];
   function fabric(map, bump, finish) {
+    // Polyester sports knit: matte, soft grazing sheen, very little gloss.
     const m = new THREE.MeshPhysicalMaterial({
       map,
       vertexColors: true, // baked ambient occlusion
       bumpMap: bump,
       bumpScale: finish === 'mesh' ? 2.2 : 1.4,
-      roughness: finish === 'sheen' ? 0.55 : finish === 'mesh' ? 0.85 : 0.8,
+      roughness: finish === 'sheen' ? 0.68 : finish === 'mesh' ? 0.92 : 0.9,
       metalness: 0,
-      // Fabric sheen: the soft grazing highlight that makes cloth (and
-      // especially dark cloth) read as cloth.
-      sheen: 1,
-      sheenRoughness: finish === 'sheen' ? 0.3 : finish === 'mesh' ? 0.55 : 0.45,
-      sheenColor: new THREE.Color(finish === 'sheen' ? 0xc8c8c8 : finish === 'mesh' ? 0x8c8c8c : 0xa8a8a8),
-      envMapIntensity: finish === 'sheen' ? 1.1 : 0.85,
+      sheen: 0.8,
+      sheenRoughness: 0.55,
+      sheenColor: new THREE.Color(finish === 'sheen' ? 0x8a8a8a : 0x606060),
+      specularIntensity: finish === 'sheen' ? 0.35 : 0.18,
+      envMapIntensity: finish === 'sheen' ? 0.55 : 0.4,
       side: THREE.FrontSide,
     });
     materials.push(m);
     return m;
   }
-  const inner = new THREE.MeshStandardMaterial({ color: 0x0b0c0a, roughness: 1, side: THREE.BackSide, vertexColors: true });
 
   // Garment meshes are generated in a background worker (they take a moment
   // to build) and cached, so the page never freezes. If workers aren't
@@ -349,7 +348,14 @@ onmessage = function (e) {
     outer.castShadow = true;
     outer.receiveShadow = true;
     g.add(outer);
-    g.add(new THREE.Mesh(geo, inner));
+    // Inside of the garment: the same printed fabric, in shadow (sublimated
+    // prints show through), rather than a black void.
+    const insides = (Array.isArray(mats) ? mats : [mats]).map((m) => {
+      const im = new THREE.MeshStandardMaterial({ map: m.map, color: 0x5a5a5a, roughness: 1, side: THREE.BackSide, vertexColors: true });
+      materials.push(im);
+      return im;
+    });
+    g.add(new THREE.Mesh(geo, Array.isArray(mats) ? insides : insides[0]));
     return g;
   }
 
