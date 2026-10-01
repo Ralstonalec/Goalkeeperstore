@@ -416,22 +416,9 @@ onmessage = function (e) {
     if (bGeo) {
       const mats = ['hip', 'legR', 'legL'].map((k) => fabric(wrapRepeat(textures[k]), detailBump(k), finish));
       const bottoms = withInner(bGeo, mats);
-      // Under a jersey, the waistband is tucked in: shrink it slightly toward
-      // the body so it never pokes through the jersey's folds.
-      if (jGeo && !bGeo.userData.tucked) {
-        const p = bGeo.attributes.position;
-        const hemY = jGeo.boundingBox.min.y + 0.2;
-        for (let i = 0; i < p.count; i++) {
-          const y = p.getY(i);
-          if (y <= hemY) continue;
-          const k = Math.min(1, (y - hemY) / 0.2) * 0.13;
-          p.setX(i, p.getX(i) * (1 - k));
-          p.setZ(i, p.getZ(i) * (1 - k));
-        }
-        p.needsUpdate = true;
-        bGeo.computeVertexNormals();
-        bGeo.userData.tucked = true;
-      }
+      // Product-shot layout: with a jersey, the shorts/pants hang just below
+      // its hem (like a ghost-mannequin kit photo) so the whole garment shows.
+      if (jGeo) bottoms.position.y = jGeo.boundingBox.min.y - 0.22 - bGeo.boundingBox.max.y;
       bottoms.children.forEach((c) => (c.userData.cached = true));
       kit.add(bottoms);
     }
@@ -442,8 +429,8 @@ onmessage = function (e) {
     }
 
     // Frame the camera on whatever was built.
-    const box = new THREE.Box3();
-    [jGeo, bGeo, sGeo].forEach((g) => g && box.union(g.boundingBox));
+    kit.updateMatrixWorld(true);
+    const box = new THREE.Box3().setFromObject(kit);
     const top = box.max.y + 0.1;
     const low = box.min.y;
     target = new THREE.Vector3(0, (top + low) / 2, 0);
