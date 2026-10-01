@@ -529,3 +529,13 @@
 .a3b__btn[aria-pressed='true'] { background: #161714; color: #f4f4f2; }
 .a3b__flat canvas { filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.18)); }
 .a3b__no3d { background: rgba(255, 255, 255, 0.85); color: rgba(22, 23, 20, 0.7); border-color: rgba(22, 23, 20, 0.12); }
+
+/* Design gallery: studio shots on the same light cove as the main stage. */
+.a3b-preset { background: #121411; }
+.a3b-preset__img {
+  border-radius: calc(var(--a3-radius, 4px) * 1.5);
+  background:
+    radial-gradient(70% 60% at 50% 40%, #f7f6f3 0%, rgba(247, 246, 243, 0) 75%),
+    linear-gradient(180deg, #e9e8e4 0%, #d6d5d0 100%);
+}
+.a3b-preset__img img { filter: none; }

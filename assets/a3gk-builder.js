@@ -630,6 +630,10 @@
         await this.kit3d.ready;
         delete this.root.dataset.building;
         this.stage3d.classList.add('is-ready');
+        // Re-render the design gallery as real 3D studio shots, in the background.
+        // Wait for the browser to be idle first so the designer itself stays snappy.
+        const later = window.requestIdleCallback || ((f) => setTimeout(f, 1500));
+        later(() => this.renderPresetThumbs3d(THREE, mod, garment).catch((e) => console.warn('A3GK: 3D thumbnails skipped', e)), { timeout: 4000 });
       } catch (e) {
         console.warn('A3GK: 3D unavailable, using flat view', e);
         this.root.dataset.no3d = 'load';
@@ -953,9 +957,11 @@
       this._presetThumbs = this._presetThumbs || {};
       const cache = (this._presetThumbs[key] = this._presetThumbs[key] || {});
       const todo = [];
+      const shots = (this._presetThumbs3d || {})[key] || {};
       imgs.forEach((img) => {
         const id = img.dataset.presetImg;
-        if (cache[id]) img.src = cache[id];
+        if (shots[id]) img.src = shots[id];
+        else if (cache[id]) img.src = cache[id];
         else todo.push(img);
       });
       const step = () => {
@@ -966,10 +972,58 @@
           const d = PRESETS.find((x) => x.id === id);
           cache[id] = this.flatPreview(this.sanitize(this.merge(this.state, this.kitPatch(this.presetDesign(d)))), 200);
         }
-        if (img.isConnected) img.src = cache[id];
+        if (img.isConnected && !(((this._presetThumbs3d || {})[key] || {})[id])) img.src = cache[id];
         requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
+    }
+
+    async renderPresetThumbs3d(THREE, mod, garment) {
+      const holder = document.createElement('div');
+      holder.style.cssText = 'position:fixed;left:-10000px;top:0;width:300px;height:400px;pointer-events:none;';
+      document.body.appendChild(holder);
+      const scene = mod.createKitScene(THREE, holder, { garment, garmentUrl: this.cfg.garmentUrl, noAutoRotate: true, lite: true });
+      const paint = P();
+      const canv = {};
+      ['torso', 'sleeveL', 'sleeveR', 'hip', 'legL', 'legR', 'sock'].forEach((k) => (canv[k] = document.createElement('canvas')));
+      const det = {};
+      ['torso', 'sleeveR', 'sleeveL', 'hip', 'legR', 'legL'].forEach((k) => (det[k] = document.createElement('canvas')));
+      const tex = {};
+      const bottom = this.bottomPart();
+      this._presetThumbs3d = this._presetThumbs3d || {};
+      const key = this.parts().join(',');
+      const out = (this._presetThumbs3d[key] = this._presetThumbs3d[key] || {});
+      for (const d of PRESETS) {
+        if (out[d.id]) continue;
+        const st = this.sanitize(this.merge(this.state, this.kitPatch(this.presetDesign(d))));
+        paint.paintTorso(canv.torso, st, {});
+        paint.paintSleeve(canv.sleeveL, st, 'l', {});
+        paint.paintSleeve(canv.sleeveR, st, 'r', {});
+        paint.paintHip(canv.hip, st, {});
+        paint.paintLeg(canv.legL, st, 'l', bottom, {});
+        paint.paintLeg(canv.legR, st, 'r', bottom, {});
+        Object.entries(det).forEach(([k, c]) => paint.paintDetail(c, k, st, canv[k].width, canv[k].height));
+        Object.entries(canv).forEach(([k, c]) => {
+          tex[k] = tex[k] || new THREE.CanvasTexture(c);
+          tex[k].colorSpace = THREE.SRGBColorSpace;
+          tex[k].needsUpdate = true;
+        });
+        Object.entries(det).forEach(([k, c]) => {
+          const kk = `${k}Bump`;
+          tex[kk] = tex[kk] || new THREE.CanvasTexture(c);
+          tex[kk].needsUpdate = true;
+        });
+        scene.update({ parts: this.parts(), sleeve: st.sleeve, collar: st.collar, finish: st.finish, socks: false, trim: st.colors.trim, textures: tex, knit: paint.knitCanvas(st.finish), finishChanged: true });
+        await scene.settled();
+        scene.setView('three', true);
+        await new Promise((r) => requestAnimationFrame(r));
+        out[d.id] = scene.snapshot('image/webp', 0.85);
+        const img = this.panes.querySelector(`img[data-preset-img="${d.id}"]`);
+        if (img) img.src = out[d.id];
+        await new Promise((r) => setTimeout(r, 30));
+      }
+      scene.dispose();
+      holder.remove();
     }
 
     flatPreview(state, width) {

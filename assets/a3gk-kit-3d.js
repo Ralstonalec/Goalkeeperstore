@@ -19,13 +19,13 @@ function createKitScene(THREE, container, options = {}) {
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(options.lite ? 1 : Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   // AgX keeps saturated kit colours true (ACES shifts them toward a "game" look).
   renderer.toneMapping = THREE.AgXToneMapping !== undefined ? THREE.AgXToneMapping : THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = THREE.AgXToneMapping !== undefined ? 1.25 : 1.0;
   // Soft shadows: sleeves shade the body, folds shade themselves, the kit sits on the floor.
-  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.enabled = !options.lite;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.domElement.className = 'a3k-canvas';
   renderer.domElement.setAttribute('aria-hidden', 'true');
@@ -65,7 +65,7 @@ function createKitScene(THREE, container, options = {}) {
   const key = new THREE.DirectionalLight(0xfffaf3, 1.9);
   key.position.set(-3, 11, 6);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(1024, 1024); // soft (blurred) shadows don't need more
   key.shadow.bias = -0.0004;
   key.shadow.normalBias = 0.02;
   key.shadow.radius = 6;
@@ -88,7 +88,7 @@ function createKitScene(THREE, container, options = {}) {
     c.width = c.height = 256;
     const g = c.getContext('2d');
     const grad = g.createRadialGradient(128, 128, 0, 128, 128, 128);
-    grad.addColorStop(0, 'rgba(0,0,0,.28)');
+    grad.addColorStop(0, 'rgba(0,0,0,.22)');
     grad.addColorStop(1, 'rgba(0,0,0,0)');
     g.fillStyle = grad;
     g.fillRect(0, 0, 256, 256);
@@ -103,6 +103,9 @@ function createKitScene(THREE, container, options = {}) {
   const shadowCatcher = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: 0.16 }));
   shadowCatcher.rotation.x = -Math.PI / 2;
   shadowCatcher.receiveShadow = true;
+  // Invisible-mannequin shots show only a soft contact shadow, not the
+  // projected silhouette of a floating jersey; keep self-shadowing only.
+  shadowCatcher.visible = false;
   scene.add(shadowCatcher);
 
   const kit = new THREE.Group();
@@ -422,6 +425,7 @@ onmessage = function (e) {
     firstFailed = rej;
   });
 
+  let lastBuild = Promise.resolve();
   async function build(spec) {
     const token = ++buildToken;
     const { parts, sleeve, collar, finish } = spec;
@@ -511,7 +515,7 @@ onmessage = function (e) {
     const key = [spec.parts.join(','), spec.sleeve, spec.collar, spec.finish, spec.socks, spec.trim].join('|');
     if (key !== lastKey) {
       lastKey = key;
-      build(spec).catch((e) => {
+      lastBuild = build(spec).catch((e) => {
         console.warn('A3GK: garment build failed', e);
         if (firstFailed) firstFailed(e);
       });
@@ -632,19 +636,25 @@ onmessage = function (e) {
   ro.observe(container);
   resize();
 
-  function setView(view) {
+  function setView(view, instant) {
     const turns = Math.round(yaw / (Math.PI * 2)) * Math.PI * 2;
-    const angle = { front: 0, back: Math.PI, left: Math.PI / 2, right: -Math.PI / 2 }[view] ?? 0;
+    const angle = { front: 0, back: Math.PI, left: Math.PI / 2, right: -Math.PI / 2, three: 0.42 }[view] ?? 0;
     targetYaw = turns + angle;
+    if (instant) yaw = targetYaw;
     velocity = 0;
     idleAt = performance.now();
     requestRender();
   }
 
-  function snapshot() {
+  function snapshot(type = 'image/png', quality) {
+    kit.rotation.y = yaw;
+    kit.rotation.x = pitch;
     renderer.render(scene, camera);
-    return renderer.domElement.toDataURL('image/png');
+    return renderer.domElement.toDataURL(type, quality);
   }
+
+  // Resolves once the latest garment build (if any) has finished.
+  const settled = () => lastBuild;
 
   function dispose() {
     ro.disconnect();
@@ -656,7 +666,7 @@ onmessage = function (e) {
     el.remove();
   }
 
-  return { update, setView, snapshot, dispose, requestRender, ready };
+  return { update, setView, snapshot, dispose, requestRender, ready, settled };
 }
 
 window.A3GKKit3D = { createKitScene };
