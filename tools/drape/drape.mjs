@@ -395,9 +395,14 @@ function ellipseTable(rx, rz, m = 720) {
 
 /* ---------------- jersey ---------------- */
 
+// Fabric resolution in cm (particle spacing). Finer = sharper folds, slower bake.
+const DS = Number(process.env.DRAPE_DS || 1.1);
+// Nearest n with n % 4 === 2 (keeps front/back centre seams on whole columns).
+const ring2 = (n) => Math.max(6, Math.round((n - 2) / 4) * 4 + 2);
+
 function buildJersey({ long }) {
   const cloth = new Cloth();
-  const ds = 1.55;
+  const ds = DS;
   const HEM = -6;
   const TOP = 67;
   const circ = 104;
@@ -527,14 +532,15 @@ function buildJersey({ long }) {
 
 function buildBottoms({ pants }) {
   const cloth = new Cloth();
-  const ds = 1.55;
+  const ds = DS;
   const TOP = 28;
   const CROTCH = -1;
-  const legLen = pants ? 79 : 17;
+  const legLen = pants ? 79 : 15;
   // Hip/waist tube with an elastic waist.
   // Fitted under the jersey: the part hidden by the jersey hugs the body.
-  const hipCirc = (y) => keyed([[CROTCH, 108], [-4, 104], [4, 98], [12, 94], [22, 88], [TOP, 84]], y);
-  const nu = Math.round(110 / ds / 2) * 2;
+  // Seat to elastic waist (the waistband gathers the waist in).
+  const hipCirc = (y) => keyed([[CROTCH, 108], [4, 106], [12, 102], [22, 92], [TOP, 86]], y);
+  const nu = ring2(110 / ds);
   const nv = Math.round((TOP - CROTCH) / ds) + 1;
   const hip = cloth.tube({
     nu,
@@ -556,8 +562,8 @@ function buildBottoms({ pants }) {
     const d = [s * Math.sin(ang), -Math.cos(ang), 0];
     const X = [Math.cos(ang), s * Math.sin(ang), 0];
     const O = [s * 10.2, CROTCH, 0];
-    const circAt = pants ? (t) => keyed([[0, 66], [30, 50], [45, 44], [legLen, 34]], t) : (t) => keyed([[0, 66], [legLen, 62]], t);
-    const lnu = Math.round(66 / ds / 2) * 2;
+    const circAt = pants ? (t) => keyed([[0, 66], [30, 50], [45, 44], [legLen, 34]], t) : (t) => keyed([[0, 66], [legLen, 63]], t);
+    const lnu = ring2(66 / ds);
     const lnv = Math.round(legLen / ds) + 1;
     // Weld the leg tops to the hip (outer arc) and to the other leg (crotch),
     // so these pieces share edge points and can't open at the seam.

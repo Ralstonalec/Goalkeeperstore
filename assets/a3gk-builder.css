@@ -23,11 +23,13 @@
   height: var(--a3b-stage-h, calc(100svh - var(--a3b-offset, 0px)));
   display: grid;
   grid-template-rows: minmax(0, 1fr) auto auto;
+  /* Photo studio: seamless light-grey cove, like a product shoot. */
   background:
-    radial-gradient(60% 50% at 50% 42%, rgba(59, 227, 127, 0.1), rgba(59, 227, 127, 0) 70%),
-    radial-gradient(90% 70% at 50% 110%, #1b1e1a 0%, rgba(14, 15, 13, 0) 70%),
-    #0b0c0a;
+    radial-gradient(70% 60% at 50% 40%, #f7f6f3 0%, rgba(247, 246, 243, 0) 75%),
+    linear-gradient(180deg, #e9e8e4 0%, #dddcd7 62%, #d2d1cb 100%);
   border-right: 1px solid var(--a3-line);
+  --a3b-stage-ink: #161714;
+  --a3b-stage-muted: rgba(22, 23, 20, 0.55);
   overflow: hidden;
 }
 
@@ -510,3 +512,20 @@
 /* Dawn colours headings from the page scheme; the designer sets its own. */
 .a3-builder-section :is(h1, h2, h3, h4, h5, h6) { color: var(--a3-text); }
 .a3b__hud-title strong { color: var(--a3-text); }
+
+/* Light studio stage: dark labels, no floor grid. */
+.a3b__stage::before { display: none; }
+.a3b__hud-title { color: var(--a3b-stage-muted); }
+.a3b__hud-title strong,
+.a3b__stage .a3b__hud-title strong { color: var(--a3b-stage-ink); }
+.a3b__hint,
+.a3b__loading,
+.a3b__disclaimer,
+.a3b__flat figcaption { color: var(--a3b-stage-muted); }
+.a3b__spinner { border-color: rgba(22, 23, 20, 0.15); border-top-color: #161714; }
+.a3b__seg { background: rgba(255, 255, 255, 0.7); border-color: rgba(22, 23, 20, 0.12); }
+.a3b__btn { color: rgba(22, 23, 20, 0.62); }
+.a3b__btn:hover { color: #161714; }
+.a3b__btn[aria-pressed='true'] { background: #161714; color: #f4f4f2; }
+.a3b__flat canvas { filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.18)); }
+.a3b__no3d { background: rgba(255, 255, 255, 0.85); color: rgba(22, 23, 20, 0.7); border-color: rgba(22, 23, 20, 0.12); }
