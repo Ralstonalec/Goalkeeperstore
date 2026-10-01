@@ -217,6 +217,47 @@ class Cloth {
         }
       }
     };
+    const G = this.group;
+    const neighbours = new Set();
+    for (const [a, b] of E.map((e) => [e[0], e[1]])) neighbours.add(a * 100000 + b).add(b * 100000 + a);
+    for (const [a, b] of S) neighbours.add(a * 100000 + b).add(b * 100000 + a);
+    const repel = (minD) => {
+      const cell = minD;
+      const hash = new Map();
+      for (let i = 0; i < n; i++) {
+        const k = `${Math.floor(P[i * 3] / cell)},${Math.floor(P[i * 3 + 1] / cell)},${Math.floor(P[i * 3 + 2] / cell)}`;
+        let l = hash.get(k);
+        if (!l) hash.set(k, (l = []));
+        l.push(i);
+      }
+      for (let i = 0; i < n; i++) {
+        const cx = Math.floor(P[i * 3] / cell);
+        const cy = Math.floor(P[i * 3 + 1] / cell);
+        const cz = Math.floor(P[i * 3 + 2] / cell);
+        for (let dx = -1; dx <= 1; dx++)
+          for (let dy = -1; dy <= 1; dy++)
+            for (let dz = -1; dz <= 1; dz++) {
+              const l = hash.get(`${cx + dx},${cy + dy},${cz + dz}`);
+              if (!l) continue;
+              for (const j of l) {
+                if (j <= i || (G[i] === G[j] && Math.abs(i - j) < 400)) continue;
+                if (neighbours.has(i * 100000 + j)) continue;
+                const ex = P[j * 3] - P[i * 3];
+                const ey = P[j * 3 + 1] - P[i * 3 + 1];
+                const ez = P[j * 3 + 2] - P[i * 3 + 2];
+                const d = Math.sqrt(ex * ex + ey * ey + ez * ez);
+                if (d >= minD || d < 1e-6) continue;
+                const c = (0.5 * (minD - d)) / d;
+                P[i * 3] -= ex * c;
+                P[i * 3 + 1] -= ey * c;
+                P[i * 3 + 2] -= ez * c;
+                P[j * 3] += ex * c;
+                P[j * 3 + 1] += ey * c;
+                P[j * 3 + 2] += ez * c;
+              }
+            }
+      }
+    };
     for (let step = 0; step < steps; step++) {
       const phase = step / steps;
       const g = gravity * clamp((phase - 0.18) / 0.12, 0, 1); // seams close first, then gravity
@@ -262,6 +303,8 @@ class Cloth {
         }
         collide(0.6);
       }
+      // Panels can't pass through each other (sleeve vs body at the armpit, legs).
+      if (phase > 0.15) repel(0.9);
       // Strain limiting: woven/knit kit fabric barely stretches (~3%).
       for (let pass = 0; pass < 3; pass++) {
         for (let e = 0; e < E.length; e++) {
@@ -345,8 +388,8 @@ function buildJersey({ long }) {
   const nv = Math.round((TOP - HEM) / ds) + 1;
   const ell = ellipseTable(19.8, 13.6);
   const NECK_W = 7.8;
-  const ARM_X = 14.6;
-  const ARMPIT = 46.5;
+  const ARM_X = 15.6;
+  const ARMPIT = 48.5;
   const topAt = (x, z) => {
     const ax = Math.abs(x);
     if (ax <= NECK_W) {
@@ -424,10 +467,17 @@ function buildJersey({ long }) {
     const d = [s * Math.sin(ang), -Math.cos(ang), 0];
     const X = [Math.cos(ang), s * Math.sin(ang), 0]; // +x-ish, perpendicular to the arm
     const J = [s * (a.x + 0.5), a.y + 1.5, 0];
-    const capC = 50;
+    // Sleeve cap is cut to the armhole's length so the seam sits flat (no gathering).
+    let loopLen = 0;
+    for (let k = 0; k < loop.length; k++) {
+      const a = cloth.pos[loop[k]];
+      const b = cloth.pos[loop[(k + 1) % loop.length]];
+      loopLen += Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+    }
+    const capC = clamp(loopLen * 0.98, 44, 56);
     const circAt = long
-      ? (t) => keyed([[0, capC], [9, 41], [30, 36], [48, 28], [lenS, 24]], t)
-      : (t) => keyed([[0, capC], [9, 41], [lenS, 38]], t);
+      ? (t) => keyed([[0, capC], [10, 40], [30, 35], [48, 28], [lenS, 24]], t)
+      : (t) => keyed([[0, capC], [10, 40], [lenS, 38]], t);
     const snu = Math.round(capC / ds / 2) * 2;
     const snv = Math.round(lenS / ds) + 1;
     const uTop = s > 0 ? 0.25 : 0.75;
